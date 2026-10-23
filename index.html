@@ -429,6 +429,17 @@ body.night .wrap{filter:brightness(.7)}
 @media (min-width:3000px){.wrap{max-width:2300px;zoom:1.6}}
 @media (max-width:760px){.dock{gap:0;padding-inline:4px}.dk{font-size:10.5px;min-height:56px;border-radius:12px}.dk svg{width:22px;height:22px}.top .pill:not(.mkdown),#fsbtn{display:none}.hero .clock{font-size:64px}.tile{padding:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== Briefing ===== */
+.bcap{display:flex;flex-direction:column;gap:3px;margin-top:10px;padding:10px 12px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55);font-size:15px;line-height:1.4}
+.bsec{font-family:var(--f-cond);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--go)}
+.bset{grid-column:1/-1;border:1px solid var(--line);border-radius:6px;padding:12px;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bset legend{font-family:var(--f-cond);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 6px}
+.bset .fl b{color:var(--ink);font-weight:600}
+.bset input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}
+.bset .bsecs,.bset .addrow{grid-column:1/-1}
+.bsecs .bl{flex-basis:100%;font-size:13px;color:var(--muted)}
+@media (max-width:620px){.bset{grid-template-columns:minmax(0,1fr)}}
+
 /* ===== Phone view ===== */
 .phone-only,.dk-more,.fab{display:none}
 .favh{margin:0 0 10px;padding:0 4px;font-family:var(--f-cond);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
@@ -626,10 +637,13 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
           <div class="astro" id="astro"></div>
           <div class="brief-ctl">
             <button class="btn primary" id="bplay" type="button" aria-label="Play spoken briefing"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Briefing</span></button>
+            <button class="btn" id="bprev" type="button" hidden aria-label="Previous section">Back</button>
             <button class="btn" id="bpause" type="button" hidden aria-label="Pause briefing">Pause</button>
+            <button class="btn" id="bnext" type="button" hidden aria-label="Next section">Skip</button>
             <button class="btn" id="brestart" type="button" hidden aria-label="Restart briefing">Restart</button>
             <button class="btn ghost" id="bstop" type="button" hidden aria-label="Stop briefing">Stop</button>
           </div>
+          <div class="bcap" id="bcap" hidden aria-live="polite"><span class="bsec" id="bsec"></span><span id="btext"></span></div>
         </section>
           <section class="tile t-phonefav phone-only" id="phonefavtile" aria-labelledby="h-pfav" hidden>
           <div class="th"><h2 id="h-pfav">Favorites</h2><button class="btn ghost" type="button" data-go="apps">All apps</button></div>
@@ -922,6 +936,14 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
             <label class="fl">Night mode: idle minutes before clock screen<input type="text" inputmode="numeric" id="p-idle" placeholder="5"></label>
             <label class="fl chk"><input type="checkbox" id="p-night"> Night mode on the big screen (dims after sunset, clock screen when idle)</label>
             <label class="fl chk"><input type="checkbox" id="p-voice"> Spoken replies to voice commands</label>
+            <fieldset class="bset" id="p-brief"><legend>Spoken briefing</legend>
+              <label class="fl">Voice<select id="p-bvoice"><option value="">Auto (best available)</option></select></label>
+              <label class="fl">Length<select id="p-blen"><option value="full">Full briefing</option><option value="quick">Quick (about a minute)</option></select></label>
+              <label class="fl">Speed <b id="p-brate-v">1.0×</b><input type="range" id="p-brate" min="0.8" max="1.3" step="0.05" value="1"></label>
+              <label class="fl">Pitch <b id="p-bpitch-v">1.0</b><input type="range" id="p-bpitch" min="0.8" max="1.2" step="0.05" value="1"></label>
+              <div class="days7 bsecs" id="p-bsecs"><span class="bl">Include</span></div>
+              <div class="addrow"><button class="btn" type="button" id="p-btest">Test voice</button><span class="sub" id="p-bvnote"></span></div>
+            </fieldset>
             <div class="addrow"><button class="btn primary" type="submit">Save settings</button><span class="sub" id="setmsg"></span></div>
           </form>
         </section>
@@ -1472,7 +1494,11 @@ setTimeout(function mkLoop(){ loadQuotes(); setTimeout(mkLoop, marketState().ope
     if (/(next|upcoming) (rocket )?launch|rocket launch|launches/.test(t)){ go('local'); const n = launchData[0];
       const a = n ? (n.name + (/TBD|TBC/i.test(n.status || '') ? ', no earlier than ' + n.d.toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'}) : ', ' + n.d.toLocaleString([], {weekday:'long', hour:'numeric', minute:'2-digit'}))) : 'No launches loaded yet';
       toast('Next launch: ' + a, heard); say('Next launch: ' + a); return; }
-    if (/good morning|briefing|brief me|what did i miss/.test(t)){ window.__rv1Briefing?.(); toast('Starting your briefing', heard); return; }
+    if (/^(?:pause|stop talking|hold on)$/.test(t)){ $('bpause').hidden || $('bpause').click(); return; }
+    if (/^(?:resume|continue|keep going)$/.test(t)){ $('bplay').click(); return; }
+    if (/^(?:skip|next)$/.test(t)){ $('bnext').click(); return; }
+    if (/^(?:stop|stop briefing|cancel)$/.test(t)){ $('bstop').click(); return; }
+    if (/good morning|good evening|briefing|brief me|what did i miss/.test(t)){ window.__rv1Briefing?.(); toast('Starting your briefing', heard); return; }
     if (/^(?:go to |open |show )?(?:the )?tools?$|calculator/.test(t)){ go('tools'); toast('Showing tools', heard); return; }
     if (/^(?:go to |open |show )?(?:the )?news$|headlines/.test(t)){ go('news'); toast('Showing the briefing', heard); return; }
     if (/weather|temperature|forecast/.test(t)){ const c2 = ((S.prefs.cities || [])[1]?.short || '').toLowerCase(); const w = (S.snapshot.weather || [])[c2 && t.includes(c2.split(',')[0]) ? 1 : 0] || 'No weather loaded yet'; go('home'); toast(w, heard); say(w); return; }
@@ -1866,7 +1892,10 @@ R.prefs = () => {
   [['p-trash', P.trash || []], ['p-recycle', P.recycle || []]].forEach(([id, sel]) => { const fs = $(id), lg = fs.querySelector('legend');
     fs.replaceChildren(lg, ...DN.map((d, i) => h('label',{}, h('input',{type:'checkbox', value:i, checked: sel.includes(i)}), d))); });
   if (document.activeElement !== $('p-trashat')) $('p-trashat').value = P.trashAt || '17:00';
-  set('p-idle', P.idle ? String(P.idle) : ''); $('p-pal').value = P.pal || ''; applyPal(P.pal); $('p-night').checked = !!P.night;
+  set('p-idle', P.idle ? String(P.idle) : '');
+  fillVoices(); $('p-bvoice').value = P.bvoice || ''; $('p-blen').value = P.blen || 'full';
+  $('p-brate').value = P.brate || 1; $('p-bpitch').value = P.bpitch || 1; bRangeLabels();
+  $('p-bsecs').replaceChildren(h('span',{class:'bl'}, 'Include'), ...BRIEF_SECTIONS().filter(([k]) => k !== 'open').map(([k, l]) => h('label',{}, h('input',{type:'checkbox', value:k, checked: !(P.boff || []).includes(k)}), l))); $('p-pal').value = P.pal || ''; applyPal(P.pal); $('p-night').checked = !!P.night;
   const sc = safeUrl(P.surfcast || ''); $('sc').href = sc || '#'; $('sc').style.cursor = sc ? '' : 'default';
   $('sc').querySelector('.go-link').hidden = !sc;
   if (!window.claude && ready) calStandalone();
@@ -1886,6 +1915,8 @@ $('setform').addEventListener('submit', async e => {
   const days = id => [...$(id).querySelectorAll('input:checked')].map(x => +x.value);
   P.trash = days('p-trash'); P.recycle = days('p-recycle'); P.trashAt = $('p-trashat').value || '17:00'; P.night = $('p-night').checked; P.idle = Math.max(1, +$('p-idle').value || 5);
   P.pal = $('p-pal').value; applyPal(P.pal);
+  P.bvoice = $('p-bvoice').value; P.blen = $('p-blen').value; P.brate = +$('p-brate').value || 1; P.bpitch = +$('p-bpitch').value || 1;
+  P.boff = [...$('p-bsecs').querySelectorAll('input')].filter(x => !x.checked).map(x => x.value);
   P.name = $('p-name').value.trim(); P.calId = $('p-cal').value.trim(); P.gh = $('p-gh').value.trim(); P.surfcast = $('p-sc').value.trim(); P.voice = $('p-voice').checked;
   const cityIn = [$('p-city1').value.trim(), $('p-city2').value.trim()], old = P.cities || [], cities = [];
   let geoFail = false;
@@ -2121,11 +2152,12 @@ function renderKids(){
     h('span',{class:'gt'}, ev.start?.dateTime ? hm(d) : 'All day', h('small',{}, d.toDateString() === new Date().toDateString() ? 'Today' : d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}))),
     h('span',{class:'dot', style:'background:var(--ok)'}), h('span',{class:'gm'}, h('b',{}, ev.summary || 'Activity'), h('span',{}, ev.location || '')))); });
 }
+let bdayCache = [];
 function renderBdays(evs){
   const t = $('bdaytile'), box = $('bdays'); box.replaceChildren();
   const today = new Date(); today.setHours(0,0,0,0); const seen = new Set();
   const list = evs.map(ev => ({name: (ev.summary || '').replace(/[’']s birthday|birthday/i, '').trim() || ev.summary, d: evStart(ev)})).filter(x => x.d && x.d >= today && !seen.has(x.name) && seen.add(x.name)).slice(0, 5);
-  t.hidden = !list.length;
+  t.hidden = !list.length; bdayCache = list;
   list.forEach(x => { const n = Math.round((x.d - today) / 864e5);
     box.append(h('div',{class:'cd'}, h('div',{class:'cd-n'}, n === 0 ? 'Today' : n, h('small',{}, n === 0 ? '' : n === 1 ? 'day' : 'days')), h('div',{class:'cd-b'}, h('b',{}, x.name), h('span',{}, x.d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}))))); });
 }
@@ -2133,38 +2165,178 @@ function renderBdays(evs){
 
 /* ---------- Spoken briefing ---------- */
 const synth = window.speechSynthesis;
-function briefingText(){
-  const P = S.prefs || {}, parts = [], t = new Date(), hr = t.getHours();
-  parts.push((hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + (P.name ? ', ' + P.name : '') + '. It’s ' + hm(t) + ' on ' + t.toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'}) + '.');
-  const al = window.claude ? (S.snapshot.alerts || []) : (nwsAlerts || []); if (al.length) parts.push('Weather alert: ' + al.map(a => a.event).join(', ') + '.');
-  (S.snapshot.weather || []).forEach(w => parts.push(w.replace(/°/g, ' degrees')));
-  const todayEv = (calEvents || []).filter(ev => evStart(ev)?.toDateString() === t.toDateString() && (!ev.start?.dateTime || evStart(ev) > t));
-  if (todayEv.length) parts.push('On your calendar today: ' + todayEv.slice(0, 4).map(ev => (ev.summary || 'an event') + (ev.start?.dateTime ? ' at ' + hm(evStart(ev)) : '')).join('; ') + '.');
-  const tr = trashDue(); if (tr) parts.push('Reminder: ' + tr.text.toLowerCase() + '. Put the bins out tonight.');
-  const td = (S.snapshot.fishing?.tides || []).map(x => ({d: parseLocal(x.t), h: x.type === 'H'})).filter(x => x.d && x.d > t).sort((a,b) => a.d - b.d)[0];
-  if (td) parts.push(`Next ${td.h ? 'high' : 'low'} tide at ${hm(td.d)}.`);
-  if (mkRows){ const v = marketVerdict(mkRows); parts.push('Market: ' + v.word + '. ' + (v.why[0] || '')); } else parts.push('The market is ' + marketState().text.split('·')[0].trim().toLowerCase() + '.');
-  const g = gamesCache.filter(x => new Date(x.start) > t - 3*3600e3).sort((a,b) => new Date(a.start) - new Date(b.start))[0];
-  if (g){ const d = new Date(g.start); parts.push(`Next game: ${g.team} ${g.label ? g.label : (g.home ? 'versus ' : 'at ') + (g.oppShort || g.opp)}, ${d.toDateString() === t.toDateString() ? 'today' : d.toLocaleDateString([], {weekday:'long'})}${g.tbd ? '' : ' at ' + hm(d)}.`); }
-  const ln = (launchData || []).find(l => !/TBD|TBC/i.test(l.status || '') && l.d - t < 48*3600e3 && l.d > t); if (ln) parts.push(`Rocket launch: ${ln.name}, ${ln.d.toLocaleString([], {weekday:'long', hour:'numeric', minute:'2-digit'})}.`);
-  return parts;
+function BRIEF_SECTIONS(){ return [['open','Opening'],['urgent','Heads-up'],['weather','Weather'],['day','Your day'],['todo','To-dos'],['sports','Sports'],['market','Market'],['coming','Coming up'],['fishing','Tides & surf'],['local','Local & launches'],['news','Headlines'],['tip','Tip of the day']]; }
+const DIRS = {N:'north',NE:'northeast',E:'east',SE:'southeast',S:'south',SW:'southwest',W:'west',NW:'northwest',NNE:'north-northeast',ENE:'east-northeast',ESE:'east-southeast',SSE:'south-southeast',SSW:'south-southwest',WSW:'west-southwest',WNW:'west-northwest',NNW:'north-northwest'};
+function sayable(t){
+  return String(t || '')
+    .replace(/last: ([WLT]) (\d+)\s*[–-]\s*(\d+)/g, (m, r, a, b) => `last time out they ${r === 'W' ? 'won' : r === 'L' ? 'lost' : 'tied'} ${a} to ${b}`)
+    .replace(/\b(N|NE|E|SE|S|SW|W|NW|NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW)\b(?=\s+(?:wind|\d+\s*(?:[–-]|mph|,|$)))/g, m => DIRS[m])
+    .replace(/(\d+)\s*–\s*(\d+)/g, '$1 to $2')
+    .replace(/°F?/g, ' degrees').replace(/\bmph\b/g, 'miles per hour').replace(/(\d)\s*ft\b/g, '$1 feet').replace(/(\d)\s*s\b/g, '$1 seconds')
+    .replace(/\bg(\d+)/g, 'gusts $1').replace(/(\d+) h (\d+) min/g, (m, a, b) => `${a} hour${a == 1 ? '' : 's'} ${b} minutes`).replace(/(\d+) min\b/g, '$1 minutes')
+    .replace(/\bvs\.?\b/g, 'versus').replace(/\s*·\s*/g, '. ').replace(/\s+/g, ' ').replace(/\.\s*\./g, '.').trim();
 }
-let bQueue = [], bIdx = 0, bState = 'idle';
-function bUI(){ $('bpause').hidden = bState === 'idle'; $('brestart').hidden = bState === 'idle'; $('bstop').hidden = bState === 'idle';
-  $('bpause').textContent = bState === 'paused' ? 'Resume' : 'Pause'; $('bplay').querySelector('span').textContent = bState === 'idle' ? 'Briefing' : 'Playing…'; }
+const list3 = arr => arr.length <= 1 ? (arr[0] || '') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1];
+const dayWord = d => { const t = new Date(); t.setHours(0,0,0,0); const x = new Date(d); x.setHours(0,0,0,0); const n = Math.round((x - t) / 864e5);
+  return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n < 7 ? x.toLocaleDateString([], {weekday:'long'}) : x.toLocaleDateString([], {month:'long', day:'numeric'}); };
+function buildBriefing(){
+  const P = S.prefs || {}, now = new Date(), hr = now.getHours(), evening = hr >= 17, quick = P.blen === 'quick', off = new Set(P.boff || []);
+  const out = [], add = (key, label, lines) => { lines = (lines || []).filter(Boolean).map(sayable).filter(Boolean); if (lines.length && (key === 'open' || !off.has(key))) out.push({key, label, lines}); };
+  const SN = Object.fromEntries(BRIEF_SECTIONS());
+  // Opening
+  add('open', 'Good ' + (hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening'), [
+    (hr < 5 ? 'Up late' : hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + (P.name ? ', ' + P.name : '') + '.',
+    `It’s ${hm(now)} on ${now.toLocaleDateString([], {weekday:'long', month:'long', day:'numeric'})}.`]);
+  // Heads-up: anything that needs attention first
+  const urg = [];
+  const al = window.claude ? (S.snapshot.alerts || []) : (nwsAlerts || []);
+  if (al.length) urg.push(`Weather alert: ${list3([...new Set(al.map(a => a.event))])}.`);
+  const st = (window.claude ? S.snapshot.storms : (stormsLive || S.snapshot.storms)) || [];
+  st.filter(x => /hurricane|storm/i.test(x.kind || '')).slice(0, 2).forEach(x => urg.push(`${x.kind} ${x.name} is active in the Atlantic${x.wind ? ', with winds near ' + x.wind + ' miles per hour' : ''}.`));
+  if (mkRows){ const idx = mkRows.filter(r => (r.sym === 'SPY' || r.sym === 'QQQ') && r.dp != null); const w = idx.length ? Math.min(...idx.map(r => r.dp)) : 0; if (w <= -1) urg.push(`The market is down. ${idx.map(r => r.sym.split('').join(' ') + ' ' + r.dp.toFixed(1) + ' percent').join(', ')}.`); }
+  bdayCache.filter(b => dayWord(b.d) === 'today').forEach(b => urg.push(`It’s ${b.name}’s birthday today.`));
+  const tdue = trashDue(); if (tdue) urg.push(`${tdue.text}. Put the bins out tonight.`);
+  if (!evening && hr < 11){ const dow = now.getDay(), items = [(P.trash || []).includes(dow) ? 'trash' : null, (P.recycle || []).includes(dow) ? 'recycling' : null].filter(Boolean); if (items.length) urg.push(`It’s ${items.join(' and ')} day.`); }
+  const ln = (launchData || []).find(l => !/TBD|TBC/i.test(l.status || '') && l.d > now && l.d - now < 24*3600e3);
+  if (ln) urg.push(`Rocket launch ${dayWord(ln.d)} at ${hm(ln.d)}: ${ln.provider ? ln.provider + ', ' : ''}${ln.name}.${isNight(ln.d) ? ' It’s a night launch, so look south.' : ''}`);
+  (S.car.vehicles || []).forEach(v => (v.items || []).forEach(it => { const s2 = itemStatus(it, +v.odo || 0); if (s2.cls === 'over') urg.push(`${v.short || v.name}: ${it.name.toLowerCase()} is due.`); }));
+  add('urgent', SN.urgent, urg);
+  // Weather
+  const wx = (S.snapshot.weather || []).slice(0, quick ? 1 : 2);
+  const sun = sunToday ? (evening ? `Sunrise tomorrow is around ${hm(new Date(sunToday.rise.getTime() + 864e5))}.` : `Sunset is at ${hm(sunToday.set)}.`) : '';
+  add('weather', SN.weather, [...wx, quick ? '' : sun]);
+  // Your day (calendar)
+  const evs = (calEvents || []).map(ev => ({ev, d: evStart(ev), allDay: !ev.start?.dateTime})).filter(x => x.d);
+  const today = evs.filter(x => x.d.toDateString() === now.toDateString() && (x.allDay || x.d > now - 30*60e3));
+  const tmr = evs.filter(x => x.d.toDateString() === new Date(now.getTime() + 864e5).toDateString());
+  const fmtEv = x => (x.ev.summary || 'an event') + (x.allDay ? '' : ' at ' + hm(x.d));
+  const dayLines = [];
+  if (calEvents){
+    if (today.length) dayLines.push(`${evening ? 'Still on today' : 'On your calendar today'}: ${list3(today.slice(0, quick ? 3 : 5).map(fmtEv))}.`);
+    else if (!evening) dayLines.push('Nothing on your calendar today.');
+    if ((evening || !quick) && tmr.length) dayLines.push(`Tomorrow: ${list3(tmr.slice(0, 4).map(fmtEv))}.`);
+  }
+  add('day', SN.day, dayLines);
+  // To-dos
+  if (!quick){ const open = (S.todos.items || []).filter(t => !t.done); if (open.length) add('todo', SN.todo, [`You have ${open.length} open to-do${open.length > 1 ? 's' : ''}: ${list3(open.slice(0, 3).map(t => t.text))}${open.length > 3 ? ', and more' : ''}.`]); }
+  // Sports
+  const sp = [], games = (gamesCache || []).filter(g => new Date(g.start) > now - 3*3600e3).sort((a,b) => new Date(a.start) - new Date(b.start));
+  const gLine = g => { const d = new Date(g.start); return `${g.team} ${g.label ? g.label.toLowerCase() : (g.home ? 'versus ' : 'at ') + (g.oppShort || g.opp)}${g.tbd ? '' : ' at ' + hm(d)}${g.tv && /night|thanksgiving/i.test(g.tv) ? ' on ' + g.tv : ''}`; };
+  const gToday = games.filter(g => new Date(g.start).toDateString() === now.toDateString());
+  if (gToday.length) sp.push(`${evening ? 'Tonight' : 'Today'}: ${list3(gToday.map(gLine))}.`);
+  if (!quick){
+    const gTmr = games.filter(g => new Date(g.start).toDateString() === new Date(now.getTime() + 864e5).toDateString());
+    if (gTmr.length) sp.push(`Tomorrow: ${list3(gTmr.map(gLine))}.`);
+    const big = games.filter(g => !gToday.includes(g) && !gTmr.includes(g) && new Date(g.start) - now < 7*864e5 && gameFlags(g, new Date(g.start)).some(f => f[0] === 'hot')).slice(0, 2);
+    big.forEach(g => { const f = gameFlags(g, new Date(g.start)).find(x => x[0] === 'hot'); sp.push(`Big one ${dayWord(g.start)}: ${gLine(g)}. ${f ? f[1] + '.' : ''}`); });
+    const res = (S.snapshot.sports || []).map(l => { const m = l.match(/last:\s*[WLT]\s*\d+\s*[–-]\s*\d+[^·]*/); const team = ['Rangers','Giants','Bills','Jaguars','Icemen','Jumbo Shrimp'].find(t => l.startsWith(t)); return m && team ? `${team}: ${m[0].trim()}` : null; }).filter(Boolean);
+    if (res.length) sp.push('Latest results. ' + res.join('. ') + '.');
+    const p = S.snapshot.psu; if (p && p.record) sp.push(`Penn State is ${p.record.replace(/[–-]/, ' and ')}${p.rank ? ', ranked number ' + p.rank : ''}.${p.next ? ' Next: ' + p.next + '.' : ''}`);
+  }
+  add('sports', SN.sports, sp);
+  // Market
+  const mk = [], ms = marketState();
+  if (mkRows){ const v = marketVerdict(mkRows); mk.push(`Market check: ${v.word}.`); if (!quick) v.why.slice(0, 2).forEach(w => mk.push(w + '.')); }
+  if (ms.phase === 'open') mk.push(`The market is open and ${ms.text.split('·')[1]?.trim() || ''}.`);
+  else if (ms.phase === 'pre') mk.push(`Pre-market. The market ${ms.text.split('·')[1]?.trim() || 'opens at 9:30'}.`);
+  else if (!quick) mk.push(`The stock market is closed${ms.text.includes('·') ? ', and ' + ms.text.split('·')[1].trim() : ''}.`);
+  add('market', SN.market, mk);
+  if (!quick){
+    // Coming up
+    const cu = [], t0 = new Date(); t0.setHours(0,0,0,0);
+    (S.countdowns.items || []).map(c => ({c, n: dayDiff(c.date)})).filter(x => x.n > 0 && x.n <= 21).sort((a,b) => a.n - b.n).slice(0, 3)
+      .forEach(x => cu.push(`${x.c.name} ${x.n === 1 ? 'is tomorrow' : 'in ' + x.n + ' days'}.`));
+    bdayCache.filter(b => { const n = Math.round((b.d - t0) / 864e5); return n > 0 && n <= 7; }).forEach(b => cu.push(`${b.name}’s birthday is ${dayWord(b.d)}.`));
+    (S.subs.items || []).map(it => ({it, d: nextBill(it)})).filter(x => x.d && Math.round((x.d - t0) / 864e5) <= 3).forEach(x => cu.push(`${x.it.name} bills ${dayWord(x.d)}, ${(+x.it.cost || 0).toFixed(2)} dollars.`));
+    (S.car.vehicles || []).forEach(v => (v.items || []).forEach(it => { if (itemStatus(it, +v.odo || 0).cls === 'due') cu.push(`${v.short || v.name}: ${it.name.toLowerCase()} is coming due.`); }));
+    const pk = (S.pkgs.items || []).length; if (pk) cu.push(`You’re tracking ${pk} package${pk > 1 ? 's' : ''}.`);
+    add('coming', SN.coming, cu);
+    // Tides & surf
+    const f = S.snapshot.fishing, fi = [];
+    if (f){ const td = (f.tides || []).map(x => ({d: parseLocal(x.t), h: x.type === 'H'})).filter(x => x.d && x.d > now).sort((a,b) => a.d - b.d);
+      if (td[0]) fi.push(`Next ${td[0].h ? 'high' : 'low'} tide at ${hm(td[0].d)}${td[1] ? `, then ${td[1].h ? 'high' : 'low'} at ${hm(td[1].d)}` : ''}.`);
+      const stt = (f.stats || []).map(x => `${x.label.toLowerCase()} ${x.value}`); if (stt.length) fi.push(`At the beach: ${list3(stt)}.`); }
+    const mp = moonPhase(); if (/full|new/i.test(mp.name)) fi.push(`It’s a ${mp.name.toLowerCase()}, which usually means stronger tides.`);
+    add('fishing', SN.fishing, fi);
+    // Local & launches
+    const lo = [];
+    const evts = (S.snapshot.events || []).map(e => ({...e, d: parseLocal((e.date || '') + ' ' + (e.time || '12:00'))})).filter(e => e.d && e.d >= t0 && e.d - t0 < 7*864e5).slice(0, 2);
+    evts.forEach(e => lo.push(`${e.title}, ${dayWord(e.d)}${e.venue ? ' at ' + e.venue : ''}.`));
+    if (!ln){ const l2 = (launchData || []).find(l => !/TBD|TBC/i.test(l.status || '') && l.d > now && l.d - now < 72*3600e3); if (l2) lo.push(`Rocket launch ${dayWord(l2.d)} at ${hm(l2.d)}: ${l2.name}.`); }
+    (S.snapshot.local || []).slice(0, 1).forEach(n => lo.push(`Around town: ${n.title}.`));
+    add('local', SN.local, lo);
+    // Headlines
+    const nd = (typeof newsData !== 'undefined' && newsData.top) ? newsData : (S.snapshot.news || {}), hl = (nd.top || []).slice(0, 3).map(n => n.title).filter(Boolean);
+    const psuN = (S.snapshot.psu?.news || [])[0];
+    add('news', SN.news, [hl.length ? 'Top headlines.' : '', ...hl.map(t => t.replace(/[.?!]?$/, '.')), psuN ? `From Penn State: ${psuN.title}.` : '']);
+    // Tip
+    const tip = TIPS[(dayNum() * 7) % TIPS.length];
+    if (tip) add('tip', SN.tip, [`Today’s ${tip.cat.toLowerCase()} tip: ${tip.title}.`, tip.body]);
+  }
+  out.push({key:'close', label:'That’s it', lines:[evening ? 'That’s your briefing. Have a good night.' : 'That’s your briefing. Have a great day.']});
+  return out;
+}
+function briefingText(){ return buildBriefing().flatMap(s => s.lines); }
+/* voices */
+function rankedVoices(){
+  if (!synth) return [];
+  const score = v => (/natural|neural|premium|enhanced|siri/i.test(v.name) ? 4 : 0) + (/google us english|aria|jenny|guy|samantha|ava|allison|zoe|evan|nathan|joelle/i.test(v.name) ? 2 : 0) + (v.lang === 'en-US' ? 1 : 0);
+  return synth.getVoices().filter(v => /^en/i.test(v.lang)).sort((a,b) => score(b) - score(a) || a.name.localeCompare(b.name));
+}
+function pickVoice(name){ const vs = rankedVoices(); return vs.find(v => v.name === name) || vs[0] || null; }
+function fillVoices(){
+  const sel = $('p-bvoice'); if (!sel) return; const cur = sel.value || (S.prefs || {}).bvoice || '';
+  const vs = rankedVoices();
+  sel.replaceChildren(h('option',{value:''}, 'Auto (best available)'), ...vs.map(v => h('option',{value:v.name}, v.name.replace(/^Microsoft |^Google /, '') + ' · ' + v.lang)));
+  sel.value = vs.some(v => v.name === cur) ? cur : '';
+  $('p-bvnote').textContent = vs.length ? `${vs.length} English voices on this device.` : (synth ? 'Voices are still loading. Try again in a moment.' : 'This browser can’t speak.');
+}
+function bRangeLabels(){ $('p-brate-v').textContent = (+$('p-brate').value).toFixed(2).replace(/0$/, '') + '×'; $('p-bpitch-v').textContent = (+$('p-bpitch').value).toFixed(2).replace(/0$/, ''); }
+if (synth){ synth.addEventListener?.('voiceschanged', fillVoices); setTimeout(fillVoices, 500); }
+['p-brate','p-bpitch'].forEach(id => $(id).addEventListener('input', bRangeLabels));
+function speakOne(text, opts, onend){
+  const u = new SpeechSynthesisUtterance(text), v = pickVoice(opts.voice);
+  if (v){ u.voice = v; u.lang = v.lang; } u.rate = opts.rate || 1; u.pitch = opts.pitch || 1;
+  u.onend = onend; u.onerror = onend; synth.speak(u);
+}
+$('p-btest').addEventListener('click', () => { if (!synth) return; synth.cancel(); const P = S.prefs || {};
+  speakOne(`This is R V 1. Good ${new Date().getHours() < 12 ? 'morning' : 'evening'}${P.name ? ', ' + P.name : ''}. Here’s how your briefing will sound.`, {voice:$('p-bvoice').value, rate:+$('p-brate').value, pitch:+$('p-bpitch').value}, () => {}); });
+/* player */
+let bQueue = [], bIdx = 0, bState = 'idle', bTok = 0;
+function bUI(){
+  const on = bState !== 'idle';
+  ['bpause','bprev','bnext','brestart','bstop'].forEach(id => $(id).hidden = !on); $('bcap').hidden = !on;
+  $('bpause').textContent = bState === 'paused' ? 'Resume' : 'Pause';
+  $('bplay').querySelector('span').textContent = on ? (bState === 'paused' ? 'Paused' : 'Playing…') : 'Briefing';
+  const cur = bQueue[bIdx]; if (on && cur){ $('bsec').textContent = cur.label + (bQueue.length ? `  ·  ${cur.si + 1} of ${cur.sn}` : ''); $('btext').textContent = cur.text; }
+}
 function bSpeak(){
   if (bIdx >= bQueue.length){ bState = 'idle'; bUI(); return; }
-  const u = new SpeechSynthesisUtterance(bQueue[bIdx]); u.rate = 1.02;
-  u.onend = () => { if (bState === 'playing'){ bIdx++; bSpeak(); } };
-  synth.speak(u);
+  bUI(); const tok = ++bTok, P = S.prefs || {};
+  speakOne(bQueue[bIdx].text, {voice:P.bvoice, rate:P.brate, pitch:P.bpitch}, () => { if (tok === bTok && bState === 'playing'){ bIdx++; bSpeak(); } });
 }
-function startBriefing(){ if (!synth){ toastMsg('Spoken briefing isn’t supported in this browser.'); return; } synth.cancel(); bQueue = briefingText(); bIdx = 0; bState = 'playing'; bUI(); bSpeak(); }
+function startBriefing(){
+  if (!synth){ toastMsg('Spoken briefing isn’t supported in this browser.'); return; }
+  synth.cancel(); bTok++;
+  const secs = buildBriefing(), n = secs.length; bQueue = [];
+  secs.forEach((sec, si) => sec.lines.forEach(line => line.split(/(?<=[.!?])\s+(?=[A-Z0-9“"])/).forEach(part => part.trim() && bQueue.push({key:sec.key, label:sec.label, text:part.trim(), si, sn:n}))));
+  bIdx = 0; bState = 'playing'; bSpeak();
+}
+function bJump(dir){
+  if (!bQueue.length) return; const cur = bQueue[bIdx]?.si ?? 0;
+  let target = dir > 0 ? bQueue.findIndex(q => q.si > cur) : (() => { const startCur = bQueue.findIndex(q => q.si === cur); return bIdx > startCur + 0 ? startCur : bQueue.findIndex(q => q.si === Math.max(0, cur - 1)); })();
+  if (target < 0){ if (dir > 0){ synth.cancel(); bTok++; bState = 'idle'; bUI(); } return; }
+  synth.cancel(); bTok++; bIdx = target; if (bState === 'paused') bUI(); else { bState = 'playing'; bSpeak(); }
+}
 const toastMsg = m => { const t = $('toast'); t.replaceChildren(h('span',{}, m)); t.hidden = false; setTimeout(() => t.hidden = true, 5000); };
-$('bplay').addEventListener('click', () => { if (bState === 'idle') startBriefing(); });
-$('bpause').addEventListener('click', () => { if (bState === 'playing'){ synth.pause(); bState = 'paused'; } else if (bState === 'paused'){ synth.resume(); bState = 'playing'; } bUI(); });
+$('bplay').addEventListener('click', () => { if (bState === 'idle') startBriefing(); else if (bState === 'paused'){ bState = 'playing'; bSpeak(); } });
+$('bpause').addEventListener('click', () => { if (bState === 'playing'){ bState = 'paused'; bTok++; synth.cancel(); } else if (bState === 'paused'){ bState = 'playing'; bSpeak(); } bUI(); });
+$('bnext').addEventListener('click', () => bJump(1));
+$('bprev').addEventListener('click', () => bJump(-1));
 $('brestart').addEventListener('click', startBriefing);
-$('bstop').addEventListener('click', () => { bState = 'idle'; synth?.cancel(); bUI(); });
+$('bstop').addEventListener('click', () => { bState = 'idle'; bTok++; synth?.cancel(); bUI(); });
 window.__rv1Briefing = startBriefing;
+window.__rv1BriefingSections = buildBriefing;
 
 /* ---------- Tropics ---------- */
 const PREP = ['Water: 1 gallon per person per day for 7 days','Non-perishable food for 7 days','Fill prescriptions','Fuel up and fully charge your vehicles','Generator fuel and test run','Batteries, flashlights, radio','Charge phones and power banks','Cash on hand','Bring in patio furniture and loose items','Shutters or window protection ready','Important papers in a waterproof bag','Know your evacuation zone and route'];
