@@ -429,6 +429,17 @@ body.night .wrap{filter:brightness(.7)}
 @media (min-width:3000px){.wrap{max-width:2300px;zoom:1.6}}
 @media (max-width:760px){.dock{gap:0;padding-inline:4px}.dk{font-size:10.5px;min-height:56px;border-radius:12px}.dk svg{width:22px;height:22px}.top .pill:not(.mkdown),#fsbtn{display:none}.hero .clock{font-size:64px}.tile{padding:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== Phone view ===== */
+.phone-only,.dk-more,.fab{display:none}
+.favh{margin:0 0 10px;padding:0 4px;font-family:var(--f-cond);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.favwrap{margin-bottom:22px}
+.allapps{display:none}
+.app-fav{position:absolute;top:-6px;right:-6px;background:var(--panel-3);color:var(--muted);border:2px solid var(--bg);z-index:2;font-size:15px}
+.app-fav.on{color:var(--warn)}
+.more-bg{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;padding:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.more-sheet{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.more-sheet .btn{min-height:64px;font-size:17px}
+
 /* ===== Industrial control-panel treatment ===== */
 [hidden]{display:none!important}
 :root{--r:6px;--well:#0a0d10;--well-line:#222930}
@@ -488,18 +499,84 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   .toast{bottom:24px;left:calc(50% + 56px)}
 }
 @media (min-width:1900px){.wrap{zoom:1.06}}
+@media (max-width:760px){
+  /* phone: one stream in priority order */
+  .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}
+  .home .col,.home .col:nth-child(3){display:contents!important}
+  .hero{order:1}.t-wx{order:2}.sc{order:3}.t-cal{order:4}.t-kids{order:5}.t-nextup{order:6}.t-mkt{order:7}.t-cd{order:8}.t-bday{order:9}.t-phonefav{order:10}
+  #favapps .app-nm,.t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}
+  body{font-size:17px}
+  .phone-only{display:flex}
+  .tile{padding:16px}
+  .tile>.th:first-child{min-height:48px}
+  .th h2{font-size:15px}
+  .sub{font-size:14px}
+  /* header: brand, alerts, time */
+  .brand-tag,.top .pill:not(.mkdown):not(.lpill),#fsbtn{display:none!important}
+  .top{flex-wrap:nowrap}
+  .topclock{font-size:20px}
+  /* dock: Home, News, Apps, Sports, More */
+  .dk[data-go="local"],.dk[data-go="garage"],.dk[data-go="tools"],.dk[data-go="life"]{display:none}
+  .dk-more{display:flex}
+  .dk span{font-size:11.5px!important;letter-spacing:.06em!important}
+  .dk svg{width:24px!important;height:24px!important}
+  .dk{min-height:62px}
+  /* home = glance screen */
+  #scr-home .askbar,.hero .clock,.hero .yr,.hero .astro,.t-todo,.t-school,#scr-home .t-cal .gcal + .sub{display:none!important}
+  .hero{padding:14px 16px;gap:6px}
+  .hero .hello{font-size:18px}
+  .hero .date{font-size:18px}
+  .hero .brief-ctl{margin-top:4px}
+  #nextlist .grow:nth-child(n+3){display:none}
+  #cds .cd:nth-child(n+2){display:none}
+  .t-mkt .chips,.t-mkt .launch,.t-mkt .editonly,#mkstamp{display:none!important}
+  section.t-mkt.editing .chips,section.t-mkt.editing .editonly{display:flex!important}
+  .sc #sccurve,.sc .sc-stats,.sc #scstamp{display:none}
+  #scr-home .t-cal .gcal{height:320px}
+  .t-sp .launch{display:none}
+  .grow{grid-template-columns:70px 10px minmax(0,1fr);padding:12px}
+  .grow .gm b{font-size:17px}
+  .verdict b{font-size:22px}
+  .verdict ul{font-size:15px}
+  /* apps: favorites first, groups behind "All apps" */
+  .allapps{display:flex;width:100%;margin:0 0 16px}
+  body:not(.allapps-open) #groups,body:not(.allapps-open) #groupform,body:not(.allapps-open) .apps-hint{display:none!important}
+  .t-phonefav .apps,#favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}
+  .t-phonefav .app,#favapps .app{min-height:86px;padding:10px 4px 8px}
+  .t-phonefav .app-ic,#favapps .app-ic{width:42px;height:42px}
+  .t-phonefav .app-nm,#favapps .app-nm{font-size:12px}
+  .app-nm{font-size:13px}
+  /* voice button */
+  .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:62px;height:62px;border-radius:50%;
+    border:1px solid #57a8ff;background:linear-gradient(180deg,#2f8df2,#1f6dc4);color:#fff;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .fab:not([hidden]){display:grid}
+  .fab svg{width:28px;height:28px}
+  .fab.live{background:var(--bad);border-color:var(--bad)}
+  body{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .t-mkt .mk-state{font-size:11px;padding:4px 8px}
+  .t-mkt .th>div{gap:2px!important}
+  .t-wx .launch a:nth-child(n+3){display:none}
+}
 @media (min-width:1200px){
   #sched{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px 18px;align-items:start}
   .t-sched .sd{padding:12px;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.18)}
-  .hero{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:22px;align-items:end}
-  .hero .hello,.hero .date,.hero .yr,.hero .brief-ctl{grid-column:1/-1}
-  .hero .clock{grid-row:2}
-  .hero .astro{grid-row:2;grid-column:2;flex-direction:column;align-self:stretch;justify-content:space-between;gap:6px;margin:0}
+  .hero .astro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 0}
 }
 .astro span{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 3px rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:.08em;font-size:12px}
 .astro span b{font-size:16px;letter-spacing:.02em;text-transform:none;white-space:nowrap}
 .astro span{white-space:nowrap;align-items:baseline}
-@media (min-width:1200px){.hero .astro span{min-width:200px}}
+@media (min-width:1200px){
+  .hero .astro span{min-width:0;padding:7px 10px;font-size:11px;flex-direction:column;align-items:flex-start;gap:2px}
+  .hero .astro span b{font-size:17px}
+  /* fill the columns so panels line up at the bottom instead of leaving bare space */
+  .home{align-items:stretch}
+  .home .col{min-height:100%}
+  .t-todo{flex:1}
+  .t-todo .todos{flex:1;min-height:156px;background-image:repeating-linear-gradient(to bottom,transparent 0 51px,var(--line) 51px 52px);background-position:0 0}
+  .t-todo .todos li{border-bottom-color:transparent}
+  .t-cd{order:9;flex:1}
+  .t-school{order:5}
+}
 @media (min-width:1200px){
   .groups{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:16px;align-items:start}
   .group{padding:12px 14px 14px;border:1px solid var(--line);border-radius:6px;background:rgba(0,0,0,.18)}
@@ -554,11 +631,15 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
             <button class="btn ghost" id="bstop" type="button" hidden aria-label="Stop briefing">Stop</button>
           </div>
         </section>
-          <section class="tile t-nextup" id="nextup" aria-labelledby="h-nextup" hidden>
+          <section class="tile t-phonefav phone-only" id="phonefavtile" aria-labelledby="h-pfav" hidden>
+          <div class="th"><h2 id="h-pfav">Favorites</h2><button class="btn ghost" type="button" data-go="apps">All apps</button></div>
+          <div class="apps" id="phonefavs"></div>
+        </section>
+        <section class="tile t-nextup" id="nextup" aria-labelledby="h-nextup" hidden>
           <div class="th"><h2 id="h-nextup">Next up</h2><button class="btn ghost" type="button" data-go="sports">All games</button></div>
           <div class="sched compact" id="nextlist"></div>
         </section>
-          <section class="tile" aria-labelledby="h-wx">
+          <section class="tile t-wx" aria-labelledby="h-wx">
         <div class="th"><h2 id="h-wx">Weather</h2></div>
         <div class="snap" id="wxsnap"></div>
         <div class="launch">
@@ -609,7 +690,7 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
             <div class="th"><h2 id="h-bday">Birthdays</h2></div>
             <div class="cds" id="bdays"></div>
           </section>
-          <section class="tile" aria-labelledby="h-cd">
+          <section class="tile t-cd" aria-labelledby="h-cd">
         <div class="th"><h2 id="h-cd">Countdowns</h2><button class="btn ghost" id="cdedit" type="button">Edit</button></div>
         <div class="cds" id="cds"></div>
         <form class="addrow editonly" id="cdform"><input type="text" id="cdname" placeholder="Event" aria-label="Countdown name"><input type="date" id="cddate" aria-label="Countdown date"><button class="btn primary" type="submit">Add</button></form>
@@ -718,6 +799,8 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
     <div class="screen" id="scr-apps" data-screen="apps" hidden>
       <section class="tile t-links" aria-labelledby="h-links">
       <div class="th"><h2 id="h-links">Favorite links</h2><button class="btn ghost" id="linkedit" type="button">Edit</button></div>
+      <div class="favwrap" id="favwrap" hidden><h3 class="favh">Favorites</h3><div class="apps" id="favapps"></div></div>
+      <button class="btn allapps" id="allapps" type="button" aria-expanded="false">All apps</button>
       <div class="groups" id="groups"></div>
       <div class="apps-hint">Tip: press and hold any app to rearrange your list or remove it.</div>
       <form class="addrow editonly" id="groupform" style="max-width:420px"><input type="text" id="groupin" placeholder="New group name" aria-label="New group name"><button class="btn" type="submit">Add group</button></form>
@@ -879,7 +962,12 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
         </section></div>
     </div>
   </main>
-  <nav class="dock" aria-label="Screens"><button class="dk" type="button" data-go="home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button class="dk" type="button" data-go="local" aria-label="Local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Local</span></button><button class="dk" type="button" data-go="news" aria-label="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/></svg><span>News</span></button><button class="dk" type="button" data-go="apps" aria-label="Apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Apps</span></button><button class="dk" type="button" data-go="sports" aria-label="Sports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"/></svg><span>Sports</span></button><button class="dk" type="button" data-go="garage" aria-label="Garage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 16v-4l2-5h12l2 5v4"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg><span>Garage</span></button><button class="dk" type="button" data-go="tools" aria-label="Tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><span>Tools</span></button><button class="dk" type="button" data-go="life" aria-label="Life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Life</span></button></nav>
+  <button class="fab" id="fabmic" type="button" aria-label="Speak a command" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+  <div class="more-bg" id="moresheet" hidden><div class="more-sheet" role="menu" aria-label="More screens">
+    <button class="btn" type="button" data-go="local">Local</button><button class="btn" type="button" data-go="garage">Garage</button>
+    <button class="btn" type="button" data-go="tools">Tools</button><button class="btn" type="button" data-go="life">Life &amp; settings</button>
+  </div></div>
+  <nav class="dock" aria-label="Screens"><button class="dk" type="button" data-go="home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button class="dk" type="button" data-go="local" aria-label="Local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Local</span></button><button class="dk" type="button" data-go="news" aria-label="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/></svg><span>News</span></button><button class="dk" type="button" data-go="apps" aria-label="Apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Apps</span></button><button class="dk" type="button" data-go="sports" aria-label="Sports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"/></svg><span>Sports</span></button><button class="dk" type="button" data-go="garage" aria-label="Garage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 16v-4l2-5h12l2 5v4"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg><span>Garage</span></button><button class="dk" type="button" data-go="tools" aria-label="Tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><span>Tools</span></button><button class="dk dk-more" type="button" id="dkmore" aria-label="More screens"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>More</span></button><button class="dk" type="button" data-go="life" aria-label="Life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Life</span></button></nav>
   <div class="ambient" id="ambient" hidden><div class="amb-clock" id="ambclock"></div><div class="amb-date" id="ambdate"></div><div class="amb-line" id="ambline"></div><div class="amb-hint">Tap anywhere to wake</div></div>
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
   <div class="sheet-bg" id="sheet" hidden>
@@ -968,7 +1056,7 @@ try { const p0 = JSON.parse(localStorage.getItem('cc_pal') || '""'); if (p0) doc
 const whenReady = () => new Promise(r => { const t = () => ready ? r() : setTimeout(t, 60); t(); });
 function renderAll(){ KEYS.forEach(k => R[k] && R[k]()); }
 
-const SEED = {"countdowns": {"items": [{"date": "2026-10-31", "id": "c1", "name": "Halloween"}, {"id": "c5", "name": "Icemen opening night", "date": "2026-10-31"}, {"date": "2026-11-26", "id": "c2", "name": "Thanksgiving"}, {"date": "2026-12-25", "id": "c3", "name": "Christmas"}, {"date": "2027-01-01", "id": "c4", "name": "New Year's Day"}]}, "links": {"groups": [{"id": "g10", "name": "AI", "links": [{"id": "l60", "name": "Claude", "url": "https://claude.ai/new"}, {"id": "l61", "name": "ChatGPT", "url": "https://chatgpt.com/"}, {"id": "l62", "name": "Gemini", "url": "https://gemini.google.com/app"}, {"id": "l63", "name": "Grok", "url": "https://grok.com/"}]}, {"id": "g1", "name": "Google", "links": [{"id": "l1", "name": "Gmail", "url": "https://mail.google.com/"}, {"id": "l2", "name": "Calendar", "url": "https://calendar.google.com/"}, {"id": "l3", "name": "Drive", "url": "https://drive.google.com/"}, {"id": "l70", "name": "Photos", "url": "https://photos.google.com/"}, {"id": "l71", "name": "Maps", "url": "https://maps.google.com/"}, {"id": "l72", "name": "Docs", "url": "https://docs.google.com/document/"}, {"id": "l73", "name": "Sheets", "url": "https://docs.google.com/spreadsheets/"}, {"id": "l74", "name": "Keep", "url": "https://keep.google.com/"}, {"id": "l75", "name": "Google News", "url": "https://news.google.com/"}, {"id": "l76", "name": "Google Home", "url": "https://home.google.com/"}]}, {"id": "g9", "links": [{"id": "l50", "name": "Netflix", "url": "https://www.netflix.com/browse"}, {"id": "l51", "name": "Hulu", "url": "https://www.hulu.com/hub/home"}, {"id": "l52", "name": "YouTube", "url": "https://www.youtube.com/"}, {"id": "l53", "name": "Prime Video", "url": "https://www.amazon.com/gp/video/storefront"}, {"id": "l54", "name": "Disney+", "url": "https://www.disneyplus.com/home"}, {"id": "l55", "name": "ESPN", "url": "https://www.espn.com/watch/"}, {"id": "l56", "name": "Pandora", "url": "https://www.pandora.com/"}], "name": "Watch & listen"}, {"id": "g8", "links": [{"id": "l40", "name": "Jacksonville radar", "url": "https://radar.weather.gov/station/KJAX/standard"}, {"id": "l41", "name": "NWS Jacksonville", "url": "https://www.weather.gov/jax/"}, {"id": "l42", "name": "Windy", "url": "https://www.windy.com/"}, {"id": "l43", "name": "Hurricane Center", "url": "https://www.nhc.noaa.gov/"}], "name": "Weather & radar"}]}};
+const SEED = {"countdowns": {"items": [{"date": "2026-10-31", "id": "c1", "name": "Halloween"}, {"id": "c5", "name": "Icemen opening night", "date": "2026-10-31"}, {"date": "2026-11-26", "id": "c2", "name": "Thanksgiving"}, {"date": "2026-12-25", "id": "c3", "name": "Christmas"}, {"date": "2027-01-01", "id": "c4", "name": "New Year's Day"}]}, "links": {"groups": [{"id": "g10", "name": "AI", "links": [{"id": "l60", "name": "Claude", "url": "https://claude.ai/new"}, {"id": "l61", "name": "ChatGPT", "url": "https://chatgpt.com/"}, {"id": "l62", "name": "Gemini", "url": "https://gemini.google.com/app"}, {"id": "l63", "name": "Grok", "url": "https://grok.com/"}]}, {"id": "g1", "name": "Google", "links": [{"id": "l1", "name": "Gmail", "url": "https://mail.google.com/", "fav": true}, {"id": "l2", "name": "Calendar", "url": "https://calendar.google.com/", "fav": true}, {"id": "l3", "name": "Drive", "url": "https://drive.google.com/"}, {"id": "l70", "name": "Photos", "url": "https://photos.google.com/"}, {"id": "l71", "name": "Maps", "url": "https://maps.google.com/"}, {"id": "l72", "name": "Docs", "url": "https://docs.google.com/document/"}, {"id": "l73", "name": "Sheets", "url": "https://docs.google.com/spreadsheets/"}, {"id": "l74", "name": "Keep", "url": "https://keep.google.com/"}, {"id": "l75", "name": "Google News", "url": "https://news.google.com/"}, {"id": "l76", "name": "Google Home", "url": "https://home.google.com/"}]}, {"id": "g9", "links": [{"id": "l50", "name": "Netflix", "url": "https://www.netflix.com/browse", "fav": true}, {"id": "l51", "name": "Hulu", "url": "https://www.hulu.com/hub/home"}, {"id": "l52", "name": "YouTube", "url": "https://www.youtube.com/", "fav": true}, {"id": "l53", "name": "Prime Video", "url": "https://www.amazon.com/gp/video/storefront"}, {"id": "l54", "name": "Disney+", "url": "https://www.disneyplus.com/home"}, {"id": "l55", "name": "ESPN", "url": "https://www.espn.com/watch/"}, {"id": "l56", "name": "Pandora", "url": "https://www.pandora.com/"}], "name": "Watch & listen"}, {"id": "g8", "links": [{"id": "l40", "name": "Jacksonville radar", "url": "https://radar.weather.gov/station/KJAX/standard"}, {"id": "l41", "name": "NWS Jacksonville", "url": "https://www.weather.gov/jax/"}, {"id": "l42", "name": "Windy", "url": "https://www.windy.com/"}, {"id": "l43", "name": "Hurricane Center", "url": "https://www.nhc.noaa.gov/"}], "name": "Weather & radar"}]}};
 
 /* ---------- Live data when opened as a plain web page ---------- */
 const WX = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Showers',81:'Showers',82:'Heavy showers',95:'Thunderstorms',96:'Thunderstorms',99:'Thunderstorms'};
@@ -1604,8 +1692,23 @@ function renderSchool(){
   $('schoollinks').replaceChildren(...(g.links || []).slice(0, 6).map(l => h('a',{href: safeUrl(l.url) || '#', target:'_blank', rel:'noopener'}, l.name)));
 }
 const iconFor = url => { try { const host = new URL(url).hostname; return 'https://www.google.com/s2/favicons?sz=128&domain=' + encodeURIComponent(host); } catch { return null; } };
+function appTile(l){
+  const letter = h('span',{class:'app-ltr','aria-hidden':'true'}, (l.name||'?').trim().charAt(0).toUpperCase()), ic = h('span',{class:'app-ic'}, letter);
+  const src = !window.claude && safeUrl(l.url) ? iconFor(l.url) : null;
+  if (src){ const img = h('img',{src, alt:'', loading:'lazy', referrerpolicy:'no-referrer', draggable:'false'});
+    img.addEventListener('load', () => { if (img.naturalWidth > 16) { letter.remove(); ic.classList.add('has-img'); } else img.remove(); });
+    img.addEventListener('error', () => img.remove()); ic.prepend(img); }
+  return h('div',{class:'app-w'}, h('a',{class:'app', href: safeUrl(l.url) || '#', target:'_blank', rel:'noopener', draggable:'false'}, ic, h('span',{class:'app-nm'}, l.name)));
+}
+function renderFavs(){
+  const favs = (S.links.groups || []).flatMap(g => (g.links || []).filter(l => l.fav));
+  const box = $('favapps'); box.replaceChildren(...favs.map(appTile));
+  $('favwrap').hidden = !favs.length;
+  const pf = $('phonefavs'); if (pf) pf.replaceChildren(...favs.slice(0, 8).map(appTile));
+  if ($('phonefavtile')) $('phonefavtile').hidden = !favs.length;
+}
 R.links = () => {
-  renderSchool();
+  renderSchool(); renderFavs();
   const box = $('groups'); box.replaceChildren();
   const groups = S.links.groups || [];
   if (!groups.length) box.append(h('div',{class:'empty'},'No apps yet. Tap + to add one.'));
@@ -1622,7 +1725,8 @@ R.links = () => {
           img.addEventListener('error', () => img.remove()); ic.prepend(img); }
         return h('div',{class:'app-w'},
           h('a',{class:'app', href: safeUrl(l.url) || '#', target:'_blank', rel:'noopener', title: l.url, draggable:'false'}, ic, h('span',{class:'app-nm'}, l.name)),
-          h('button',{class:'x app-x editonly', type:'button', 'aria-label':'Remove '+l.name, onclick: () => { g.links = g.links.filter(x => x !== l); R.links(); save('links'); }}, '×'));
+          h('button',{class:'x app-x editonly', type:'button', 'aria-label':'Remove '+l.name, onclick: () => { g.links = g.links.filter(x => x !== l); R.links(); save('links'); }}, '×'),
+          h('button',{class:'x app-fav editonly' + (l.fav ? ' on' : ''), type:'button', 'aria-label': (l.fav ? 'Remove from favorites: ' : 'Add to favorites: ') + l.name, onclick: () => { l.fav = !l.fav; R.links(); save('links'); }}, l.fav ? '★' : '☆'));
       }), h('div',{class:'app-w'}, h('button',{class:'app app-add', type:'button', 'aria-label':'Add a link to ' + g.name, onclick: () => openSheet(g.id)}, h('span',{class:'app-ic'}, '+'), h('span',{class:'app-nm'}, 'Add')))))
     );
   });
@@ -1665,12 +1769,25 @@ $('groupform').addEventListener('submit', e => {
   (S.links.groups ||= []).push({id:uid(), name:v, links:[]}); $('groupin').value = ''; R.links(); save('links');
 });
 
+/* ---------- Phone: More sheet, All apps, voice button ---------- */
+(() => {
+  const ms = $('moresheet');
+  $('dkmore').addEventListener('click', () => { ms.hidden = !ms.hidden; });
+  ms.addEventListener('click', e => { if (e.target === ms || e.target.closest('[data-go]')) ms.hidden = true; });
+  $('allapps').addEventListener('click', () => { const on = document.body.classList.toggle('allapps-open'); $('allapps').textContent = on ? 'Show favorites only' : 'All apps'; $('allapps').setAttribute('aria-expanded', on); });
+  const mic = $('mic'), fab = $('fabmic');
+  const sync = () => { fab.hidden = mic.hidden; fab.classList.toggle('live', mic.classList.contains('live')); };
+  new MutationObserver(sync).observe(mic, {attributes:true, attributeFilter:['hidden','class']}); sync();
+  fab.addEventListener('click', () => mic.click());
+})();
+
 /* ---------- Screens + dock ---------- */
 const SCREENS = [...document.querySelectorAll('.screen')].map(x => x.dataset.screen);
 function go(name, opts = {}){
   if (!SCREENS.includes(name)) name = 'home';
   document.querySelectorAll('.screen').forEach(x => x.hidden = x.dataset.screen !== name);
   document.querySelectorAll('.dk').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
+  $('dkmore').setAttribute('aria-current', ['local','garage','tools','life'].includes(name) ? 'page' : 'false');
   lsSet('screen', name);
   if (!opts.keepScroll) window.scrollTo({top:0});
   if (name === 'local') setTimeout(renderMap, 0);
