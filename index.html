@@ -306,6 +306,39 @@ textarea#notes{min-height:180px;resize:vertical;line-height:1.6;flex:1}
 .llist small{font-size:13px;color:var(--muted)}
 .llist .lt{font-size:13px;color:var(--muted);padding-top:2px}
 .lpill{border:none;cursor:pointer;color:var(--accent-ink);background:var(--accent);font-weight:600}
+.mktrend{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:4px;background:var(--well);border:1px solid var(--well-line);box-shadow:inset 0 2px 4px rgba(0,0,0,.55)}
+.mkarrow{font-family:var(--f-cond);font-size:46px;line-height:1;width:52px;text-align:center;flex:none;color:var(--muted)}
+.mktrend.up .mkarrow{color:var(--ok)}.mktrend.dn .mkarrow{color:var(--bad)}
+.mktrend b{display:block;font-family:var(--f-cond);font-size:24px;font-weight:600;letter-spacing:.02em}
+.mktrend.up b{color:var(--ok)}.mktrend.dn b{color:var(--bad)}
+.mktrend .sub{display:block}
+.kidages{display:flex;gap:6px;flex-wrap:wrap}
+.kidages span{font-family:var(--f-cond);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:var(--go-soft);color:var(--go)}
+.idealist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.idealist a,.idealist div.ir{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;padding:11px 0;border-top:1px solid var(--line);text-decoration:none}
+.idealist li:first-child a,.idealist li:first-child div.ir{border-top:none}
+.idealist b{font-weight:500;font-size:16px}
+.idealist small{font-size:13px;color:var(--muted)}
+.subh{margin:4px 0 0;font-family:var(--f-cond);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lfacts{display:flex;flex-wrap:wrap;gap:6px}
+.lfacts span{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:var(--accent-soft);color:var(--accent-text)}
+.ldesc{margin:0;font-size:14px;line-height:1.45;color:#c6ccd3}
+.lnext .ldesc{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.lnext .ldesc.open{display:block}
+.lmore{align-self:flex-start;min-height:32px;padding:4px 0;border:none;background:none;color:var(--accent-text);font-size:13px;cursor:pointer}
+.lacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.lacts .btn{min-height:40px;text-decoration:none}
+.llist details{min-width:0}
+.llist summary{cursor:pointer;list-style:none}
+.llist summary::-webkit-details-marker{display:none}
+.llist summary::after{content:' +';color:var(--muted);font-size:13px}
+.llist details[open] summary::after{content:' –'}
+.llist .ldet{display:flex;flex-direction:column;gap:8px;padding:8px 0 4px}
+.llist .ldet a.btn{align-self:flex-start}
+.spnews{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.spnews a{display:block;padding:12px 0;border-top:1px solid var(--line);text-decoration:none;font-size:15px;line-height:1.35}
+.spnews li:first-child a{border-top:none}
+.spnews small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
 
 /* Voice */
 .mic{flex:none;width:48px;height:48px;border-radius:50%;border:none;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer}
@@ -767,6 +800,7 @@ html.vp-phone .toast{left:50%}
           <section class="tile t-mkt" aria-labelledby="h-mkt">
       <div class="th"><h2 id="h-mkt">Market</h2><div style="display:flex;gap:6px;align-items:center"><span class="mk-state" id="mkstate">—</span><button class="btn ghost" id="mkedit" type="button">Edit</button></div></div>
       <div class="downbar" id="mkdown" hidden></div>
+      <div class="mktrend" id="mktrend" hidden aria-live="polite"></div>
       <div class="verdict" id="mkverdict"><span class="dot"></span><div><b>Checking…</b></div></div>
       <div class="qwrap"><table class="qt" id="mkquotes"></table></div>
       <div class="sub" id="mkstamp"></div>
@@ -819,6 +853,25 @@ html.vp-phone .toast{left:50%}
             <a href="https://www.ticketmaster.com/discover/concerts/jacksonville" target="_blank" rel="noopener">Ticketmaster</a>
           </div>
         </section>
+        <section class="tile t-kidfun" aria-labelledby="h-kidfun">
+          <div class="th"><h2 id="h-kidfun">Kids' fun</h2><span class="sub">Kid-friendly picks</span></div>
+          <div class="kidages" id="kidages"></div>
+          <div class="sched" id="kidfun"></div>
+          <div class="launch l4">
+            <a href="https://www.visitstaugustine.com/events/kids" target="_blank" rel="noopener">St. Aug kids events</a>
+            <a href="https://fun4auggiekids.com/calendar/" target="_blank" rel="noopener">Fun 4 Auggie Kids</a>
+            <a href="https://fun4firstcoastkids.com/calendar/" target="_blank" rel="noopener">Fun 4 First Coast Kids</a>
+            <a href="https://www.jacksonvillezoo.org/" target="_blank" rel="noopener">Jacksonville Zoo</a>
+          </div>
+        </section>
+        <section class="tile t-date" aria-labelledby="h-date">
+          <div class="th"><h2 id="h-date">Date night</h2><span class="sub">St. Augustine · Ponte Vedra</span></div>
+          <h3 class="subh">Coming up</h3>
+          <div class="sched" id="dateev"></div>
+          <h3 class="subh">Anytime ideas</h3>
+          <ul class="idealist" id="dateideas"></ul>
+          <div class="launch"><a href="https://www.floridashistoriccoast.com/blog/date-night-ideas-on-floridas-historic-coast-romantic-casual-coastal-escapes/" target="_blank" rel="noopener">More date ideas</a><a href="https://www.visitstaugustine.com/events/food" target="_blank" rel="noopener">Food &amp; music events</a></div>
+        </section>
         <section class="tile t-disney" aria-labelledby="h-disney">
           <div class="th"><h2 id="h-disney">Walt Disney World</h2><span class="sub">Passholder</span></div>
           <div class="gtabs" id="wdwtabs" role="tablist" aria-label="Parks"></div>
@@ -845,7 +898,12 @@ html.vp-phone .toast{left:50%}
           <div class="th"><h2 id="h-launch">Space Coast launches</h2><span class="sub">Cape Canaveral · KSC</span></div>
           <div class="lnext" id="lnext"></div>
           <ul class="llist" id="llist"></ul>
-          <div class="launch"><a href="https://www.nextspaceflight.com/launches/" target="_blank" rel="noopener">Full schedule</a><a href="https://www.spacex.com/launches/" target="_blank" rel="noopener">SpaceX webcasts</a></div>
+          <div class="launch"><a href="https://www.nextspaceflight.com/launches/" target="_blank" rel="noopener">Full schedule</a><a href="https://www.spacex.com/launches/" target="_blank" rel="noopener">SpaceX webcasts</a><a href="https://www.nasa.gov/live/" target="_blank" rel="noopener">NASA Live</a><a href="https://spaceflightnow.com/launch-schedule/" target="_blank" rel="noopener">Launch schedule</a></div>
+        </section>
+        <section class="tile t-space" aria-labelledby="h-space">
+          <div class="th"><h2 id="h-space">Space news</h2><span class="sub" id="spstamp">SpaceX · NASA · Space Coast</span></div>
+          <ul class="spnews" id="spnews"></ul>
+          <div class="launch"><a href="https://www.spacex.com/updates/" target="_blank" rel="noopener">SpaceX updates</a><a href="https://www.nasa.gov/news/" target="_blank" rel="noopener">NASA news</a><a href="https://spaceflightnow.com/" target="_blank" rel="noopener">Spaceflight Now</a><a href="https://www.floridatoday.com/space/" target="_blank" rel="noopener">Florida Today space</a></div>
         </section>
         
       </div>
@@ -1025,6 +1083,7 @@ html.vp-phone .toast{left:50%}
             <label class="fl">Google Calendar email<input type="text" id="p-cal" placeholder="you@gmail.com" inputmode="email"></label>
             <label class="fl">GitHub username<input type="text" id="p-gh" placeholder="Optional"></label>
             <label class="fl">SurfCast address<input type="text" id="p-sc" placeholder="Optional, https://…"></label>
+            <label class="fl">Kids (name and birthday)<input type="text" id="p-kids" placeholder="e.g. Sam 2019-03-01, Alex 2017-06-15" autocomplete="off"></label>
             <fieldset class="days7" id="p-trash"><legend>Trash pickup days</legend></fieldset>
             <fieldset class="days7" id="p-recycle"><legend>Recycling pickup days</legend></fieldset>
             <label class="fl">Remind me the evening before at<input type="time" id="p-trashat" value="17:00"></label>
@@ -1355,13 +1414,21 @@ $('cdform').addEventListener('submit', e => {
 });
 
 /* ---------- Weather / sports snapshot ---------- */
+let pubData = {};
+const snapView = () => window.claude ? (S.snapshot || {}) : {...(S.snapshot || {}), ...pubData};
+async function loadPubData(){
+  if (window.claude || !/^https?:$/.test(location.protocol)) return;
+  try { const r = await fetch('data.json?t=' + Date.now(), {cache:'no-store'}); if (!r.ok) return; const j = await r.json();
+    const keep = {}; ['market','kidsEvents','dateNight','events'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot(); } catch {}
+}
+setTimeout(loadPubData, 250); setInterval(loadPubData, 60*60e3);
 R.snapshot = () => {
-  const s = S.snapshot || {};
+  const s = snapView();
   const stamp = s.updatedAt ? new Date(s.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : '';
   const wx = $('wxsnap'); wx.replaceChildren();
   const wl = Array.isArray(s.weather) ? s.weather : (s.weather ? [s.weather] : []);
   if (wl.length){ wl.forEach(l => wx.append(h('div',{}, l))); if (stamp) wx.append(h('div',{class:'sub'}, 'Updated ' + stamp)); }
-  renderSurf(s.fishing); renderPsu(s.psu); renderGames(s.games); renderEvents(s.events); renderStorms(); renderHeads(); if (!liveNews) renderNews(s.news); renderLocalNews(s.local); if (!liveLaunches) renderLaunches(s.launches);
+  renderSurf(s.fishing); renderPsu(s.psu); renderGames(s.games); renderEvents(s.events); renderStorms(); renderHeads(); if (!liveNews) renderNews(s.news); renderLocalNews(s.local); if (!liveLaunches) renderLaunches(s.launches); if (!liveSpace) renderSpaceNews(s.space); renderTrend(); renderKidFun(s.kidsEvents); renderDateNight(s.dateNight);
   const sp = $('spsnap'); sp.replaceChildren();
   if (Array.isArray(s.sports) && s.sports.length){ s.sports.forEach(l => sp.append(h('div',{}, l))); if (stamp) sp.append(h('div',{class:'sub'}, 'Updated ' + stamp)); }
 };
@@ -1471,8 +1538,26 @@ function marketVerdict(rows){
   return {level:'calm', word:'All quiet', why:['Indexes and your watchlist are moving less than usual.']};
 }
 let mkRows = null, mkMsg = '';
+const pctTxt = dp => (dp > 0 ? '+' : dp < 0 ? '−' : '') + Math.abs(dp).toFixed(2) + '%';
+function trendData(){
+  if (mkRows){ const idx = ['SPY','QQQ'].map(s => mkRows.find(r => r.sym === s && r.dp != null)).filter(Boolean);
+    if (idx.length) return {main: {name: idx[0].sym === 'SPY' ? 'S&P 500' : 'Nasdaq', dp: +idx[0].dp}, rest: idx.slice(1).map(r => ({name: 'Nasdaq', dp: +r.dp})), note: 'Live · ' + hm(new Date())}; }
+  const m = snapView().market;
+  if (m && Array.isArray(m.indexes) && m.indexes.length && m.indexes[0].dp != null){ const [a, ...b] = m.indexes; return {main: {name: a.name, dp: +a.dp}, rest: b.filter(x => x.dp != null).map(x => ({name: x.name, dp: +x.dp})), note: (m.label || 'Last close') + ' · updates each morning'}; }
+  return null;
+}
+function renderTrend(){
+  const el = $('mktrend'); if (!el) return; const t = trendData();
+  if (!t){ el.hidden = true; return; }
+  const dp = t.main.dp, dir = dp >= 0.1 ? 'up' : dp <= -0.1 ? 'dn' : 'flat';
+  el.hidden = false; el.className = 'mktrend ' + dir;
+  el.setAttribute('aria-label', `${t.main.name} ${dir === 'up' ? 'up' : dir === 'dn' ? 'down' : 'flat'} ${Math.abs(dp).toFixed(2)} percent`);
+  el.replaceChildren(h('span',{class:'mkarrow', 'aria-hidden':'true'}, dir === 'up' ? '▲' : dir === 'dn' ? '▼' : '▶'),
+    h('div',{}, h('b',{}, (dir === 'up' ? 'Up ' : dir === 'dn' ? 'Down ' : 'Flat ') + pctTxt(dp).replace(/^[+−]/, '')), h('span',{class:'sub'}, t.main.name + (t.rest.length ? ' · ' + t.rest.map(x => x.name + ' ' + pctTxt(x.dp)).join(' · ') : '')), h('span',{class:'sub'}, t.note)));
+}
 R.market = () => {
   const st = marketState(); const se = $('mkstate'); se.textContent = st.text; se.className = 'mk-state' + (st.open ? ' open' : '');
+  renderTrend();
   const syms = S.market.symbols || [];
   const wl = $('mkwatch'); wl.replaceChildren();
   if (!syms.length) wl.append(h('div',{class:'empty'},'Tap Edit to add your watchlist tickers.'));
@@ -2169,6 +2254,7 @@ R.prefs = () => {
   const set = (id, v) => { if (document.activeElement !== $(id)) $(id).value = v || ''; };
   set('p-name', P.name); set('p-addr', S.home.address); set('p-city1', P.cities?.[0]?.name); set('p-city2', P.cities?.[1]?.name);
   set('p-cal', P.calId); set('p-gh', P.gh); set('p-sc', P.surfcast);
+  set('p-kids', (P.kids || []).map(k => k.name + (k.born ? ' ' + k.born : '')).join(', '));
   $('p-voice').checked = P.voice !== false; lsSet('voiceReplies', P.voice !== false);
   const DN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   [['p-trash', P.trash || []], ['p-recycle', P.recycle || []]].forEach(([id, sel]) => { const fs = $(id), lg = fs.querySelector('legend');
@@ -2181,7 +2267,7 @@ R.prefs = () => {
   const sc = safeUrl(P.surfcast || ''); $('sc').href = sc || '#'; $('sc').style.cursor = sc ? '' : 'default';
   $('sc').querySelector('.go-link').hidden = !sc;
   if (!window.claude && ready) calStandalone();
-  tick();
+  tick(); renderKidFun(snapView().kidsEvents);
 };
 $('sc').addEventListener('click', e => { if ($('sc').getAttribute('href') === '#') e.preventDefault(); });
 async function geocode(q){
@@ -2200,6 +2286,7 @@ $('setform').addEventListener('submit', async e => {
   { const pin = $('p-vpin').value.replace(/\D/g, ''); if ($('p-vpinoff').checked) P.vpin = ''; else if (pin.length >= 4) P.vpin = await pinHash(pin); $('p-vpin').value = ''; $('p-vpinoff').checked = false; }
   P.bvoice = $('p-bvoice').value; P.blen = $('p-blen').value; P.brate = +$('p-brate').value || 1; P.bpitch = +$('p-bpitch').value || 1;
   P.boff = [...$('p-bsecs').querySelectorAll('input')].filter(x => !x.checked).map(x => x.value);
+  P.kids = $('p-kids').value.split(/[,;\n]+/).map(x => x.trim()).filter(Boolean).map(x => { const m = x.match(/^(.*?)\s+(\d{4}-\d{1,2}-\d{1,2})$/); return m ? {name: m[1].trim(), born: m[2].split('-').map((v,i) => i ? v.padStart(2,'0') : v).join('-')} : {name: x}; });
   P.name = $('p-name').value.trim(); P.calId = $('p-cal').value.trim(); P.gh = $('p-gh').value.trim(); P.surfcast = $('p-sc').value.trim(); P.voice = $('p-voice').checked;
   const cityIn = [$('p-city1').value.trim(), $('p-city2').value.trim()], old = P.cities || [], cities = [];
   let geoFail = false;
@@ -2348,7 +2435,7 @@ function renderGames(list){
   const byDay = new Map(); shown.forEach(g => { const k = new Date(g.start).toDateString(); (byDay.get(k) || byDay.set(k, []).get(k)).push(g); });
   const today = new Date().toDateString(), tmr = new Date(Date.now() + 864e5).toDateString();
   byDay.forEach((gs, k) => box.append(h('div',{class:'sd' + (k === today ? ' today' : '')}, h('h3',{}, k === today ? 'Today' : k === tmr ? 'Tomorrow' : new Date(k).toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'})), gs.map(g => gameRow(g)),
-    h('div',{class:'sd-fill', 'aria-hidden':'false'}, [...new Set(gs.map(g => teamKey(g.team)).filter(Boolean))].map(t => teamLogo(t, 'tl-fill'))))));
+    h('div',{class:'sd-fill'}, [...new Set(gs.map(g => teamKey(g.team)).filter(Boolean))].map(t => teamLogo(t, 'tl-fill'))))));
   // Home: next 3 plus the next flagged one
   const nl = $('nextlist'); nl.replaceChildren();
   const pick = games.slice(0, 3); const sp = games.find(g => !pick.includes(g) && gameFlags(g, new Date(g.start)).some(x => x[0] === 'hot')); if (sp) pick.push(sp);
@@ -2373,6 +2460,43 @@ function renderEvents(list){
       h('span',{class:'dot', style:'background:' + ({Concert:'#c084fc', Festival:'#ffb21f', Family:'#3fd27a', Sports:'#4f7dff', Disney:'#5fd3ff'}[e.kind] || 'var(--accent)')}),
       h('span',{class:'gm'}, h('b',{}, e.title), h('span',{}, [e.venue, e.city].filter(Boolean).join(' · ')),
         (e.highlight || e.until) ? h('span',{class:'flags'}, e.highlight ? h('span',{class:'flag gold'}, e.highlight) : null, e.until ? h('span',{class:'flag'}, 'Through ' + new Date(e.until + 'T12:00').toLocaleDateString([], {month:'short', day:'numeric'})) : null) : null))); });
+}
+
+/* ---------- Kids' fun + date night ---------- */
+function ageOn(born, d = new Date()){ const [y,m,dd] = String(born || '').split('-').map(Number); if (!y) return null; let a = d.getFullYear() - y; if (d.getMonth()+1 < m || (d.getMonth()+1 === m && d.getDate() < dd)) a--; return a; }
+function upcomingRows(list){
+  const today = new Date(); today.setHours(0,0,0,0);
+  return (list || []).map(e => ({...e, d: parseLocal((e.date || '') + ' ' + (e.time || '00:00')) || new Date(e.date)}))
+    .filter(e => e.d && !isNaN(e.d) && (e.until ? new Date(e.until + 'T23:59') >= today : e.d >= today)).sort((a,b) => a.d - b.d);
+}
+function eventRow(e, col){
+  const u = safeUrl(e.url || ''), today = new Date(); today.setHours(0,0,0,0);
+  const running = e.until && e.d < today, shown = running ? today : e.d;
+  const flags = [e.free ? h('span',{class:'flag gold'}, 'Free') : null, e.cost ? h('span',{class:'flag'}, e.cost) : null, e.note ? h('span',{class:'flag'}, e.note) : null,
+    e.until ? h('span',{class:'flag'}, (running ? 'On now · through ' : 'Through ') + new Date(e.until + 'T12:00').toLocaleDateString([], {month:'short', day:'numeric'})) : null].filter(Boolean);
+  return h(u ? 'a' : 'div',{class:'grow', href:u || undefined, target: u ? '_blank' : undefined, rel: u ? 'noopener' : undefined},
+    h('span',{class:'gt'}, shown.toLocaleDateString([], {month:'short', day:'numeric'}), h('small',{}, shown.toLocaleDateString([], {weekday:'short'}) + (e.time ? ' · ' + hm(e.d) : ''))),
+    h('span',{class:'dot', style:'background:' + col}),
+    h('span',{class:'gm'}, h('b',{}, e.title), h('span',{}, [e.venue, e.city].filter(Boolean).join(' · ')), flags.length ? h('span',{class:'flags'}, flags) : null));
+}
+function renderKidFun(list){
+  const box = $('kidfun'); if (!box) return; box.replaceChildren();
+  const kids = ((S.prefs || {}).kids || []).map(k => ({name: k.name, age: ageOn(k.born)})).filter(k => k.name);
+  $('kidages').replaceChildren(...kids.map(k => h('span',{}, k.name + (k.age != null ? ' · ' + k.age : ''))));
+  const sub = document.querySelector('.t-kidfun .th .sub'); if (sub && kids.length) sub.textContent = 'Picked for ages ' + list3(kids.map(k => k.age).filter(a => a != null).sort((a,b) => a - b).map(String));
+  const rows = upcomingRows(list).slice(0, 12);
+  if (!rows.length){ box.append(h('div',{class:'empty'}, 'Kid-friendly events arrive with the morning update. The buttons below have full calendars.')); return; }
+  rows.forEach(e => box.append(eventRow(e, '#3fd27a')));
+}
+function renderDateNight(dn){
+  const ev = $('dateev'), ul = $('dateideas'); if (!ev) return; ev.replaceChildren(); ul.replaceChildren();
+  const rows = upcomingRows(dn && dn.events).slice(0, 8);
+  if (!rows.length) ev.append(h('div',{class:'empty'}, 'Date-worthy shows and dinners arrive with the morning update.'));
+  rows.forEach(e => ev.append(eventRow(e, '#ff6b8b')));
+  const ideas = (dn && dn.ideas) || [];
+  if (!ideas.length) ul.append(h('li',{class:'empty'}, 'Ideas arrive with the morning update.'));
+  ideas.slice(0, 12).forEach(i => { const u = safeUrl(i.url || ''), kids = [h('b',{}, i.title), h('small',{}, [i.what, i.where].filter(Boolean).join(' · '))];
+    ul.append(h('li',{}, u ? h('a',{href:u, target:'_blank', rel:'noopener'}, kids) : h('div',{class:'ir'}, kids))); });
 }
 
 /* ---------- Disney wait times ---------- */
@@ -2771,6 +2895,19 @@ function renderLocalNews(list){
 /* ---------- Space Coast launches ---------- */
 let liveLaunches = false, launchData = [];
 const isNight = d => { const m = d.getMonth(), hr = d.getHours() + d.getMinutes()/60; const sunset = [17.9,18.3,19.6,19.9,20.1,20.4,20.4,20.1,19.6,19.0,17.6,17.5][m], sunrise = [7.2,7.0,7.4,7.0,6.6,6.4,6.6,6.9,7.1,7.3,6.6,7.0][m]; return hr >= sunset + .4 || hr <= sunrise - .4; };
+function launchFacts(l){ return [l.rocket, l.orbit, l.type].filter(Boolean); }
+function launchWindow(l){
+  const a = l.windowStart ? new Date(l.windowStart) : null, b = l.windowEnd ? new Date(l.windowEnd) : null;
+  if (!a || isNaN(a) || /TBD|TBC/i.test(l.status || '')) return '';
+  if (!b || isNaN(b) || b - a < 60e3) return 'Instantaneous window at ' + hm(a);
+  return 'Window ' + hm(a) + ' – ' + hm(b) + ' (' + dur(b - a) + ')';
+}
+function launchLinks(l){
+  const out = [], w = safeUrl(l.webcast || ''), i = safeUrl(l.info || '');
+  if (w) out.push(h('a',{class:'btn primary', href:w, target:'_blank', rel:'noopener'}, l.webcastLive ? 'Watch live now' : 'Webcast'));
+  if (i) out.push(h('a',{class:'btn', href:i, target:'_blank', rel:'noopener'}, 'Mission details'));
+  return out;
+}
 function renderLaunches(list){
   launchData = (list || []).map(l => ({...l, d: new Date(l.net)})).filter(l => !isNaN(l.d) && l.d > Date.now() - 3*3600e3).sort((a,b) => a.d - b.d);
   const nx = $('lnext'), ul = $('llist'); ul.replaceChildren();
@@ -2779,9 +2916,20 @@ function renderLaunches(list){
   const when = tbd ? 'No earlier than ' + n.d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}) : n.d.toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
   const tm = ms <= 0 ? 'Launch window open' : tbd ? 'Date not confirmed' : 'T– ' + (ms > 864e5 ? Math.floor(ms/864e5) + 'd ' : '') + Math.floor(ms % 864e5 / 3600e3) + 'h ' + Math.floor(ms % 3600e3 / 60e3) + 'm';
   const vis = tbd ? 'Watch this space for a confirmed time.' : isNight(n.d) ? 'Night launch. Look south toward Cape Canaveral; the rocket climbs into view a minute or two after liftoff.' : 'Daytime launch. You may spot the trail low in the southern sky if it’s clear.';
-  nx.replaceChildren(h('span',{class:'lk'}, 'Next launch · ' + (n.provider || 'Launch')), h('b',{}, n.name), h('div',{class:'tminus'}, tm), h('div',{class:'sub'}, when + (n.pad ? ' · ' + n.pad : '')), h('div',{class:'lvis'}, vis));
-  launchData.slice(1, 7).forEach(l => { const t = /TBD|TBC/i.test(l.status || '');
-    ul.append(h('li',{}, h('span',{class:'lt'}, l.d.toLocaleDateString([], {month:'short', day:'numeric'}) + (t ? '' : '\n' + hm(l.d))), h('span',{}, l.name, h('small',{style:'display:block'}, [l.provider, t ? 'time TBD' : (isNight(l.d) ? 'night' : 'day')].filter(Boolean).join(' · ')))));
+  const facts = launchFacts(n), win = launchWindow(n), links = launchLinks(n);
+  const desc = n.desc ? h('p',{class:'ldesc'}, n.desc) : null;
+  const more = desc && n.desc.length > 220 ? h('button',{class:'lmore', type:'button', onclick: e => { const o = desc.classList.toggle('open'); e.target.textContent = o ? 'Show less' : 'Read more'; }}, 'Read more') : null;
+  nx.replaceChildren(...[h('span',{class:'lk'}, 'Next launch · ' + (n.provider || 'Launch')), h('b',{}, n.name),
+    facts.length ? h('div',{class:'lfacts'}, facts.map(f => h('span',{}, f))) : null,
+    h('div',{class:'tminus'}, tm), h('div',{class:'sub'}, when + (n.pad ? ' · ' + n.pad : '')), win ? h('div',{class:'sub'}, win) : null,
+    desc, more, h('div',{class:'lvis'}, vis), links.length ? h('div',{class:'lacts'}, links) : null].filter(Boolean));
+  launchData.slice(1, 15).forEach(l => { const t = /TBD|TBC/i.test(l.status || ''), f = launchFacts(l), w = launchWindow(l), lk = launchLinks(l);
+    const meta = h('small',{style:'display:block'}, [l.provider, l.rocket, t ? 'time TBD' : (isNight(l.d) ? 'night' : 'day')].filter(Boolean).join(' · '));
+    const hasMore = l.desc || f.length || w || lk.length || l.pad;
+    const body = hasMore ? h('details',{}, h('summary',{}, l.name, meta),
+      h('div',{class:'ldet'}, f.length ? h('div',{class:'lfacts'}, f.map(x => h('span',{}, x))) : null, l.pad ? h('small',{}, l.pad) : null, w ? h('small',{}, w) : null,
+        l.desc ? h('p',{class:'ldesc'}, l.desc) : null, lk.length ? h('div',{class:'lacts'}, lk) : null)) : h('span',{}, l.name, meta);
+    ul.append(h('li',{}, h('span',{class:'lt'}, l.d.toLocaleDateString([], {month:'short', day:'numeric'}) + (t ? '' : '\n' + hm(l.d))), body));
   });
   lpill();
 }
@@ -2793,15 +2941,35 @@ function lpill(){
 $('lpill').addEventListener('click', () => go('local'));
 async function loadLaunchesLive(){
   if (window.claude) return;
-  const cached = lsGet('ll2'); if (cached && Date.now() - cached.at < 60*60e3){ liveLaunches = true; renderLaunches(cached.list); return; }
+  const cached = lsGet('ll3'); if (cached && Date.now() - cached.at < 60*60e3){ liveLaunches = true; renderLaunches(cached.list); return; }
   try {
-    const j = await getJSON('https://ll.thespacedevs.com/2.3.0/launches/upcoming/?location__ids=12,27&limit=8&mode=normal');
-    const list = (j.results || []).map(r => ({name: r.mission?.name || r.name, net: r.net, status: r.status?.abbrev || '', provider: r.launch_service_provider?.name || (r.name || '').split('|')[0].trim(), pad: r.pad?.name}));
-    lsSet('ll2', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list);
+    const j = await getJSON('https://ll.thespacedevs.com/2.3.0/launches/upcoming/?location__ids=12,27&limit=15&mode=detailed');
+    const list = (j.results || []).map(r => { const v = (r.vid_urls || []).slice().sort((a,b) => (a.priority ?? 99) - (b.priority ?? 99))[0];
+      return {name: r.mission?.name || r.name, net: r.net, status: r.status?.abbrev || '', provider: r.launch_service_provider?.name || (r.name || '').split('|')[0].trim(), pad: r.pad?.name,
+        rocket: r.rocket?.configuration?.full_name || r.rocket?.configuration?.name || (r.name || '').split('|')[0].trim(), orbit: r.mission?.orbit?.name || '', type: r.mission?.type || '',
+        desc: r.mission?.description || '', windowStart: r.window_start, windowEnd: r.window_end, webcast: v?.url || '', webcastLive: !!r.webcast_live}; });
+    lsSet('ll3', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list);
   } catch { if (cached) { liveLaunches = true; renderLaunches(cached.list); } else renderLaunches([]); }
 }
 setInterval(() => { if (launchData.length) renderLaunches(launchData.map(({d, ...r}) => r)); }, 60000);
 setTimeout(loadLaunchesLive, 100); setInterval(loadLaunchesLive, 60*60e3);
+
+/* ---------- Space news ---------- */
+let liveSpace = false;
+function renderSpaceNews(list){
+  const ul = $('spnews'); if (!ul) return; ul.replaceChildren();
+  const items = (list || []).filter(n => safeUrl(n.url || ''));
+  if (!items.length){ ul.append(h('li',{class:'empty'}, window.claude ? 'Space headlines arrive with the morning update.' : 'Space headlines couldn’t load here. Use the buttons below.')); return; }
+  items.slice(0, 6).forEach(n => { const t = n.time ? new Date(n.time) : null;
+    ul.append(h('li',{}, h('a',{href:safeUrl(n.url), target:'_blank', rel:'noopener'}, n.title, h('small',{}, [n.source, t && !isNaN(t) ? ago(t.toISOString()) : ''].filter(Boolean).join(' · '))))); });
+}
+async function loadSpaceLive(){
+  if (window.claude) return;
+  try { const j = await getJSON('https://api.spaceflightnewsapi.net/v4/articles/?limit=6&ordering=-published_at');
+    const list = (j.results || []).map(a => ({title: a.title, url: a.url, source: a.news_site, time: a.published_at}));
+    if (list.length){ liveSpace = true; renderSpaceNews(list); } } catch {}
+}
+setTimeout(loadSpaceLive, 300); setInterval(loadSpaceLive, 60*60e3);
 
 /* ---------- Google Drive (connector) ---------- */
 (async () => {
