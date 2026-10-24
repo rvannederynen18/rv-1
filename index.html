@@ -194,6 +194,8 @@ a.sc:active{background:var(--panel-2)}
 .fs svg{width:14px;height:14px}
 
 /* Penn State */
+.psu-top{display:flex;align-items:center;gap:16px}
+.tl-psu{width:72px;height:72px}.tl-psu .tl-badge{font-size:16px}
 .psu-rec{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .psu-rec b{font-size:44px;font-weight:300;letter-spacing:-.02em}
 .psu-rec span{font-size:14px;color:var(--muted)}
@@ -347,9 +349,23 @@ textarea#notes{min-height:180px;resize:vertical;line-height:1.6;flex:1}
 /* Schedules + events */
 .tfilt{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.tfilt::-webkit-scrollbar{display:none}
 .sched{display:flex;flex-direction:column;gap:16px}
+.tlogo{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;flex:none}
+.tlogo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.tl-badge{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border:2px solid;border-radius:50%;font:700 11px/1 var(--f-cond);letter-spacing:.04em;background:rgba(0,0,0,.35)}
+.tl-row{width:30px;height:30px;margin-top:-3px;cursor:pointer;border-radius:4px}
+.tl-row:hover,.tl-row:focus-visible{background:rgba(255,255,255,.08);outline:none}
+.sd-fill{display:none;container-type:size}
+@container (max-height:46px){.tl-fill{display:none!important}}
+.tab-logo{width:18px;height:18px;object-fit:contain;margin-right:7px;vertical-align:-4px}
+.teamboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:8px;margin-bottom:12px}
+.tl-board{flex-direction:column;gap:6px;padding:12px 6px 9px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55);transition:border-color .15s}
+.tl-board:hover,.tl-board:focus-visible{border-color:var(--accent);outline:none}
+.tl-board img,.tl-board .tl-badge{width:48px;height:48px}
+.tl-board .tl-badge{font-size:14px}
+.tl-tag{font:600 11px/1.1 var(--f-cond);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
 .sched .sd h3{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--muted)}
 .sched .sd.today h3{color:var(--accent-text)}
-.grow{display:grid;grid-template-columns:78px 10px minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border-radius:16px;background:var(--panel-2);margin-bottom:8px;text-decoration:none}
+.grow{display:grid;grid-template-columns:78px 30px minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border-radius:16px;background:var(--panel-2);margin-bottom:8px;text-decoration:none}
 .grow:last-child{margin-bottom:0}
 .grow .gt{font-size:15px;font-weight:500;padding-top:1px}
 .grow .gt small{display:block;font-size:12px;color:var(--muted);font-weight:400}
@@ -578,7 +594,7 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   .sc #sccurve,.sc .sc-stats,.sc #scstamp{display:none}
   #scr-home .t-cal .gcal{height:320px}
   .t-sp .launch{display:none}
-  .grow{grid-template-columns:70px 10px minmax(0,1fr);padding:12px}
+  .grow{grid-template-columns:70px 30px minmax(0,1fr);padding:12px}
   .grow .gm b{font-size:17px}
   .verdict b{font-size:22px}
   .verdict ul{font-size:15px}
@@ -602,7 +618,11 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   .t-wx .launch a:nth-child(n+3){display:none}
 }
 @media (min-width:1200px){
-  html:not(.vp-phone) #sched{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px 18px;align-items:start}
+  html:not(.vp-phone) #sched{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px 18px;align-items:stretch}
+  html:not(.vp-phone) .t-sched .sd{display:flex;flex-direction:column}
+  html:not(.vp-phone) .sd-fill{display:flex;flex:1 1 0;min-height:0;align-items:center;justify-content:center;gap:22px;overflow:hidden;padding-top:8px}
+  html:not(.vp-phone) .tl-fill{height:min(100%,96px);aspect-ratio:1;opacity:.22;transition:opacity .15s}
+  html:not(.vp-phone) .tl-fill:hover,html:not(.vp-phone) .tl-fill:focus-visible{opacity:.85;outline:none}
   html:not(.vp-phone) .t-sched .sd{padding:12px;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.18)}
   html:not(.vp-phone) .hero .astro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 0}
 }
@@ -642,7 +662,7 @@ html.vp-phone .waitgrid{grid-template-columns:minmax(0,1fr)}
 html.vp-phone .calc{grid-template-columns:minmax(0,1fr)}html.vp-phone .car-read.c4{grid-template-columns:1fr 1fr}
 html.vp-phone .dock{gap:0;padding-inline:4px}html.vp-phone .dk{font-size:10.5px;min-height:56px;border-radius:12px}html.vp-phone .dk svg{width:22px;height:22px}html.vp-phone .top .pill:not(.mkdown),html.vp-phone #fsbtn{display:none}html.vp-phone .hero .clock{font-size:64px}html.vp-phone .tile{padding:16px}
 html.vp-phone .bset{grid-template-columns:minmax(0,1fr)}
-html.vp-phone .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}html.vp-phone .home .col,html.vp-phone .home .col:nth-child(3){display:contents!important}html.vp-phone .hero{order:1}html.vp-phone .t-wx{order:2}html.vp-phone .sc{order:3}html.vp-phone .t-cal{order:4}html.vp-phone .t-kids{order:5}html.vp-phone .t-nextup{order:6}html.vp-phone .t-mkt{order:7}html.vp-phone .t-cd{order:8}html.vp-phone .t-bday{order:9}html.vp-phone .t-phonefav{order:10}html.vp-phone #favapps .app-nm,html.vp-phone .t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}html.vp-phone body{font-size:17px}html.vp-phone .phone-only{display:flex}html.vp-phone .tile{padding:16px}html.vp-phone .tile>.th:first-child{min-height:48px}html.vp-phone .th h2{font-size:15px}html.vp-phone .sub{font-size:14px}html.vp-phone .brand-tag,html.vp-phone .top .pill:not(.mkdown):not(.lpill):not(.gspill),html.vp-phone #fsbtn{display:none!important}html.vp-phone .vbtn{min-height:34px!important;padding:4px 10px!important;font-size:12px!important}html.vp-phone .top{flex-wrap:nowrap}html.vp-phone .topclock{font-size:20px}html.vp-phone .dk[data-go="local"],html.vp-phone .dk[data-go="garage"],html.vp-phone .dk[data-go="tools"],html.vp-phone .dk[data-go="life"]{display:none}html.vp-phone .dk-more{display:flex}html.vp-phone .dk span{font-size:11.5px!important;letter-spacing:.06em!important}html.vp-phone .dk svg{width:24px!important;height:24px!important}html.vp-phone .dk{min-height:62px}html.vp-phone #scr-home .askbar,html.vp-phone .hero .clock,html.vp-phone .hero .yr,html.vp-phone .hero .astro,html.vp-phone .t-todo,html.vp-phone .t-school,html.vp-phone #scr-home .t-cal .gcal + .sub{display:none!important}html.vp-phone .hero{padding:14px 16px;gap:6px}html.vp-phone .hero .hello{font-size:18px}html.vp-phone .hero .date{font-size:18px}html.vp-phone .hero .brief-ctl{margin-top:4px}html.vp-phone #nextlist .grow:nth-child(n+3){display:none}html.vp-phone #cds .cd:nth-child(n+2){display:none}html.vp-phone .t-mkt .chips,html.vp-phone .t-mkt .launch,html.vp-phone .t-mkt .editonly,html.vp-phone #mkstamp{display:none!important}html.vp-phone section.t-mkt.editing .chips,html.vp-phone section.t-mkt.editing .editonly{display:flex!important}html.vp-phone .sc #sccurve,html.vp-phone .sc .sc-stats,html.vp-phone .sc #scstamp{display:none}html.vp-phone #scr-home .t-cal .gcal{height:320px}html.vp-phone .t-sp .launch{display:none}html.vp-phone .grow{grid-template-columns:70px 10px minmax(0,1fr);padding:12px}html.vp-phone .grow .gm b{font-size:17px}html.vp-phone .verdict b{font-size:22px}html.vp-phone .verdict ul{font-size:15px}html.vp-phone .allapps{display:flex;width:100%;margin:0 0 16px}html.vp-phone body:not(.allapps-open) #groups,html.vp-phone body:not(.allapps-open) #groupform,html.vp-phone body:not(.allapps-open) .apps-hint{display:none!important}html.vp-phone .t-phonefav .apps,html.vp-phone #favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}html.vp-phone .t-phonefav .app,html.vp-phone #favapps .app{min-height:86px;padding:10px 4px 8px}html.vp-phone .t-phonefav .app-ic,html.vp-phone #favapps .app-ic{width:42px;height:42px}html.vp-phone .t-phonefav .app-nm,html.vp-phone #favapps .app-nm{font-size:12px}html.vp-phone .app-nm{font-size:13px}html.vp-phone .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:62px;height:62px;border-radius:50%;
+html.vp-phone .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}html.vp-phone .home .col,html.vp-phone .home .col:nth-child(3){display:contents!important}html.vp-phone .hero{order:1}html.vp-phone .t-wx{order:2}html.vp-phone .sc{order:3}html.vp-phone .t-cal{order:4}html.vp-phone .t-kids{order:5}html.vp-phone .t-nextup{order:6}html.vp-phone .t-mkt{order:7}html.vp-phone .t-cd{order:8}html.vp-phone .t-bday{order:9}html.vp-phone .t-phonefav{order:10}html.vp-phone #favapps .app-nm,html.vp-phone .t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}html.vp-phone body{font-size:17px}html.vp-phone .phone-only{display:flex}html.vp-phone .tile{padding:16px}html.vp-phone .tile>.th:first-child{min-height:48px}html.vp-phone .th h2{font-size:15px}html.vp-phone .sub{font-size:14px}html.vp-phone .brand-tag,html.vp-phone .top .pill:not(.mkdown):not(.lpill):not(.gspill),html.vp-phone #fsbtn{display:none!important}html.vp-phone .vbtn{min-height:34px!important;padding:4px 10px!important;font-size:12px!important}html.vp-phone .top{flex-wrap:nowrap}html.vp-phone .topclock{font-size:20px}html.vp-phone .dk[data-go="local"],html.vp-phone .dk[data-go="garage"],html.vp-phone .dk[data-go="tools"],html.vp-phone .dk[data-go="life"]{display:none}html.vp-phone .dk-more{display:flex}html.vp-phone .dk span{font-size:11.5px!important;letter-spacing:.06em!important}html.vp-phone .dk svg{width:24px!important;height:24px!important}html.vp-phone .dk{min-height:62px}html.vp-phone #scr-home .askbar,html.vp-phone .hero .clock,html.vp-phone .hero .yr,html.vp-phone .hero .astro,html.vp-phone .t-todo,html.vp-phone .t-school,html.vp-phone #scr-home .t-cal .gcal + .sub{display:none!important}html.vp-phone .hero{padding:14px 16px;gap:6px}html.vp-phone .hero .hello{font-size:18px}html.vp-phone .hero .date{font-size:18px}html.vp-phone .hero .brief-ctl{margin-top:4px}html.vp-phone #nextlist .grow:nth-child(n+3){display:none}html.vp-phone #cds .cd:nth-child(n+2){display:none}html.vp-phone .t-mkt .chips,html.vp-phone .t-mkt .launch,html.vp-phone .t-mkt .editonly,html.vp-phone #mkstamp{display:none!important}html.vp-phone section.t-mkt.editing .chips,html.vp-phone section.t-mkt.editing .editonly{display:flex!important}html.vp-phone .sc #sccurve,html.vp-phone .sc .sc-stats,html.vp-phone .sc #scstamp{display:none}html.vp-phone #scr-home .t-cal .gcal{height:320px}html.vp-phone .t-sp .launch{display:none}html.vp-phone .grow{grid-template-columns:70px 30px minmax(0,1fr);padding:12px}html.vp-phone .grow .gm b{font-size:17px}html.vp-phone .verdict b{font-size:22px}html.vp-phone .verdict ul{font-size:15px}html.vp-phone .allapps{display:flex;width:100%;margin:0 0 16px}html.vp-phone body:not(.allapps-open) #groups,html.vp-phone body:not(.allapps-open) #groupform,html.vp-phone body:not(.allapps-open) .apps-hint{display:none!important}html.vp-phone .t-phonefav .apps,html.vp-phone #favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}html.vp-phone .t-phonefav .app,html.vp-phone #favapps .app{min-height:86px;padding:10px 4px 8px}html.vp-phone .t-phonefav .app-ic,html.vp-phone #favapps .app-ic{width:42px;height:42px}html.vp-phone .t-phonefav .app-nm,html.vp-phone #favapps .app-nm{font-size:12px}html.vp-phone .app-nm{font-size:13px}html.vp-phone .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:62px;height:62px;border-radius:50%;
     border:1px solid #57a8ff;background:linear-gradient(180deg,#2f8df2,#1f6dc4);color:#fff;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}html.vp-phone .fab:not([hidden]){display:grid}html.vp-phone .fab svg{width:28px;height:28px}html.vp-phone .fab.live{background:var(--bad);border-color:var(--bad)}html.vp-phone body{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}html.vp-phone .t-mkt .mk-state{font-size:11px;padding:4px 8px}html.vp-phone .t-mkt .th>div{gap:2px!important}html.vp-phone .t-wx .launch a:nth-child(n+3){display:none}
 html.vp-phone .dk{flex:1 1 0;min-width:0;padding:0 2px}html.vp-phone .dk span{font-size:9.5px;letter-spacing:.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis}html.vp-phone .dk svg{width:20px;height:20px}html.vp-phone .astro span{flex:1 1 auto}
 html.vp-phone body{max-width:460px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh;box-sizing:border-box}
@@ -902,14 +922,15 @@ html.vp-phone .toast{left:50%}
       </section>
       <div class="two" style="margin-top:16px"><section class="tile t-sp" aria-labelledby="h-sp">
         <div class="th"><h2 id="h-sp">Sports</h2><button class="btn ghost" id="spedit" type="button">Edit</button></div>
+        <div class="teamboard" id="teamboard" aria-label="Team home pages"></div>
         <div class="snap" id="spsnap"></div>
-        <div class="chips" id="teams"></div>
+        <div class="chips editonly" id="teams"></div>
         <form class="addrow editonly" id="teamform"><input type="text" id="teamin" placeholder="Add a team" aria-label="Team name"><button class="btn primary" type="submit">Add</button></form>
         <div class="launch"><a href="https://www.espn.com/scoreboard" target="_blank" rel="noopener">Scores</a><a href="https://www.espn.com/watch/schedule" target="_blank" rel="noopener">On TV</a></div>
       </section>
       <section class="tile t-psu" aria-labelledby="h-psu">
       <div class="th"><h2 id="h-psu">Penn State</h2><span class="sub">Nittany Lions</span></div>
-      <div class="psu-rec" id="psurec"><b>—</b><span>Football</span></div>
+      <div class="psu-top"><span id="psulogo"></span><div class="psu-rec" id="psurec"><b>—</b><span>Football</span></div></div>
       <div class="psu-rows" id="psurows"></div>
       <ul class="psu-news" id="psunews"></ul>
       <div class="launch">
@@ -1349,6 +1370,7 @@ R.snapshot = () => {
 function renderPsu(p){
   const rec = $('psurec'), rows = $('psurows'), news = $('psunews');
   rows.replaceChildren(); news.replaceChildren();
+  const pl = $('psulogo'); if (pl && !pl.firstChild && typeof teamLogo === 'function'){ const l = teamLogo('Penn State', 'tl-psu'); if (l) pl.append(l); }
   if (!p){ rows.append(h('div',{class:'empty'},'Scores and headlines arrive with the morning update.')); return; }
   rec.replaceChildren(h('b',{}, p.record || '—'), h('span',{}, (p.rank ? '#' + p.rank + ' · ' : '') + 'Football'));
   if (p.next) rows.append(h('div',{}, h('small',{}, 'Next'), h('span',{}, p.next)));
@@ -1752,6 +1774,10 @@ R.teams = () => {
   const box = $('teams'); box.replaceChildren();
   const items = S.teams.items || [];
   if (!items.length) box.append(h('div',{class:'empty'},'Tap Edit to add your teams.'));
+  const board = $('teamboard');
+  if (board){ const ks = [...new Set([...items.map(t => teamKey(t.name)), 'Penn State'].filter(Boolean))];
+    board.replaceChildren(...ks.map(k => { const ti = TEAMINFO[k], u = safeUrl((items.find(t => teamKey(t.name) === k) || {}).url || '') || ti.home;
+      const a = teamLogo(k, 'tl-board'); a.href = u; a.append(h('span',{class:'tl-tag'}, k)); return a; })); }
   items.forEach(t => box.append(h('span',{class:'chip'},
     h('a',{href: safeUrl(t.url || '') || ('https://www.espn.com/search/_/q/' + encodeURIComponent(t.name)), target:'_blank', rel:'noopener'}, t.name),
     h('button',{class:'x editonly', type:'button', 'aria-label':'Remove '+t.name, onclick: () => { S.teams.items = items.filter(x => x !== t); R.teams(); save('teams'); }}, '×')
@@ -2258,6 +2284,28 @@ $('subform').addEventListener('submit', e => {
 });
 
 /* ---------- Upcoming games ---------- */
+const TEAMINFO = {
+  Rangers:{logo:'https://a.espncdn.com/i/teamlogos/nhl/500/nyr.png', home:'https://www.nhl.com/rangers', full:'New York Rangers', ab:'NYR'},
+  Giants:{logo:'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png', home:'https://www.giants.com/', full:'New York Giants', ab:'NYG'},
+  Bills:{logo:'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png', home:'https://www.buffalobills.com/', full:'Buffalo Bills', ab:'BUF'},
+  Jaguars:{logo:'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png', home:'https://www.jaguars.com/', full:'Jacksonville Jaguars', ab:'JAX'},
+  'Penn State':{logo:'https://a.espncdn.com/i/teamlogos/ncaa/500/213.png', home:'https://gopsusports.com/sports/football', full:'Penn State Nittany Lions', ab:'PSU'},
+  Icemen:{logo:'', home:'https://jacksonvilleicemen.com/', full:'Jacksonville Icemen', ab:'ICE'},
+  'Jumbo Shrimp':{logo:'https://www.mlbstatic.com/team-logos/564.svg', home:'https://www.milb.com/jacksonville', full:'Jacksonville Jumbo Shrimp', ab:'JAX'}
+};
+function teamKey(name){ const n = String(name || ''); return Object.keys(TEAMINFO).find(k => new RegExp(k, 'i').test(n)) || null; }
+// Team logo that opens the team's home page. inLink: inside another link, so use a span that opens the page itself.
+function teamLogo(team, cls, inLink){
+  const k = teamKey(team), ti = k && TEAMINFO[k]; if (!ti) return null;
+  const col = (typeof TEAMCOL !== 'undefined' && TEAMCOL[k]) || 'var(--accent)';
+  const badge = () => h('span',{class:'tl-badge', style:'border-color:' + col + ';color:' + col}, ti.ab);
+  const inner = ti.logo ? h('img',{src:ti.logo, alt:'', loading:'lazy', referrerpolicy:'no-referrer', onerror: function(){ this.replaceWith(badge()); }}) : badge();
+  const tip = ti.full + ' home page';
+  if (inLink) return h('span',{class:'tlogo ' + (cls || ''), role:'link', tabindex:'0', title:tip, 'aria-label':tip,
+    onclick: e => { e.preventDefault(); e.stopPropagation(); window.open(ti.home, '_blank', 'noopener'); },
+    onkeydown: e => { if (e.key === 'Enter'){ e.preventDefault(); e.stopPropagation(); window.open(ti.home, '_blank', 'noopener'); } }}, inner);
+  return h('a',{class:'tlogo ' + (cls || ''), href:ti.home, target:'_blank', rel:'noopener', title:tip, 'aria-label':tip}, inner);
+}
 const TEAMCOL = {Rangers:'#3d7cff', Giants:'#e5484d', Bills:'#00a8e8', Jaguars:'#d7a22a', 'Penn State':'#dfe7ff', Icemen:'#9aa8b5', 'Jumbo Shrimp':'#ff7a59'};
 const RIVALS = {Rangers:/islanders|devils|flyers|penguins|bruins|capitals/i, Giants:/cowboys|eagles|commanders/i, Bills:/dolphins|patriots|jets|chiefs/i, Jaguars:/titans|texans|colts/i, 'Penn State':/ohio state|michigan|pitt|michigan state/i};
 const FL_OPP = /lightning|panthers|jaguars|dolphins|buccaneers|magic|heat|orlando|miami|tampa/i;
@@ -2283,7 +2331,7 @@ function gameRow(g, compact){
   const u = safeUrl(g.url || '') || 'https://www.espn.com/search/_/q/' + encodeURIComponent(g.team);
   return h('a',{class:'grow' + (f.some(x => x[0] === 'hot' || x[0] === 'gold') ? ' flagged' : ''), href:u, target:'_blank', rel:'noopener'},
     h('span',{class:'gt'}, g.tbd ? 'TBD' : hm(d), h('small',{}, compact ? d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}) : (g.home ? 'Home' : 'Away'))),
-    h('span',{class:'dot', style:'background:' + col}),
+    teamLogo(g.team, 'tl-row', true) || h('span',{class:'dot', style:'background:' + col}),
     h('span',{class:'gm'}, h('b',{}, g.label ? `${g.team} · ${g.label}` : `${g.team} ${g.home ? 'vs' : 'at'} ${g.oppShort || g.opp}`), h('span',{}, [g.tv && !/night football/i.test(g.tv) ? g.tv : '', g.venue].filter(Boolean).join(' · ')),
       f.length ? h('span',{class:'flags'}, f.map(([c,t]) => h('span',{class:'flag ' + c}, t))) : null));
 }
@@ -2293,13 +2341,14 @@ function renderGames(list){
   const now = Date.now(), games = (list || []).filter(g => g.start && new Date(g.start).getTime() > now - 3.5*3600e3).sort((a,b) => new Date(a.start) - new Date(b.start));
   const teams = ['All', ...new Set(games.map(g => g.team))];
   if (!teams.includes(gFilter)) gFilter = 'All';
-  $('tfilt').replaceChildren(...teams.map(t => h('button',{class:'gtab', type:'button', role:'tab', 'aria-selected': t === gFilter ? 'true' : 'false', onclick: () => { gFilter = t; renderGames(list); }}, t)));
+  $('tfilt').replaceChildren(...teams.map(t => h('button',{class:'gtab', type:'button', role:'tab', 'aria-selected': t === gFilter ? 'true' : 'false', onclick: () => { gFilter = t; renderGames(list); }}, t !== 'All' && TEAMINFO[teamKey(t)] && TEAMINFO[teamKey(t)].logo ? h('img',{class:'tab-logo', src:TEAMINFO[teamKey(t)].logo, alt:'', loading:'lazy', referrerpolicy:'no-referrer', onerror: function(){ this.remove(); }}) : null, t)));
   const shown = games.filter(g => gFilter === 'All' || g.team === gFilter).slice(0, 40), box = $('sched'); box.replaceChildren();
   $('schedsub').textContent = games.length ? `${games.length} games in the next 5 weeks` : '';
   if (!shown.length) box.append(h('div',{class:'empty'}, window.claude ? 'Schedules arrive with the morning update.' : 'Loading schedules…'));
   const byDay = new Map(); shown.forEach(g => { const k = new Date(g.start).toDateString(); (byDay.get(k) || byDay.set(k, []).get(k)).push(g); });
   const today = new Date().toDateString(), tmr = new Date(Date.now() + 864e5).toDateString();
-  byDay.forEach((gs, k) => box.append(h('div',{class:'sd' + (k === today ? ' today' : '')}, h('h3',{}, k === today ? 'Today' : k === tmr ? 'Tomorrow' : new Date(k).toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'})), gs.map(g => gameRow(g)))));
+  byDay.forEach((gs, k) => box.append(h('div',{class:'sd' + (k === today ? ' today' : '')}, h('h3',{}, k === today ? 'Today' : k === tmr ? 'Tomorrow' : new Date(k).toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'})), gs.map(g => gameRow(g)),
+    h('div',{class:'sd-fill', 'aria-hidden':'false'}, [...new Set(gs.map(g => teamKey(g.team)).filter(Boolean))].map(t => teamLogo(t, 'tl-fill'))))));
   // Home: next 3 plus the next flagged one
   const nl = $('nextlist'); nl.replaceChildren();
   const pick = games.slice(0, 3); const sp = games.find(g => !pick.includes(g) && gameFlags(g, new Date(g.start)).some(x => x[0] === 'hot')); if (sp) pick.push(sp);
