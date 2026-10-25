@@ -1734,8 +1734,10 @@ $('cdform').addEventListener('submit', e => {
 let pubData = {};
 const snapView = () => window.claude ? (S.snapshot || {}) : {...(S.snapshot || {}), ...pubData};
 async function loadPubData(){
-  if (window.claude || !/^https?:$/.test(location.protocol)) return;
-  try { const r = await fetch('data.json?t=' + Date.now(), {cache:'no-store'}); if (!r.ok){ window.__rv3 && stat('pub', false, 'HTTP ' + r.status); return; } const j = await r.json();
+  if (window.claude) return;
+  /* Opened as a file from the computer: read the same data file straight from GitHub */
+  const src = /^https?:$/.test(location.protocol) ? 'data.json' : 'https://raw.githubusercontent.com/rvannederynen18/rv-1/main/data.json';
+  try { const r = await fetch(src + '?t=' + Date.now(), {cache:'no-store'}); if (!r.ok){ window.__rv3 && stat('pub', false, 'HTTP ' + r.status); return; } const j = await r.json();
     const keep = {}; ['market','kidsEvents','dateNight','events','scoreboard','gameWeather'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot();
     window.__rv3 && stat('pub', true, j.updatedAt ? 'from ' + new Date(j.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : ''); } catch { window.__rv3 && stat('pub', false, 'not found'); }
 }
@@ -3603,7 +3605,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.25.0038';
+const RV1_VERSION = '2026.10.25.1049';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
