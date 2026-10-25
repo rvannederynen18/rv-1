@@ -757,6 +757,17 @@ html.vp-phone .calc3{grid-template-columns:minmax(0,1fr)}
 .t-golfmini .gverd{background:none;border:none;box-shadow:none;padding:2px 0}
 @media (max-width:760px){.t-golfmini{order:2}.t-nextup{order:3}}
 html.vp-phone .t-golfmini{order:2}html.vp-phone .t-nextup{order:3}
+/* ===== Gunmetal blue theme: blue-tinted gunmetal plates with a metallic sheen ===== */
+:root[data-pal="gunmetal"]{--bg:#06090d;--panel:#1b232c;--panel-2:#222c37;--panel-3:#2b3744;--ink:#eef3f8;--muted:#a3b2c2;--line:#2d3a48;--line-hi:#40505f;
+  --accent:#4aa3ff;--accent-ink:#ffffff;--accent-soft:#10304f;--accent-text:#9fd0ff;--go:#2fd27a;--go-soft:#0d2f1f;--meter:linear-gradient(90deg,#4aa3ff,#2fd27a);
+  --well:#0a0f15;--well-line:#243241;--panel-bg:linear-gradient(170deg,#2e3a48 0%,#222c37 22%,#1a222b 58%,#212a35 82%,#1b232c 100%)}
+:root[data-pal="gunmetal"] .tile{box-shadow:inset 0 1px 0 rgba(200,225,255,.16),inset 0 -1px 0 rgba(0,0,0,.55),0 2px 10px rgba(0,0,0,.35);border-color:#33424f}
+:root[data-pal="gunmetal"] .tile>.th:first-child{background:linear-gradient(180deg,rgba(150,185,220,.10),rgba(0,0,0,.22));border-bottom-color:#33424f}
+:root[data-pal="gunmetal"] .btn{background:linear-gradient(180deg,#3a4857 0%,#2a3542 48%,#222b36 100%);border-color:#4a5b6c;box-shadow:inset 0 1px 0 rgba(210,230,255,.18),0 1px 0 rgba(0,0,0,.6)}
+:root[data-pal="gunmetal"] .btn.primary{background:linear-gradient(180deg,#5cb0ff,#2f7fd6 55%,#2468b5);border-color:#7cc0ff}
+:root[data-pal="gunmetal"] .btn.ghost{background:none;border-color:transparent;box-shadow:none}
+:root[data-pal="gunmetal"] .launch a,:root[data-pal="gunmetal"] .app{background:linear-gradient(180deg,#2c3846,#1f2833);border-color:#3a4958;box-shadow:inset 0 1px 0 rgba(210,230,255,.12)}
+:root[data-pal="gunmetal"] .dock{background:linear-gradient(180deg,#1b232c,#0e1319)}
 /*VP-PHONE-START*/
 html.vp-phone .home{grid-template-columns:repeat(2,minmax(0,1fr))}html.vp-phone .home .col:nth-child(3){grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
 html.vp-phone .home,html.vp-phone .two{grid-template-columns:minmax(0,1fr)}html.vp-phone .home .col:nth-child(3){display:flex}
@@ -1349,7 +1360,7 @@ html.vp-phone .toast{left:50%}
       <div class="two"><section class="tile t-settings" aria-labelledby="h-set" id="settingstile">
           <div class="th"><h2 id="h-set">Settings</h2><span class="sub">Saved only in this browser</span></div>
           <form class="setform" id="setform" autocomplete="off">
-            <label class="fl">Color theme<select id="p-pal"><option value="">Brushed steel</option><option value="midnight">Midnight blue</option><option value="teal">Carbon teal</option><option value="amber">Graphite amber</option><option value="violet">Night violet</option><option value="crimson">Crimson</option></select></label>
+            <label class="fl">Color theme<select id="p-pal"><option value="">Brushed steel</option><option value="midnight">Midnight blue</option><option value="teal">Carbon teal</option><option value="amber">Graphite amber</option><option value="violet">Night violet</option><option value="crimson">Crimson</option><option value="gunmetal">Gunmetal blue</option></select></label>
             <label class="fl">Your name<input type="text" id="p-name" placeholder="Shown in the greeting"></label>
             <label class="fl">Home address<input type="text" id="p-addr" placeholder="Street, city, state ZIP"></label>
             <label class="fl">Weather: home city<input type="text" id="p-city1" placeholder="e.g. St. Augustine, FL"></label>
@@ -2425,6 +2436,19 @@ function migrateLinks(){
   if (!L.v3links){ L.v3links = true; changed = true;
     const at = () => { const i = L.groups.findIndex(g => g.vault); return i < 0 ? L.groups.length : i; };
     [CODES_GROUP, INDUSTRY_GROUP].forEach(G => { if (!L.groups.some(g => g.id === G.id)) L.groups.splice(at(), 0, clone(G)); }); }
+  if (!L.v4links){ L.v4links = true; changed = true;
+    /* Work links reorganized: vendor groups by type, Q-PAC into Work, past employers in their own group, LinkedIn in My apps */
+    const ind = L.groups.find(g => g.id === 'gindustry'), allNew = V4_GROUPS.flatMap(G => G.links).map(l => l.url);
+    let work = L.groups.find(g => g.id === 'g2') || L.groups.find(g => /^work$/i.test(g.name || ''));
+    if (!work){ work = {id:'g2', name:'Work', links:[]}; L.groups.splice(L.groups.findIndex(g => g.vault) < 0 ? L.groups.length : L.groups.findIndex(g => g.vault), 0, work); }
+    if (!(work.links || []).some(l => /q-pac\.com/.test(l.url))) (work.links ||= []).unshift({id: uid(), name:'Q-PAC', url:'https://www.q-pac.com/'});
+    if (ind){ (ind.links || []).forEach(l => { if (!/q-pac\.com/.test(l.url) && !allNew.includes(l.url)) (work.links ||= []).push(l); }); L.groups = L.groups.filter(g => g !== ind); }
+    let pos = L.groups.indexOf(work) + 1;
+    V4_GROUPS.forEach(G => { if (!L.groups.some(g => g.id === G.id)) L.groups.splice(pos++, 0, clone(G)); });
+    const codes = L.groups.find(g => g.id === 'gcodes'), past = L.groups.find(g => g.id === 'gpast');
+    if (codes && past){ L.groups = L.groups.filter(g => g !== codes); L.groups.splice(L.groups.indexOf(past), 0, codes); }
+    const mine = L.groups.find(g => g.id === 'g0' || g.id === 'gmyapps' || /^my apps$/i.test(g.name || ''));
+    if (mine && !(mine.links || []).some(l => /linkedin\.com/.test(l.url))) (mine.links ||= []).push({id: uid(), name:'LinkedIn', url:'https://www.linkedin.com/'}); }
   return changed;
 }
 const MYAPPS = [['SurfCast','https://rvannederynen18.github.io/Surf-Cast/'],['Learning Den','https://rvannederynen18.github.io/Learning-Den/'],
@@ -2459,6 +2483,61 @@ const INDUSTRY_GROUP = {"id":"gindustry","name":"Industry & work","links":[
   {"id":"in1","name":"Q-PAC","url":"https://www.q-pac.com/"},{"id":"in2","name":"ITT Goulds Pumps","url":"https://www.gouldspumps.com/"},
   {"id":"in3","name":"Xylem","url":"https://www.xylem.com/"},{"id":"in4","name":"ZIEHL-ABEGG","url":"https://www.ziehl-abegg.com/"},
   {"id":"in5","name":"ebm-papst","url":"https://www.ebmpapst.com/"},{"id":"in6","name":"Schneider Electric","url":"https://www.se.com/us/en/"}]};
+const V4_GROUPS = [
+ {"id":"gbms","name":"Controls & BMS","links":[
+  {"id":"bm1","name":"BACnet PlugFest","url":"https://bacnetinternational.org/news/bacnet-international-hosts-plugfest-interoperability-workshop"},
+  {"id":"bm2","name":"BTL listed products","url":"https://bacnetinternational.net/btl/"},
+  {"id":"bm3","name":"Niagara \u00b7 Tridium","url":"https://www.tridium.com/"},
+  {"id":"bm4","name":"Ignition \u00b7 Inductive Automation","url":"https://inductiveautomation.com/"},
+  {"id":"bm5","name":"Metasys \u00b7 Johnson Controls","url":"https://www.johnsoncontrols.com/"},
+  {"id":"bm6","name":"Honeywell Buildings","url":"https://buildings.honeywell.com/"},
+  {"id":"bm7","name":"Siemens Desigo","url":"https://www.siemens.com/"},
+  {"id":"bm8","name":"Distech Controls","url":"https://www.distech-controls.com/"},
+  {"id":"bm9","name":"KMC Controls","url":"https://www.kmccontrols.com/"},
+  {"id":"bm10","name":"Automated Logic","url":"https://www.automatedlogic.com/"},
+  {"id":"bm11","name":"Delta Controls","url":"https://www.deltacontrols.com/"},
+  {"id":"bm12","name":"Carel","url":"https://www.carel.com/"},
+  {"id":"bm13","name":"Contemporary Controls","url":"https://www.ccontrols.com/"},
+  {"id":"bm14","name":"Belimo","url":"https://www.belimo.com/"},
+  {"id":"bm15","name":"Dwyer Omega","url":"https://www.dwyeromega.com/"},
+  {"id":"bm16","name":"Setra","url":"https://www.setra.com/"},
+  {"id":"bm17","name":"Veris","url":"https://www.veris.com/"}]},
+ {"id":"gplc","name":"Automation & PLCs","links":[
+  {"id":"pl1","name":"CODESYS","url":"https://www.codesys.com/"},
+  {"id":"pl2","name":"CODESYS Store","url":"https://store.codesys.com/"},
+  {"id":"pl3","name":"WAGO","url":"https://www.wago.com/"},
+  {"id":"pl4","name":"Phoenix Contact","url":"https://www.phoenixcontact.com/"},
+  {"id":"pl5","name":"Carlo Gavazzi","url":"https://gavazziautomation.com/"},
+  {"id":"pl6","name":"Telemecanique Sensors","url":"https://www.tesensors.com/"},
+  {"id":"pl7","name":"Allen-Bradley \u00b7 Rockwell","url":"https://www.rockwellautomation.com/"},
+  {"id":"pl8","name":"Siemens SIMATIC","url":"https://www.siemens.com/"},
+  {"id":"pl9","name":"ABB","url":"https://new.abb.com/"},
+  {"id":"pl10","name":"Beckhoff","url":"https://www.beckhoff.com/"},
+  {"id":"pl11","name":"Red Lion","url":"https://www.redlion.net/"},
+  {"id":"pl12","name":"Schneider Electric","url":"https://www.se.com/us/en/"}]},
+ {"id":"gdrives","name":"Drives, motors & fans","links":[
+  {"id":"dr1","name":"ZIEHL-ABEGG","url":"https://www.ziehl-abegg.com/"},
+  {"id":"dr2","name":"ebm-papst","url":"https://www.ebmpapst.com/"},
+  {"id":"dr3","name":"ABB drives","url":"https://new.abb.com/drives"},
+  {"id":"dr4","name":"Danfoss","url":"https://www.danfoss.com/"},
+  {"id":"dr5","name":"Yaskawa","url":"https://www.yaskawa.com/"},
+  {"id":"dr6","name":"WEG","url":"https://www.weg.net/"},
+  {"id":"dr7","name":"Greenheck","url":"https://www.greenheck.com/"},
+  {"id":"dr8","name":"Twin City Fan","url":"https://www.tcf.com/"}]},
+ {"id":"ghvac","name":"HVAC equipment","links":[
+  {"id":"hv1","name":"MAS HVAC","url":"https://www.mas-hvac.com/"},
+  {"id":"hv2","name":"ClimateCraft","url":"https://www.climatecraft.com/"},
+  {"id":"hv3","name":"Trane","url":"https://www.trane.com/"},
+  {"id":"hv4","name":"Daikin Applied","url":"https://www.daikinapplied.com/"},
+  {"id":"hv5","name":"Carrier","url":"https://www.carrier.com/commercial/"},
+  {"id":"hv6","name":"York","url":"https://www.york.com/"},
+  {"id":"hv7","name":"AAON","url":"https://www.aaon.com/"},
+  {"id":"hv8","name":"Nortek Air \u00b7 Huntair, Temtrol","url":"https://www.nortekair.com/"},
+  {"id":"hv9","name":"Haakon","url":"https://www.haakon.com/"},
+  {"id":"hv10","name":"Energy Labs","url":"https://www.energylabs.com/"}]},
+ {"id":"gpast","name":"Past companies","links":[
+  {"id":"pa1","name":"ITT Goulds Pumps","url":"https://www.gouldspumps.com/"},
+  {"id":"pa2","name":"Xylem","url":"https://www.xylem.com/"}]}];
 const VAULT_SEED = {"id":"gvault","name":"Vault","vault":true,"links":[
   {"id":"v1","name":"Google Password Manager","url":"https://passwords.google.com/"},
   {"id":"v2","name":"Google Security Checkup","url":"https://myaccount.google.com/security-checkup"},
