@@ -2131,8 +2131,15 @@ function migrateLinks(){
   if (wx){ [['AccuWeather','https://www.accuweather.com/en/us/st-augustine-fl/32084/weather-forecast/332327'],['AccuWeather radar','https://www.accuweather.com/en/us/st-augustine-fl/32084/weather-radar/332327'],['Weather Underground','https://www.wunderground.com/forecast/us/fl/st.-augustine/32095']].reverse()
     .forEach(([n, u]) => { if (!has(wx, u)){ (wx.links ||= []).unshift({id: uid(), name: n, url: u}); changed = true; } }); }
   if (!L.groups.some(g => g.vault)){ L.groups.push(clone(VAULT_SEED)); changed = true; }
+  if (!L.myAppsAdded){ L.myAppsAdded = true; changed = true;
+    if (!L.groups.some(g => g.id === 'gmyapps')) L.groups.unshift(clone(MYAPPS_SEED)); }
   return changed;
 }
+const MYAPPS_SEED = {"id":"gmyapps","name":"My apps","links":[
+  {"id":"ma1","name":"SurfCast","url":"https://rvannederynen18.github.io/Surf-Cast/"},
+  {"id":"ma2","name":"Learning Den","url":"https://rvannederynen18.github.io/Learning-Den/"},
+  {"id":"ma3","name":"CV-1","url":"https://rvannederynen18.github.io/Learning-Den/cv-1.html"},
+  {"id":"ma4","name":"HV-1","url":"https://rvannederynen18.github.io/Learning-Den/hv-1.html"}]};
 const VAULT_SEED = {"id":"gvault","name":"Vault","vault":true,"links":[
   {"id":"v1","name":"Google Password Manager","url":"https://passwords.google.com/"},
   {"id":"v2","name":"Google Security Checkup","url":"https://myaccount.google.com/security-checkup"},
@@ -2267,7 +2274,7 @@ R.prefs = () => {
   fillVoices(); $('p-bvoice').value = P.bvoice || ''; $('p-blen').value = P.blen || 'full';
   $('p-brate').value = P.brate || 1; $('p-bpitch').value = P.bpitch || 1; bRangeLabels();
   $('p-bsecs').replaceChildren(h('span',{class:'bl'}, 'Include'), ...BRIEF_SECTIONS().filter(([k]) => k !== 'open').map(([k, l]) => h('label',{}, h('input',{type:'checkbox', value:k, checked: !(P.boff || []).includes(k)}), l))); $('p-pal').value = P.pal || ''; applyPal(P.pal); $('p-night').checked = !!P.night;
-  const sc = safeUrl(P.surfcast || ''); $('sc').href = sc || '#'; $('sc').style.cursor = sc ? '' : 'default';
+  const sc = safeUrl(P.surfcast || 'https://rvannederynen18.github.io/Surf-Cast/'); $('sc').href = sc || '#'; $('sc').style.cursor = sc ? '' : 'default';
   $('sc').querySelector('.go-link').hidden = !sc;
   if (!window.claude && ready) calStandalone();
   tick(); renderKidFun(snapView().kidsEvents);
