@@ -3683,7 +3683,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.25.1331';
+const RV1_VERSION = '2026.10.25.1638';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
@@ -3940,22 +3940,73 @@ async function renderGameWx(){
     h('b',{}, r.g.label ? `${r.g.team} · ${r.g.label}` : `${r.g.team} vs ${r.g.oppShort || r.g.opp}`), h('span',{class:'sub'}, r.line))));
 }
 
-/* ---------- Ring & Alexa: open the phone app on phones, the website on a computer ---------- */
+/* ---------- Phone apps: on a phone, links open the installed app; on a computer, the website ----------
+   android = the Play Store package (always safe: Android falls back to the website if the app isn't installed)
+   ios     = the app's own link name, listed only where it's known; anything without one opens as a normal link
+   deep    = hand the app the exact page (a map pin, a video) instead of just opening the app */
+const appHost = (...hosts) => new RegExp('^https?://([a-z0-9-]+\\.)*(' + hosts.map(x => x.replace(/\./g, '\\.')).join('|') + ')(/|$|\\?)', 'i');
 const PHONE_APPS = [
-  {re: /^https:\/\/(account\.)?ring\.com\//i, android: 'com.ringapp', ios: 'ring://'},
-  {re: /^https:\/\/(www\.)?alexa\.(com|amazon\.com)\//i, android: 'com.amazon.dee.app', ios: 'alexa://'}];
+  {re: appHost('ring.com'), android: 'com.ringapp', ios: 'ring://'},
+  {re: appHost('alexa.com', 'alexa.amazon.com'), android: 'com.amazon.dee.app', ios: 'alexa://'},
+  {re: appHost('schwab.com'), android: 'com.schwab.mobile'},
+  {re: appHost('bankofamerica.com'), android: 'com.infonow.bofa'},
+  {re: appHost('finance.yahoo.com'), android: 'com.yahoo.mobile.client.android.finance'},
+  {re: appHost('tradingview.com'), android: 'com.tradingview.tradingviewapp'},
+  {re: appHost('tesla.com'), android: 'com.teslamotors.tesla', ios: 'tesla://'},
+  {re: appHost('maps.google.com'), android: 'com.google.android.apps.maps', deep: true},
+  {re: appHost('waze.com'), android: 'com.waze', ios: 'waze://'},
+  {re: appHost('mail.google.com'), android: 'com.google.android.gm', ios: 'googlegmail://'},
+  {re: appHost('calendar.google.com'), android: 'com.google.android.calendar', ios: 'googlecalendar://'},
+  {re: appHost('drive.google.com'), android: 'com.google.android.apps.docs', ios: 'googledrive://'},
+  {re: appHost('docs.google.com'), android: 'com.google.android.apps.docs.editors.docs', ios: 'googledocs://'},
+  {re: appHost('photos.google.com'), android: 'com.google.android.apps.photos', ios: 'googlephotos://'},
+  {re: appHost('keep.google.com'), android: 'com.google.android.keep'},
+  {re: appHost('home.google.com'), android: 'com.google.android.apps.chromecast.app'},
+  {re: appHost('youtube.com', 'youtu.be'), android: 'com.google.android.youtube', ios: 'youtube://', deep: true},
+  {re: appHost('netflix.com'), android: 'com.netflix.mediaclient', ios: 'nflx://'},
+  {re: appHost('hulu.com'), android: 'com.hulu.plus', ios: 'hulu://'},
+  {re: appHost('disneyplus.com'), android: 'com.disney.disneyplus', ios: 'disneyplus://'},
+  {re: appHost('pandora.com'), android: 'com.pandora.android', ios: 'pandora://'},
+  {re: appHost('disneyworld.disney.go.com'), android: 'com.disney.wdw.android'},
+  {re: appHost('espn.com'), android: 'com.espn.score_center', ios: 'sportscenter://'},
+  {re: appHost('nhl.com'), android: 'com.nhl.gc1112.free'},
+  {re: appHost('ticketmaster.com'), android: 'com.ticketmaster.mobile.android.na'},
+  {re: appHost('foxnews.com'), android: 'com.foxnews.android'},
+  {re: appHost('accuweather.com'), android: 'com.accuweather.android'},
+  {re: appHost('wunderground.com'), android: 'com.wunderground.android.weather'},
+  {re: appHost('windy.com'), android: 'com.windyty.android'},
+  {re: appHost('gasbuddy.com'), android: 'gbis.gbandroid'},
+  {re: appHost('amazon.com'), android: 'com.amazon.mShop.android.shopping', ios: 'com.amazon.mobile.shopping://'},
+  {re: appHost('ebay.com'), android: 'com.ebay.mobile', ios: 'ebay://'},
+  {re: appHost('linkedin.com'), android: 'com.linkedin.android', ios: 'linkedin://'},
+  {re: appHost('ups.com'), android: 'com.ups.mobile.android'},
+  {re: appHost('fedex.com'), android: 'com.fedex.ida.android'},
+  {re: appHost('delta.com'), android: 'com.delta.mobile.android'},
+  {re: appHost('united.com'), android: 'com.united.mobile.android'},
+  {re: appHost('southwest.com'), android: 'com.southwestairlines.mobile'},
+  {re: appHost('hilton.com'), android: 'com.hilton.android.hhonors'},
+  {re: appHost('github.com'), android: 'com.github.android'},
+  {re: appHost('claude.ai'), android: 'com.anthropic.claude', ios: 'claude://'},
+  {re: appHost('chatgpt.com'), android: 'com.openai.chatgpt'},
+  {re: appHost('gemini.google.com'), android: 'com.google.android.apps.bard'},
+  {re: appHost('grok.com'), android: 'ai.x.grok'}];
+const phoneOS = () => { const ua = navigator.userAgent || ''; return /Android/i.test(ua) ? 'android' : (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) ? 'ios' : ''; };
 document.addEventListener('click', e => {
-  const a = e.target.closest && e.target.closest('a[href]'); if (!a || window.claude) return;
-  const ua = navigator.userAgent || '', android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-  if (!android && !ios) return;
+  const a = e.target.closest && e.target.closest('a[href]'); if (!a || window.claude || e.defaultPrevented) return;
+  const os = phoneOS(); if (!os) return;
   const app = PHONE_APPS.find(x => x.re.test(a.href)); if (!app) return;
+  if (os === 'ios' && !app.ios) return;
   e.preventDefault();
-  if (android){ location.href = 'intent://#Intent;package=' + app.android + ';S.browser_fallback_url=' + encodeURIComponent(a.href) + ';end'; return; }
+  if (os === 'android'){
+    const u = new URL(a.href), fb = ';S.browser_fallback_url=' + encodeURIComponent(a.href) + ';end';
+    location.href = app.deep ? 'intent://' + u.host + u.pathname + u.search + '#Intent;scheme=https;package=' + app.android + fb : 'intent://#Intent;package=' + app.android + fb;
+    return;
+  }
   /* iPhone: try the app; if it hasn't opened in 1.5 s, go to the website */
   const t = setTimeout(() => { if (!document.hidden) location.href = a.href; }, 1500);
   const stop = () => { if (document.hidden) clearTimeout(t); };
   document.addEventListener('visibilitychange', stop, {once: true}); window.addEventListener('pagehide', () => clearTimeout(t), {once: true});
-  location.href = app.ios;
+  location.href = app.deep && app.ios === 'youtube://' ? a.href.replace(/^https?:\/\/(www\.|m\.)?youtube\.com/i, 'youtube://www.youtube.com') : app.ios;
 }, true);
 
 /* ---------- Golf ---------- */
