@@ -1,0 +1,188 @@
+{
+ "countdowns": {
+  "items": [
+   {
+    "date": "2026-10-31",
+    "id": "c1",
+    "name": "Halloween"
+   },
+   {
+    "id": "c5",
+    "name": "Icemen opening night",
+    "date": "2026-10-31"
+   },
+   {
+    "date": "2026-11-26",
+    "id": "c2",
+    "name": "Thanksgiving"
+   },
+   {
+    "date": "2026-12-25",
+    "id": "c3",
+    "name": "Christmas"
+   },
+   {
+    "date": "2027-01-01",
+    "id": "c4",
+    "name": "New Year's Day"
+   }
+  ]
+ },
+ "links": {
+  "groups": [
+   {
+    "id": "g10",
+    "name": "AI",
+    "links": [
+     {
+      "id": "l60",
+      "name": "Claude",
+      "url": "https://claude.ai/new"
+     },
+     {
+      "id": "l61",
+      "name": "ChatGPT",
+      "url": "https://chatgpt.com/"
+     },
+     {
+      "id": "l62",
+      "name": "Gemini",
+      "url": "https://gemini.google.com/app"
+     },
+     {
+      "id": "l63",
+      "name": "Grok",
+      "url": "https://grok.com/"
+     }
+    ]
+   },
+   {
+    "id": "g1",
+    "name": "Google",
+    "links": [
+     {
+      "id": "l1",
+      "name": "Gmail",
+      "url": "https://mail.google.com/",
+      "fav": true
+     },
+     {
+      "id": "l2",
+      "name": "Calendar",
+      "url": "https://calendar.google.com/",
+      "fav": true
+     },
+     {
+      "id": "l3",
+      "name": "Drive",
+      "url": "https://drive.google.com/"
+     },
+     {
+      "id": "l70",
+      "name": "Photos",
+      "url": "https://photos.google.com/"
+     },
+     {
+      "id": "l71",
+      "name": "Maps",
+      "url": "https://maps.google.com/"
+     },
+     {
+      "id": "l72",
+      "name": "Docs",
+      "url": "https://docs.google.com/document/"
+     },
+     {
+      "id": "l73",
+      "name": "Sheets",
+      "url": "https://docs.google.com/spreadsheets/"
+     },
+     {
+      "id": "l74",
+      "name": "Keep",
+      "url": "https://keep.google.com/"
+     },
+     {
+      "id": "l75",
+      "name": "Google News",
+      "url": "https://news.google.com/"
+     },
+     {
+      "id": "l76",
+      "name": "Google Home",
+      "url": "https://home.google.com/"
+     }
+    ]
+   },
+   {
+    "id": "g9",
+    "links": [
+     {
+      "id": "l50",
+      "name": "Netflix",
+      "url": "https://www.netflix.com/browse",
+      "fav": true
+     },
+     {
+      "id": "l51",
+      "name": "Hulu",
+      "url": "https://www.hulu.com/hub/home"
+     },
+     {
+      "id": "l52",
+      "name": "YouTube",
+      "url": "https://www.youtube.com/",
+      "fav": true
+     },
+     {
+      "id": "l53",
+      "name": "Prime Video",
+      "url": "https://www.amazon.com/gp/video/storefront"
+     },
+     {
+      "id": "l54",
+      "name": "Disney+",
+      "url": "https://www.disneyplus.com/home"
+     },
+     {
+      "id": "l55",
+      "name": "ESPN",
+      "url": "https://www.espn.com/watch/"
+     },
+     {
+      "id": "l56",
+      "name": "Pandora",
+      "url": "https://www.pandora.com/"
+     }
+    ],
+    "name": "Watch & listen"
+   },
+   {
+    "id": "g8",
+    "links": [
+     {
+      "id": "l40",
+      "name": "Jacksonville radar",
+      "url": "https://radar.weather.gov/station/KJAX/standard"
+     },
+     {
+      "id": "l41",
+      "name": "NWS Jacksonville",
+      "url": "https://www.weather.gov/jax/"
+     },
+     {
+      "id": "l42",
+      "name": "Windy",
+      "url": "https://www.windy.com/"
+     },
+     {
+      "id": "l43",
+      "name": "Hurricane Center",
+      "url": "https://www.nhc.noaa.gov/"
+     }
+    ],
+    "name": "Weather & radar"
+   }
+  ]
+ }
+}

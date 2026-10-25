@@ -130,6 +130,17 @@ section:not(.editing) .editonly{display:none}
 .ev-time{font-size:14px;color:var(--muted);padding-top:1px}
 .ev-t{font-weight:500;overflow-wrap:anywhere}
 .ev-l{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+/* Inbox (Gmail connector) */
+.mail{display:flex;flex-direction:column}
+.mrow{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;padding:10px 12px;margin-inline:-12px;border-radius:14px;text-decoration:none;min-height:var(--tap)}
+.mrow:active{background:var(--panel-2)}
+.mrow .mdot{width:8px;height:8px;border-radius:50%;align-self:center}
+.mrow.unread .mdot{background:var(--accent)}
+.mrow .ms{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow .mt{font-size:12px;color:var(--muted);white-space:nowrap}
+.mrow .mj{grid-column:2/-1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow.unread .mj{font-weight:600}
+.mrow.unread .ms{color:var(--ink)}
 .gcal{width:100%;height:420px;border:0;border-radius:14px;filter:invert(.9) hue-rotate(180deg)}
 
 /* To do */
@@ -596,7 +607,7 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   /* phone: one stream in priority order */
   .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}
   .home .col,.home .col:nth-child(3){display:contents!important}
-  .hero{order:1}.t-wx{order:2}.sc{order:3}.t-cal{order:4}.t-kids{order:5}.t-nextup{order:6}.t-mkt{order:7}.t-cd{order:8}.t-bday{order:9}.t-phonefav{order:10}
+  .hero{order:1}.t-wx{order:2}.sc{order:3}.t-cal{order:4}.t-mail{order:4}.t-kids{order:5}.t-nextup{order:6}.t-mkt{order:7}.t-cd{order:8}.t-bday{order:9}.t-phonefav{order:10}
   #favapps .app-nm,.t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}
   body{font-size:17px}
   .phone-only{display:flex}
@@ -683,6 +694,85 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   html:not(.vp-phone) .app-w{display:flex}html:not(.vp-phone) .app-w>.app{flex:1}
 }
 @media (max-width:760px){.dk{flex:1 1 0;min-width:0;padding:0 2px}.dk span{font-size:9.5px;letter-spacing:.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis}.dk svg{width:20px;height:20px}.astro span{flex:1 1 auto}}
+
+/* ===== v3: scoreboard, teams, golf, local, life, tools ===== */
+.scrbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px}
+.stled{display:inline-block;margin-right:8px;vertical-align:middle}
+.res{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 4px;border-radius:3px;font-family:var(--f-cond);font-weight:700;font-size:13px;box-sizing:border-box}
+.res.w{background:var(--go-soft);color:var(--ok)}.res.l{background:rgba(255,77,94,.16);color:#ff8a94}.res.t{background:rgba(255,176,32,.14);color:var(--warn)}
+b.w{color:var(--ok)}b.l{color:#ff8a94}b.t{color:var(--warn)}b.ok,.ok{color:var(--ok)}b.warn,.warn{color:var(--warn)}b.bad{color:#ff8a94}
+#scoreboard{container-type:inline-size}
+.sbfull{display:flex;flex-direction:column;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55)}
+.sbrow{display:grid;grid-template-columns:30px minmax(0,1.1fr) minmax(0,1.7fr) auto minmax(0,1.5fr);gap:10px;align-items:center;padding:9px 12px;min-height:50px;text-decoration:none;box-sizing:border-box}
+.sbrow+.sbrow{border-top:1px solid var(--well-line)}
+a.sbrow:hover{background:rgba(255,255,255,.03)}
+.sbn{font-weight:600}
+.sbl{font-family:var(--f-cond);font-size:16px;display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbr{font-family:var(--f-cond);font-size:19px;font-weight:600;color:#eef4fa;text-align:right;white-space:nowrap}
+.sbx{font-size:12.5px;color:var(--muted);line-height:1.25;min-width:0}
+.sbx b{display:block;color:#c3ccd5;font-weight:500;font-size:13.5px}
+.sbmini{display:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sbtile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;text-decoration:none;min-height:92px;box-sizing:border-box;text-align:center}
+.sbtile b{font-family:var(--f-cond);font-size:14px;font-weight:700}
+.sbtile small{font-family:var(--f-cond);font-size:12px;color:var(--muted)}
+.tl-mini{width:36px;height:36px}.tl-mini .tl-badge{font-size:11px}
+@container (max-width:560px){.sbfull{display:none}.sbmini{display:grid}}
+.t-nextup .subh{margin-top:6px}
+.spgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start;margin-top:16px}
+.spside{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:1000px){.spgrid{grid-template-columns:minmax(0,1fr)}}
+html.vp-phone .spgrid{grid-template-columns:minmax(0,1fr)}
+.teamcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:12px}
+.tcard{display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55);min-width:0}
+.tchead{display:flex;align-items:center;gap:12px}
+.tl-card{width:44px;height:44px}.tl-card .tl-badge{font-size:12px}
+.tcname{display:flex;flex-direction:column;min-width:0}
+.tcname b{font-size:17px;font-weight:600}
+.tcname small{font-size:12.5px;color:var(--muted)}
+.tcrec{margin-left:auto;white-space:nowrap;flex:none;font-family:var(--f-cond);font-size:26px;font-weight:600;line-height:1;color:#eef4fa}
+.tckv{display:grid;grid-template-columns:72px minmax(0,1fr);gap:5px 10px;margin:0;font-size:14px}
+.tckv dt{font-family:var(--f-cond);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.tckv dd{margin:0;overflow-wrap:anywhere}
+.tclink{align-self:flex-start;font-size:13px;color:var(--accent-text);text-decoration:none}
+.dykh{display:flex;align-items:center;gap:10px}
+.dykh .lk{font-family:var(--f-cond);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text)}
+.dykt{margin:0;font-size:18px;line-height:1.45;font-weight:500}
+.qt.stt td{padding:9px 6px}
+.qt.stt tr.me td{background:var(--accent-soft);color:var(--ink)}
+.golf{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.gl{flex:1.4 1 480px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.gr{flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.gwell{padding:12px 14px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:8px;min-width:0}
+.ghead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ghead b{font-family:var(--f-cond);font-size:24px;font-weight:600;color:#eef4fa;margin-left:6px}
+.gverd{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--well);border:1px solid var(--well-line);border-radius:4px;box-shadow:inset 0 2px 4px rgba(0,0,0,.55)}
+.gverd>span:last-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gverd b{font-weight:500;font-size:16px}
+.gverd .lk{font-family:var(--f-cond);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text)}
+.gword{font-family:var(--f-cond);font-size:40px;font-weight:700;line-height:1;letter-spacing:.04em;color:var(--muted)}
+.gverd.big .gword{font-size:58px}.gverd.big b{font-size:19px}
+.gverd.ok .gword{color:var(--ok)}.gverd.warn .gword{color:var(--warn)}.gverd.bad .gword{color:#ff8a94}
+.ghours{display:grid;grid-template-columns:repeat(auto-fit,minmax(52px,1fr));gap:4px}
+.ghr{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:3px;font-family:var(--f-cond);font-size:12px;color:var(--muted);min-width:0}
+.ghr b{font-size:16px;color:#eef4fa;font-weight:600}
+.ghr small{font-size:11px;white-space:nowrap}
+.ghr.best{background:var(--go-soft);outline:1px solid color-mix(in srgb,var(--ok) 60%,transparent)}
+.gbar{display:block;width:100%;height:6px;border-radius:2px}
+.gbar.ok{background:var(--ok)}.gbar.warn{background:var(--warn)}.gbar.bad{background:var(--bad)}
+.local{display:block!important;columns:3 360px;column-gap:16px}
+.local>.tile{break-inside:avoid;margin-bottom:16px;width:100%;box-sizing:border-box}
+.t-map{grid-row:auto!important}
+.mapbox iframe{height:clamp(240px,34vh,420px)!important}
+.cols3{columns:3 380px;column-gap:16px}
+.cols3>.tile{break-inside:avoid;margin-bottom:16px;width:100%;box-sizing:border-box}
+.toolsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(420px,100%),1fr));gap:16px;align-items:start}
+.calc3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.calc3{grid-template-columns:minmax(0,1fr)}}
+html.vp-phone .calc3{grid-template-columns:minmax(0,1fr)}
+.refs{display:flex;flex-wrap:wrap;gap:8px}
+.t-golfmini .gverd{background:none;border:none;box-shadow:none;padding:2px 0}
+@media (max-width:760px){.t-golfmini{order:2}.t-nextup{order:3}}
+html.vp-phone .t-golfmini{order:2}html.vp-phone .t-nextup{order:3}
 /*VP-PHONE-START*/
 html.vp-phone .home{grid-template-columns:repeat(2,minmax(0,1fr))}html.vp-phone .home .col:nth-child(3){grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
 html.vp-phone .home,html.vp-phone .two{grid-template-columns:minmax(0,1fr)}html.vp-phone .home .col:nth-child(3){display:flex}
@@ -697,7 +787,7 @@ html.vp-phone .waitgrid{grid-template-columns:minmax(0,1fr)}
 html.vp-phone .calc{grid-template-columns:minmax(0,1fr)}html.vp-phone .car-read.c4{grid-template-columns:1fr 1fr}
 html.vp-phone .dock{gap:0;padding-inline:4px}html.vp-phone .dk{font-size:10.5px;min-height:56px;border-radius:12px}html.vp-phone .dk svg{width:22px;height:22px}html.vp-phone .top .pill:not(.mkdown),html.vp-phone #fsbtn{display:none}html.vp-phone .hero .clock{font-size:64px}html.vp-phone .tile{padding:16px}
 html.vp-phone .bset{grid-template-columns:minmax(0,1fr)}
-html.vp-phone .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}html.vp-phone .home .col,html.vp-phone .home .col:nth-child(3){display:contents!important}html.vp-phone .hero{order:1}html.vp-phone .t-wx{order:2}html.vp-phone .sc{order:3}html.vp-phone .t-cal{order:4}html.vp-phone .t-kids{order:5}html.vp-phone .t-nextup{order:6}html.vp-phone .t-mkt{order:7}html.vp-phone .t-cd{order:8}html.vp-phone .t-bday{order:9}html.vp-phone .t-phonefav{order:10}html.vp-phone #favapps .app-nm,html.vp-phone .t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}html.vp-phone body{font-size:17px}html.vp-phone .phone-only{display:flex}html.vp-phone .tile{padding:16px}html.vp-phone .tile>.th:first-child{min-height:48px}html.vp-phone .th h2{font-size:15px}html.vp-phone .sub{font-size:14px}html.vp-phone .brand-tag,html.vp-phone .top .pill:not(.mkdown):not(.lpill):not(.gspill),html.vp-phone #fsbtn{display:none!important}html.vp-phone .vbtn{min-height:34px!important;padding:4px 10px!important;font-size:12px!important}html.vp-phone .top{flex-wrap:nowrap}html.vp-phone .topclock{font-size:20px}html.vp-phone .dk[data-go="local"],html.vp-phone .dk[data-go="garage"],html.vp-phone .dk[data-go="tools"],html.vp-phone .dk[data-go="life"]{display:none}html.vp-phone .dk-more{display:flex}html.vp-phone .dk span{font-size:11.5px!important;letter-spacing:.06em!important}html.vp-phone .dk svg{width:24px!important;height:24px!important}html.vp-phone .dk{min-height:62px}html.vp-phone #scr-home .askbar,html.vp-phone .hero .clock,html.vp-phone .hero .yr,html.vp-phone .hero .astro,html.vp-phone .t-todo,html.vp-phone .t-school,html.vp-phone #scr-home .t-cal .gcal + .sub{display:none!important}html.vp-phone .hero{padding:14px 16px;gap:6px}html.vp-phone .hero .hello{font-size:18px}html.vp-phone .hero .date{font-size:18px}html.vp-phone .hero .brief-ctl{margin-top:4px}html.vp-phone #nextlist .grow:nth-child(n+3){display:none}html.vp-phone #cds .cd:nth-child(n+2){display:none}html.vp-phone .t-mkt .chips,html.vp-phone .t-mkt .launch,html.vp-phone .t-mkt .editonly,html.vp-phone #mkstamp{display:none!important}html.vp-phone section.t-mkt.editing .chips,html.vp-phone section.t-mkt.editing .editonly{display:flex!important}html.vp-phone .sc #sccurve,html.vp-phone .sc .sc-stats,html.vp-phone .sc #scstamp{display:none}html.vp-phone #scr-home .t-cal .gcal{height:320px}html.vp-phone .t-sp .launch{display:none}html.vp-phone .grow{grid-template-columns:70px 30px minmax(0,1fr);padding:12px}html.vp-phone .grow .gm b{font-size:17px}html.vp-phone .verdict b{font-size:22px}html.vp-phone .verdict ul{font-size:15px}html.vp-phone .allapps{display:flex;width:100%;margin:0 0 16px}html.vp-phone body:not(.allapps-open) #groups,html.vp-phone body:not(.allapps-open) #groupform,html.vp-phone body:not(.allapps-open) .apps-hint{display:none!important}html.vp-phone .t-phonefav .apps,html.vp-phone #favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}html.vp-phone .t-phonefav .app,html.vp-phone #favapps .app{min-height:86px;padding:10px 4px 8px}html.vp-phone .t-phonefav .app-ic,html.vp-phone #favapps .app-ic{width:42px;height:42px}html.vp-phone .t-phonefav .app-nm,html.vp-phone #favapps .app-nm{font-size:12px}html.vp-phone .app-nm{font-size:13px}html.vp-phone .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:62px;height:62px;border-radius:50%;
+html.vp-phone .home{display:flex!important;flex-direction:column;gap:12px;align-items:stretch!important}html.vp-phone .home .col,html.vp-phone .home .col:nth-child(3){display:contents!important}html.vp-phone .hero{order:1}html.vp-phone .t-wx{order:2}html.vp-phone .sc{order:3}html.vp-phone .t-cal{order:4}html.vp-phone .t-mail{order:4}html.vp-phone .t-kids{order:5}html.vp-phone .t-nextup{order:6}html.vp-phone .t-mkt{order:7}html.vp-phone .t-cd{order:8}html.vp-phone .t-bday{order:9}html.vp-phone .t-phonefav{order:10}html.vp-phone #favapps .app-nm,html.vp-phone .t-phonefav .app-nm{overflow-wrap:normal;word-break:normal;hyphens:auto;font-size:11.5px;line-height:1.15}html.vp-phone body{font-size:17px}html.vp-phone .phone-only{display:flex}html.vp-phone .tile{padding:16px}html.vp-phone .tile>.th:first-child{min-height:48px}html.vp-phone .th h2{font-size:15px}html.vp-phone .sub{font-size:14px}html.vp-phone .brand-tag,html.vp-phone .top .pill:not(.mkdown):not(.lpill):not(.gspill),html.vp-phone #fsbtn{display:none!important}html.vp-phone .vbtn{min-height:34px!important;padding:4px 10px!important;font-size:12px!important}html.vp-phone .top{flex-wrap:nowrap}html.vp-phone .topclock{font-size:20px}html.vp-phone .dk[data-go="local"],html.vp-phone .dk[data-go="garage"],html.vp-phone .dk[data-go="tools"],html.vp-phone .dk[data-go="life"]{display:none}html.vp-phone .dk-more{display:flex}html.vp-phone .dk span{font-size:11.5px!important;letter-spacing:.06em!important}html.vp-phone .dk svg{width:24px!important;height:24px!important}html.vp-phone .dk{min-height:62px}html.vp-phone #scr-home .askbar,html.vp-phone .hero .clock,html.vp-phone .hero .yr,html.vp-phone .hero .astro,html.vp-phone .t-todo,html.vp-phone .t-school,html.vp-phone #scr-home .t-cal .gcal + .sub{display:none!important}html.vp-phone .hero{padding:14px 16px;gap:6px}html.vp-phone .hero .hello{font-size:18px}html.vp-phone .hero .date{font-size:18px}html.vp-phone .hero .brief-ctl{margin-top:4px}html.vp-phone #nextlist .grow:nth-child(n+3){display:none}html.vp-phone #cds .cd:nth-child(n+2){display:none}html.vp-phone .t-mkt .chips,html.vp-phone .t-mkt .launch,html.vp-phone .t-mkt .editonly,html.vp-phone #mkstamp{display:none!important}html.vp-phone section.t-mkt.editing .chips,html.vp-phone section.t-mkt.editing .editonly{display:flex!important}html.vp-phone .sc #sccurve,html.vp-phone .sc .sc-stats,html.vp-phone .sc #scstamp{display:none}html.vp-phone #scr-home .t-cal .gcal{height:320px}html.vp-phone .t-sp .launch{display:none}html.vp-phone .grow{grid-template-columns:70px 30px minmax(0,1fr);padding:12px}html.vp-phone .grow .gm b{font-size:17px}html.vp-phone .verdict b{font-size:22px}html.vp-phone .verdict ul{font-size:15px}html.vp-phone .allapps{display:flex;width:100%;margin:0 0 16px}html.vp-phone body:not(.allapps-open) #groups,html.vp-phone body:not(.allapps-open) #groupform,html.vp-phone body:not(.allapps-open) .apps-hint{display:none!important}html.vp-phone .t-phonefav .apps,html.vp-phone #favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}html.vp-phone .t-phonefav .app,html.vp-phone #favapps .app{min-height:86px;padding:10px 4px 8px}html.vp-phone .t-phonefav .app-ic,html.vp-phone #favapps .app-ic{width:42px;height:42px}html.vp-phone .t-phonefav .app-nm,html.vp-phone #favapps .app-nm{font-size:12px}html.vp-phone .app-nm{font-size:13px}html.vp-phone .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:21;width:62px;height:62px;border-radius:50%;
     border:1px solid #57a8ff;background:linear-gradient(180deg,#2f8df2,#1f6dc4);color:#fff;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}html.vp-phone .fab:not([hidden]){display:grid}html.vp-phone .fab svg{width:28px;height:28px}html.vp-phone .fab.live{background:var(--bad);border-color:var(--bad)}html.vp-phone body{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}html.vp-phone .t-mkt .mk-state{font-size:11px;padding:4px 8px}html.vp-phone .t-mkt .th>div{gap:2px!important}html.vp-phone .t-wx .launch a:nth-child(n+3){display:none}
 html.vp-phone .dk{flex:1 1 0;min-width:0;padding:0 2px}html.vp-phone .dk span{font-size:9.5px;letter-spacing:.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis}html.vp-phone .dk svg{width:20px;height:20px}html.vp-phone .astro span{flex:1 1 auto}
 html.vp-phone body{max-width:460px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh;box-sizing:border-box}
@@ -756,13 +846,13 @@ html.vp-phone .toast{left:50%}
           </div>
           <div class="bcap" id="bcap" hidden aria-live="polite"><span class="bsec" id="bsec"></span><span id="btext"></span></div>
         </section>
+          <section class="tile t-golfmini" id="golfmini" aria-labelledby="h-golfmini">
+            <div class="th"><h2 id="h-golfmini">Golf</h2><button class="btn ghost" type="button" data-go="sports">Details</button></div>
+            <div id="golfminibody"><div class="load">Checking the forecast…</div></div>
+          </section>
           <section class="tile t-phonefav phone-only" id="phonefavtile" aria-labelledby="h-pfav" hidden>
           <div class="th"><h2 id="h-pfav">Favorites</h2><button class="btn ghost" type="button" data-go="apps">All apps</button></div>
           <div class="apps" id="phonefavs"></div>
-        </section>
-        <section class="tile t-nextup" id="nextup" aria-labelledby="h-nextup" hidden>
-          <div class="th"><h2 id="h-nextup">Next up</h2><button class="btn ghost" type="button" data-go="sports">All games</button></div>
-          <div class="sched compact" id="nextlist"></div>
         </section>
           <section class="tile t-wx" aria-labelledby="h-wx">
         <div class="th"><h2 id="h-wx">Weather</h2></div>
@@ -788,9 +878,19 @@ html.vp-phone .toast{left:50%}
       </a>
         </div>
         <div class="col">
+          <section class="tile t-nextup" id="nextup" aria-labelledby="h-nextup">
+            <div class="th"><h2 id="h-nextup">Scoreboard</h2><button class="btn ghost" type="button" data-go="sports">All teams</button></div>
+            <div id="scoreboard"></div>
+            <h3 class="subh" id="nextsub" hidden>Next up</h3>
+            <div class="sched compact" id="nextlist"></div>
+          </section>
           <section class="tile t-cal" aria-labelledby="h-cal">
       <div class="th"><h2 id="h-cal">Schedule</h2><span class="sub">Next 7 days</span></div>
       <div id="cal" class="days"><div class="load">Loading your calendar…</div></div>
+    </section>
+          <section class="tile t-mail" id="mailtile" aria-labelledby="h-mail" hidden>
+      <div class="th"><h2 id="h-mail">Inbox</h2><div style="display:flex;gap:6px;align-items:center"><span class="tag" id="mailcount" hidden></span><a class="btn ghost" href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener" style="text-decoration:none">Open Gmail</a></div></div>
+      <div class="mail" id="mail"></div>
     </section>
           <section class="tile t-todo" aria-labelledby="h-todo">
       <div class="th"><h2 id="h-todo">To do</h2><button class="btn ghost" id="cleardone" type="button">Clear done</button></div>
@@ -822,7 +922,7 @@ html.vp-phone .toast{left:50%}
           <section class="tile t-cd" aria-labelledby="h-cd">
         <div class="th"><h2 id="h-cd">Countdowns</h2><button class="btn ghost" id="cdedit" type="button">Edit</button></div>
         <div class="cds" id="cds"></div>
-        <form class="addrow editonly" id="cdform"><input type="text" id="cdname" placeholder="Event" aria-label="Countdown name"><input type="date" id="cddate" aria-label="Countdown date"><button class="btn primary" type="submit">Add</button></form>
+        <form class="addrow editonly" id="cdform"><input type="text" id="cdname" placeholder="Event" aria-label="Countdown name"><input type="date" id="cddate" aria-label="Countdown date"><label class="fl chk" style="flex:0 0 auto"><input type="checkbox" id="cdyearly"> Every year</label><button class="btn primary" type="submit">Add</button></form>
       </section>
           <section class="tile t-school" id="schooltile" aria-labelledby="h-school" hidden>
             <div class="th"><h2 id="h-school">School</h2><span class="sub" id="schoolph"></span></div>
@@ -839,6 +939,18 @@ html.vp-phone .toast{left:50%}
           <form class="addrow editonly" id="addrform"><input type="text" id="addrin" placeholder="Home address" aria-label="Home address" autocomplete="street-address"><button class="btn primary" type="submit">Save</button></form>
           <div class="mapbox" id="mapbox"></div>
           <div class="launch l4" id="maplinks"></div>
+        </section>
+        <section class="tile t-beach" aria-labelledby="h-beach">
+          <div class="th"><h2 id="h-beach">Beach today</h2><span class="sub" id="beachsub"></span></div>
+          <div class="car-read" id="beachread" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div>
+          <div class="lnext" id="beachfish"></div>
+          <div class="launch"><a href="https://rvannederynen18.github.io/Surf-Cast/" target="_blank" rel="noopener">Open SurfCast</a><a href="https://www.weather.gov/jax/" target="_blank" rel="noopener">NWS beach forecast</a><a href="https://www.sjcfl.us/" target="_blank" rel="noopener">County beach info</a><a href="https://www.weather.gov/safety/ripcurrent" target="_blank" rel="noopener">Rip current safety</a></div>
+        </section>
+        <section class="tile t-sky" aria-labelledby="h-sky">
+          <div class="th"><h2 id="h-sky">Tonight’s sky</h2></div>
+          <div class="car-read" id="skyread"></div>
+          <div class="sub" id="skynote"></div>
+          <div class="launch"><a href="https://spotthestation.nasa.gov/" target="_blank" rel="noopener">Space station sightings</a><a href="https://www.timeanddate.com/astronomy/night/" target="_blank" rel="noopener">Night sky tonight</a></div>
         </section>
         <section class="tile t-events" aria-labelledby="h-events">
           <div class="th"><h2 id="h-events">Happening around here</h2><span class="sub">St. Augustine · Jacksonville</span></div>
@@ -865,6 +977,20 @@ html.vp-phone .toast{left:50%}
             <a href="https://fun4firstcoastkids.com/calendar/" target="_blank" rel="noopener">Fun 4 First Coast Kids</a>
             <a href="https://www.jacksonvillezoo.org/" target="_blank" rel="noopener">Jacksonville Zoo</a>
           </div>
+        </section>
+        <section class="tile t-traffic" aria-labelledby="h-traffic">
+          <div class="th"><h2 id="h-traffic">Traffic</h2></div>
+          <div class="launch" id="trafficlinks"></div>
+          <div class="sub">Drive times open live in Google Maps. FL511 has the I-95 cameras.</div>
+        </section>
+        <section class="tile t-gas" aria-labelledby="h-gas">
+          <div class="th"><h2 id="h-gas">Gas &amp; charging</h2></div>
+          <div class="launch" id="gaslinks"></div>
+          <div class="sub">Prices change through the day, so these open live price maps near home.</div>
+        </section>
+        <section class="tile t-markets" aria-labelledby="h-markets">
+          <div class="th"><h2 id="h-markets">Farmers markets</h2><span class="sub">Check before you go</span></div>
+          <div class="sched" id="markets"></div>
         </section>
         <section class="tile t-date" aria-labelledby="h-date">
           <div class="th"><h2 id="h-date">Date night</h2><span class="sub">St. Augustine · Ponte Vedra</span></div>
@@ -921,7 +1047,7 @@ html.vp-phone .toast{left:50%}
           <div class="launch l4" id="nlinks"></div>
         </section>
         <section class="tile t-news" aria-labelledby="h-news">
-          <div class="th"><h2 id="h-news">Local news</h2></div>
+          <div class="th"><h2 id="h-news">Around St. Augustine</h2></div>
           <ul class="psu-news" id="localnews"></ul>
           <div class="launch">
             <a href="https://www.staugustine.com/" target="_blank" rel="noopener">The Record</a>
@@ -975,7 +1101,58 @@ html.vp-phone .toast{left:50%}
     </section>
     </div>
     <div class="screen" id="scr-sports" data-screen="sports" hidden>
-      <section class="tile t-sched" aria-labelledby="h-sched">
+      <section class="tile t-golf" id="golftile" aria-labelledby="h-golf">
+        <div class="th"><h2 id="h-golf">Golf</h2><span class="sub" id="golfstamp"></span></div>
+        <div class="golf">
+          <div class="gl">
+            <div id="golfverdict"></div>
+            <div class="gwell"><h3 class="subh" style="margin:0">Hour by hour</h3><div class="ghours" id="golfhours"></div></div>
+            <div class="car-read c4" id="golffacts"></div>
+            <div class="sub">Good, Fair or Skip comes from the forecast at home over a 4-hour round in daylight: rain chance, lightning, wind and gusts, heat index and temperature.</div>
+          </div>
+          <div class="gr">
+            <div class="gwell">
+              <div class="ghead"><h3 class="subh" style="margin:0">My rounds</h3><span class="sub">Handicap estimate<b id="hcp">—</b></span></div>
+              <div class="sub" id="golfavg"></div>
+              <ul class="sublist" id="rounds"></ul>
+              <form class="car-form" id="roundform" autocomplete="off">
+                <label>Date<input type="date" id="r-date"></label>
+                <label style="grid-column:span 2">Course<input type="text" id="r-course" list="r-courses" placeholder="Course name"></label>
+                <label>Score<input type="text" inputmode="numeric" id="r-score" placeholder="e.g. 88"></label>
+                <label>Course rating<input type="text" inputmode="decimal" id="r-rating" placeholder="e.g. 71.2"></label>
+                <label>Slope<input type="text" inputmode="numeric" id="r-slope" placeholder="e.g. 128"></label>
+                <button class="btn primary" type="submit" style="grid-column:1/-1">Log round</button>
+              </form>
+              <datalist id="r-courses"></datalist>
+              <div class="sub">Rating and slope are on the scorecard for the tees you played. The estimate follows the World Handicap System and needs 3 rounds that include both.</div>
+            </div>
+            <div class="gwell"><h3 class="subh" style="margin:0">Courses near home</h3><ul class="sublist" id="courses"></ul></div>
+          </div>
+        </div>
+      </section>
+      <div class="spgrid">
+        <section class="tile t-teams" aria-labelledby="h-teams">
+          <div class="th"><h2 id="h-teams">Your teams</h2><span class="sub" id="teamsstamp"></span></div>
+          <div class="teamcards" id="teamcards"></div>
+        </section>
+        <div class="spside">
+          <section class="tile t-dyk" aria-labelledby="h-dyk">
+            <div class="th"><h2 id="h-dyk">Did you know?</h2></div>
+            <div id="dyk"></div>
+            <div><button class="btn" id="dyknext" type="button">Another fact</button></div>
+          </section>
+          <section class="tile t-stand" aria-labelledby="h-stand">
+            <div class="th"><h2 id="h-stand">Standings</h2></div>
+            <div class="gtabs" id="standtabs" role="tablist" aria-label="Divisions"></div>
+            <div id="standtable"></div>
+          </section>
+          <section class="tile t-gdw" aria-labelledby="h-gdw">
+            <div class="th"><h2 id="h-gdw">Game-day weather</h2><span class="sub">Outdoor home games</span></div>
+            <div id="gdw" style="display:flex;flex-direction:column;gap:8px"></div>
+          </section>
+        </div>
+      </div>
+      <section class="tile t-sched" aria-labelledby="h-sched" style="margin-top:16px">
         <div class="th"><h2 id="h-sched">Upcoming games</h2><span class="sub" id="schedsub"></span></div>
         <div class="gtabs tfilt" id="tfilt" role="tablist" aria-label="Filter by team"></div>
         <div class="sched" id="sched"></div>
@@ -1022,7 +1199,7 @@ html.vp-phone .toast{left:50%}
     </section></div>
     </div>
     <div class="screen" id="scr-tools" data-screen="tools" hidden>
-      <div class="two">
+      <div class="toolsgrid">
         <section class="tile" aria-labelledby="h-aff">
           <div class="th"><h2 id="h-aff">Fan affinity laws</h2><span class="sub">Same fan, same air density</span></div>
           <div class="calc">
@@ -1071,9 +1248,120 @@ html.vp-phone .toast{left:50%}
           </div>
           <div class="car-read" id="cv-out"></div>
         </section>
+        <section class="tile" aria-labelledby="h-fa">
+          <div class="th"><h2 id="h-fa">Fan array redundancy</h2><span class="sub">N+1 check</span></div>
+          <div class="calc3"><label class="fl">Fans in array<input type="text" inputmode="numeric" id="fa-n" value="6"></label><label class="fl">Fans down<input type="text" inputmode="numeric" id="fa-down" value="1"></label><label class="fl">Normal speed (%)<input type="text" inputmode="decimal" id="fa-spd" value="80"></label></div>
+          <div class="car-read" id="fa-out"></div>
+          <div class="sub">Same airflow and system curve; power per affinity laws (∝ speed³).</div>
+        </section>
+        <section class="tile" aria-labelledby="h-p3">
+          <div class="th"><h2 id="h-p3">3-phase power</h2></div>
+          <div class="calc3"><label class="fl">Volts<input type="text" inputmode="decimal" id="p3-v" value="460"></label><label class="fl">Power factor<input type="text" inputmode="decimal" id="p3-pf" value="0.85"></label><label class="fl">Motor efficiency (%)<input type="text" inputmode="decimal" id="p3-eff" value="92"></label>
+            <label class="fl">I know the<select id="p3-k"><option value="a">Amps</option><option value="kw">kW</option><option value="hp">Shaft HP</option></select></label><label class="fl">Value<input type="text" inputmode="decimal" id="p3-x" value="10"></label></div>
+          <div class="car-read c4" id="p3-out"></div>
+        </section>
+        <section class="tile" aria-labelledby="h-fl">
+          <div class="th"><h2 id="h-fl">Motor FLA &amp; protection</h2><span class="sub">NEC 430</span></div>
+          <div class="calc3"><label class="fl">Motor<select id="fl-hp"></select></label><label class="fl">Volts (3-phase)<select id="fl-v"><option>200</option><option>208</option><option>230</option><option selected>460</option><option>575</option></select></label>
+            <label class="fl">Protection<select id="fl-p"><option value="itb">Inverse-time breaker</option><option value="tdf">Dual-element fuse</option><option value="ntd">Non-time-delay fuse</option><option value="itr">Instantaneous-trip breaker</option></select></label><label class="fl">Nameplate FLA (optional)<input type="text" inputmode="decimal" id="fl-np" placeholder="from the motor"></label></div>
+          <div class="car-read c4" id="fl-out"></div>
+          <div class="sub">FLA from Table 430.250; conductor 125% of FLA, 75°C copper (Table 310.16); max device from Table 430.52, rounded up to the next standard size. Overload is 115–125% of nameplate per 430.32. Always confirm with the code book and local rules.</div>
+        </section>
+        <section class="tile" aria-labelledby="h-vd">
+          <div class="th"><h2 id="h-vd">Voltage drop &amp; wire size</h2></div>
+          <div class="calc3"><label class="fl">Load (A)<input type="text" inputmode="decimal" id="vd-a" value="14"></label><label class="fl">One-way length (ft)<input type="text" inputmode="decimal" id="vd-l" value="250"></label><label class="fl">Volts<input type="text" inputmode="decimal" id="vd-v" value="460"></label>
+            <label class="fl">Phase<select id="vd-ph"><option value="3">3-phase</option><option value="1">1-phase</option></select></label><label class="fl">Max drop (%)<input type="text" inputmode="decimal" id="vd-t" value="3"></label></div>
+          <div class="car-read" id="vd-out"></div>
+          <div class="sub">Smallest copper size that meets both ampacity (75°C) and the drop target, using NEC Chapter 9, Table 8 resistance.</div>
+        </section>
+        <section class="tile" aria-labelledby="h-ld">
+          <div class="th"><h2 id="h-ld">Air-side loads</h2></div>
+          <div class="calc3"><label class="fl">CFM<input type="text" inputmode="decimal" id="ld-cfm" value="10000"></label><label class="fl">ΔT (°F)<input type="text" inputmode="decimal" id="ld-dt" value="20"></label><label class="fl">Δh (BTU/lb, optional)<input type="text" inputmode="decimal" id="ld-dh" placeholder="enthalpy change"></label></div>
+          <div class="car-read" id="ld-out"></div>
+        </section>
+        <section class="tile" aria-labelledby="h-ps">
+          <div class="th"><h2 id="h-ps">Psychrometrics</h2><span class="sub">Sea level</span></div>
+          <div class="calc3"><label class="fl">Dry bulb (°F)<input type="text" inputmode="decimal" id="ps-db" value="75"></label><label class="fl">Relative humidity (%)<input type="text" inputmode="decimal" id="ps-rh" value="50"></label></div>
+          <div class="car-read c4" id="ps-out"></div>
+        </section>
+        <section class="tile" aria-labelledby="h-dc">
+          <div class="th"><h2 id="h-dc">Duct velocity</h2></div>
+          <div class="calc3"><label class="fl">CFM<input type="text" inputmode="decimal" id="dc-cfm" value="10000"></label><label class="fl">Width (in)<input type="text" inputmode="decimal" id="dc-w" value="36"></label><label class="fl">Height (in)<input type="text" inputmode="decimal" id="dc-h" value="24"></label>
+            <label class="fl">— or round dia (in)<input type="text" inputmode="decimal" id="dc-d" placeholder="leave width/height blank"></label></div>
+          <div class="car-read" id="dc-out"></div>
+        </section>
+        <section class="tile" aria-labelledby="h-sg">
+          <div class="th"><h2 id="h-sg">Signal scaling</h2></div>
+          <div class="calc3"><label class="fl">Signal type<select id="sg-t"><option value="ma">4–20 mA</option><option value="v10">0–10 V</option><option value="v210">2–10 V</option><option value="ma020">0–20 mA</option></select></label><label class="fl">Signal<input type="text" inputmode="decimal" id="sg-s" value="12"></label><label class="fl">Units<input type="text" id="sg-u" value="psi"></label>
+            <label class="fl">Range low<input type="text" inputmode="decimal" id="sg-lo" value="0"></label><label class="fl">Range high<input type="text" inputmode="decimal" id="sg-hi" value="100"></label></div>
+          <div class="car-read" id="sg-out"></div>
+        </section>
+        <section class="tile" aria-labelledby="h-sn">
+          <div class="th"><h2 id="h-sn">Sensor lookup</h2></div>
+          <div class="calc3"><label class="fl">Sensor<select id="sn-t"><option value="pt1000">Pt1000 RTD</option><option value="pt100">Pt100 RTD</option><option value="ntc">NTC thermistor</option></select></label><label class="fl">I know the<select id="sn-m"><option value="t">Temperature (°F)</option><option value="r">Resistance (Ω)</option></select></label><label class="fl">Value<input type="text" inputmode="decimal" id="sn-x" value="77"></label></div>
+          <div class="calc3" id="sn-ntc" hidden><label class="fl">R at 77°F (Ω)<input type="text" inputmode="decimal" id="sn-r25" value="10000"></label><label class="fl">Beta (β)<input type="text" inputmode="decimal" id="sn-b" value="3950"></label></div>
+          <div class="car-read" id="sn-out"></div>
+          <div class="sub">RTDs use the IEC 60751 curve. Thermistor “Type II/III” curves vary by maker, so enter the β from your sensor’s datasheet.</div>
+        </section>
+        <section class="tile" aria-labelledby="h-ms">
+          <div class="th"><h2 id="h-ms">BACnet MS/TP planner</h2></div>
+          <div class="calc3"><label class="fl">Devices<input type="text" inputmode="numeric" id="ms-n" value="24"></label><label class="fl">First MAC<input type="text" inputmode="numeric" id="ms-mac" value="1"></label><label class="fl">First instance<input type="text" inputmode="numeric" id="ms-inst" value="1001"></label>
+            <label class="fl">Unit load per device<select id="ms-ul"><option value="1">1 (full)</option><option value="0.5">½</option><option value="0.25" selected>¼</option><option value="0.125">⅛</option></select></label><label class="fl">Baud<select id="ms-b"><option>9600</option><option>19200</option><option>38400</option><option selected>76800</option><option>115200</option></select></label></div>
+          <div class="car-read c4" id="ms-out"></div>
+          <div class="sub" id="ms-note"></div>
+          <div><button class="btn" type="button" id="ms-copy">Copy device list</button></div>
+        </section>
+        <section class="tile" aria-labelledby="h-ref">
+          <div class="th"><h2 id="h-ref">Quick reference</h2></div>
+          <div class="refs"><button class="btn" type="button" data-ref="nema">NEMA &amp; IP ratings</button><button class="btn" type="button" data-ref="wire">Wire colors</button><button class="btn" type="button" data-ref="fill">Conduit fill</button><button class="btn" type="button" data-ref="ohm">Ohm’s law</button><button class="btn" type="button" data-ref="rs485">RS-485 wiring</button></div>
+        </section>
       </div>
     </div>
     <div class="screen" id="scr-life" data-screen="life" hidden>
+      <div class="scrbar"><button class="btn" type="button" data-go="settings">Settings, status &amp; backup</button></div>
+      <div class="cols3">
+        <section class="tile t-tips" aria-labelledby="h-tips">
+      <div class="th"><h2 id="h-tips">Tips &amp; tricks</h2><span class="sub" id="tcount"></span></div>
+      <div class="tcats" id="tcats" role="tablist" aria-label="Tip categories"></div>
+      <div class="tip" id="tip" aria-live="polite"></div>
+      <div class="tbar"><button class="btn" id="tprev" type="button">Back</button><button class="btn primary" id="tnext" type="button">Next tip</button><button class="btn" id="tsave" type="button">☆ Save</button><span class="sp"></span><button class="btn" id="task" type="button" hidden>Ask Claude for a new one</button></div>
+    </section>
+      <section class="tile t-goals" aria-labelledby="h-goals">
+      <div class="th"><h2 id="h-goals">Long-term goals</h2><button class="btn ghost" id="goaledit" type="button">Edit</button></div>
+      <div class="goals" id="goals"></div>
+      <form class="addrow editonly" id="goalform"><input type="text" id="goalname" placeholder="Goal" aria-label="Goal"><input type="date" id="goaldate" aria-label="Target date"><button class="btn primary" type="submit">Add goal</button></form>
+    </section>
+      <section class="tile t-notes" aria-labelledby="h-notes">
+      <div class="th"><h2 id="h-notes">Notes</h2><span class="sub" id="notestate">Saves as you type</span></div>
+      <textarea id="notes" aria-label="Notes" placeholder="Field notes, ideas, parts to order…"></textarea>
+    </section>
+      <section class="tile t-gh" aria-labelledby="h-gh">
+      <div class="th"><h2 id="h-gh">GitHub</h2><a class="btn ghost" id="ghprofile" href="https://github.com/" target="_blank" rel="noopener" style="text-decoration:none">Profile ↗</a></div>
+      <div class="repos" id="repos"><div class="load">Loading your repositories…</div></div>
+      <div class="launch"><a href="https://github.com/new" target="_blank" rel="noopener">New repo</a><a href="https://github.com/notifications" target="_blank" rel="noopener">Inbox</a></div>
+    </section>
+      <section class="tile t-pkg" aria-labelledby="h-pkg">
+          <div class="th"><h2 id="h-pkg">Packages</h2></div>
+          <form class="addrow" id="pkgform" autocomplete="off"><input type="text" id="pkgnum" placeholder="Paste a tracking number" aria-label="Tracking number"><input type="text" id="pkglabel" placeholder="What is it? (optional)" aria-label="Package description"><button class="btn primary" type="submit">Track</button></form>
+          <ul class="sublist" id="pkglist"></ul>
+        </section>
+        <section class="tile t-drive" aria-labelledby="h-drive">
+          <div class="th"><h2 id="h-drive">Recent in Google Drive</h2><a class="btn ghost" href="https://drive.google.com/drive/recent" target="_blank" rel="noopener">Open Drive</a></div>
+          <div class="repos" id="drive"><div class="load">Loading…</div></div>
+        </section>
+        <section class="tile t-read" aria-labelledby="h-read">
+          <div class="th"><h2 id="h-read">Reading &amp; watch list</h2></div>
+          <form class="addrow" id="readform" autocomplete="off"><input type="text" id="readin" placeholder="Paste a link or type a title" aria-label="Link or title"><select id="readkind" aria-label="Type" style="flex:0 0 110px"><option>Read</option><option>Watch</option><option>Listen</option></select><button class="btn primary" type="submit">Save</button></form>
+          <ul class="sublist" id="readlist"></ul>
+        </section>
+        <section class="tile t-hist" aria-labelledby="h-hist">
+          <div class="th"><h2 id="h-hist">Today in history</h2><button class="btn ghost" id="histnext" type="button">Another</button></div>
+          <div id="history" style="display:flex;flex-direction:column;gap:6px"></div>
+        </section>
+</div>
+    </div>
+    <div class="screen" id="scr-settings" data-screen="settings" hidden>
+      <div class="scrbar" style="justify-content:flex-start"><button class="btn" type="button" data-go="life">‹ Back to Life</button></div>
       <div class="two"><section class="tile t-settings" aria-labelledby="h-set" id="settingstile">
           <div class="th"><h2 id="h-set">Settings</h2><span class="sub">Saved only in this browser</span></div>
           <form class="setform" id="setform" autocomplete="off">
@@ -1112,47 +1400,25 @@ html.vp-phone .toast{left:50%}
             <div class="addrow"><button class="btn primary" type="submit">Save settings</button><span class="sub" id="setmsg"></span></div>
           </form>
         </section>
-        <section class="tile t-tips" aria-labelledby="h-tips">
-      <div class="th"><h2 id="h-tips">Tips &amp; tricks</h2><span class="sub" id="tcount"></span></div>
-      <div class="tcats" id="tcats" role="tablist" aria-label="Tip categories"></div>
-      <div class="tip" id="tip" aria-live="polite"></div>
-      <div class="tbar"><button class="btn" id="tprev" type="button">Back</button><button class="btn primary" id="tnext" type="button">Next tip</button><button class="btn" id="tsave" type="button">☆ Save</button><span class="sp"></span><button class="btn" id="task" type="button" hidden>Ask Claude for a new one</button></div>
-    </section>
-      <section class="tile t-goals" aria-labelledby="h-goals">
-      <div class="th"><h2 id="h-goals">Long-term goals</h2><button class="btn ghost" id="goaledit" type="button">Edit</button></div>
-      <div class="goals" id="goals"></div>
-      <form class="addrow editonly" id="goalform"><input type="text" id="goalname" placeholder="Goal" aria-label="Goal"><input type="date" id="goaldate" aria-label="Target date"><button class="btn primary" type="submit">Add goal</button></form>
-    </section>
-      <section class="tile t-notes" aria-labelledby="h-notes">
-      <div class="th"><h2 id="h-notes">Notes</h2><span class="sub" id="notestate">Saves as you type</span></div>
-      <textarea id="notes" aria-label="Notes" placeholder="Field notes, ideas, parts to order…"></textarea>
-    </section>
-      <section class="tile t-gh" aria-labelledby="h-gh">
-      <div class="th"><h2 id="h-gh">GitHub</h2><a class="btn ghost" id="ghprofile" href="https://github.com/" target="_blank" rel="noopener" style="text-decoration:none">Profile ↗</a></div>
-      <div class="repos" id="repos"><div class="load">Loading your repositories…</div></div>
-      <div class="launch"><a href="https://github.com/new" target="_blank" rel="noopener">New repo</a><a href="https://github.com/notifications" target="_blank" rel="noopener">Inbox</a></div>
-    </section>
-      <section class="tile t-pkg" aria-labelledby="h-pkg">
-          <div class="th"><h2 id="h-pkg">Packages</h2></div>
-          <form class="addrow" id="pkgform" autocomplete="off"><input type="text" id="pkgnum" placeholder="Paste a tracking number" aria-label="Tracking number"><input type="text" id="pkglabel" placeholder="What is it? (optional)" aria-label="Package description"><button class="btn primary" type="submit">Track</button></form>
-          <ul class="sublist" id="pkglist"></ul>
-        </section>
-        <section class="tile t-drive" aria-labelledby="h-drive">
-          <div class="th"><h2 id="h-drive">Recent in Google Drive</h2><a class="btn ghost" href="https://drive.google.com/drive/recent" target="_blank" rel="noopener">Open Drive</a></div>
-          <div class="repos" id="drive"><div class="load">Loading…</div></div>
-        </section>
+        <div class="col" style="display:flex;flex-direction:column;gap:16px">
+          <section class="tile t-status" aria-labelledby="h-status">
+            <div class="th"><h2 id="h-status">Data status</h2><span class="sub" id="verlabel"></span></div>
+            <ul class="sublist" id="statuslist"></ul>
+          </section>
         <section class="tile t-backup" aria-labelledby="h-bk" id="backuptile">
           <div class="th"><h2 id="h-bk">Backup</h2></div>
           <p class="sub" style="margin:0">Your links, lists, garage and settings live in this browser. Save a backup before clearing browser data or moving to another computer.</p>
           <div class="addrow"><button class="btn primary" id="bkdown" type="button">Save backup file</button><label class="btn" for="bkfile">Restore from file</label><input type="file" id="bkfile" accept="application/json,.json" hidden></div>
           <div class="sub" id="bkmsg"></div>
-        </section></div>
+        </section>
+        </div>
+      </div>
     </div>
   </main>
   <button class="fab" id="fabmic" type="button" aria-label="Speak a command" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
   <div class="more-bg" id="moresheet" hidden><div class="more-sheet" role="menu" aria-label="More screens">
     <button class="btn" type="button" data-go="local">Local</button><button class="btn" type="button" data-go="garage">Garage</button>
-    <button class="btn" type="button" data-go="tools">Tools</button><button class="btn" type="button" data-go="life">Life &amp; settings</button>
+    <button class="btn" type="button" data-go="tools">Tools</button><button class="btn" type="button" data-go="life">Life</button><button class="btn" type="button" data-go="settings">Settings</button>
   </div></div>
   <nav class="dock" aria-label="Screens"><button class="dk" type="button" data-go="home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button class="dk" type="button" data-go="local" aria-label="Local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Local</span></button><button class="dk" type="button" data-go="news" aria-label="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/></svg><span>News</span></button><button class="dk" type="button" data-go="apps" aria-label="Apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Apps</span></button><button class="dk" type="button" data-go="sports" aria-label="Sports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c3.5 3.5 3.5 9.3 0 12.8M18.4 5.6c-3.5 3.5-3.5 9.3 0 12.8"/></svg><span>Sports</span></button><button class="dk" type="button" data-go="garage" aria-label="Garage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 16v-4l2-5h12l2 5v4"/><path d="M3 16h18v3H3z"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/></svg><span>Garage</span></button><button class="dk" type="button" data-go="tools" aria-label="Tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg><span>Tools</span></button><button class="dk dk-more" type="button" id="dkmore" aria-label="More screens"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>More</span></button><button class="dk" type="button" data-go="life" aria-label="Life"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Life</span></button></nav>
   <div class="ambient" id="ambient" hidden><div class="amb-clock" id="ambclock"></div><div class="amb-date" id="ambdate"></div><div class="amb-line" id="ambline"></div><div class="amb-hint">Tap anywhere to wake</div></div>
@@ -1193,6 +1459,43 @@ function h(tag, attrs, ...kids){
 }
 const safeUrl = u => { try { const x = new URL(u.includes('://') ? u : 'https://' + u); return /^https?:$/.test(x.protocol) ? x.href : null; } catch { return null; } };
 
+/* ---------- Date helpers (rolling holidays, market calendar) ---------- */
+const p2 = n => String(n).padStart(2, '0');
+const isoDay = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+function nthDow(y, m, dow, n){ const d = new Date(y, m-1, 1); return new Date(y, m-1, 1 + ((dow - d.getDay() + 7) % 7) + (n-1)*7); }
+function lastDow(y, m, dow){ const d = new Date(y, m, 0); return new Date(y, m-1, d.getDate() - ((d.getDay() - dow + 7) % 7)); }
+function easterDay(y){ const a = y%19, b = Math.floor(y/100), c = y%100, d = Math.floor(b/4), e = b%4, f = Math.floor((b+8)/25), g = Math.floor((b-f+1)/3),
+  hh = (19*a+b-d-g+15)%30, i = Math.floor(c/4), k = c%4, l = (32+2*e+2*i-hh-k)%7, m = Math.floor((a+11*hh+22*l)/451), mo = Math.floor((hh+l-7*m+114)/31), da = ((hh+l-7*m+114)%31)+1;
+  return new Date(y, mo-1, da); }
+const HOLI_FIXED = {"halloween":[10,31], "christmas":[12,25], "christmas day":[12,25], "christmas eve":[12,24], "new year's day":[1,1], "new year's eve":[12,31], "independence day":[7,4], "fourth of july":[7,4], "4th of july":[7,4], "valentine's day":[2,14], "st. patrick's day":[3,17], "veterans day":[11,11]};
+const HOLI_RULE = {"thanksgiving": y => nthDow(y,11,4,4), "memorial day": y => lastDow(y,5,1), "labor day": y => nthDow(y,9,1,1), "mother's day": y => nthDow(y,5,0,2),
+  "father's day": y => nthDow(y,6,0,3), "easter": y => easterDay(y), "mlk day": y => nthDow(y,1,1,3), "presidents' day": y => nthDow(y,2,1,3)};
+/* A countdown named for a holiday (or marked "repeats every year") always shows its next date */
+function rollDate(c){
+  const nm = String(c.name || '').toLowerCase().replace(/[’‘]/g, "'").trim(), fx = HOLI_FIXED[nm], rule = HOLI_RULE[nm];
+  if (!fx && !rule && !c.yearly) return c.date;
+  const t = new Date(); t.setHours(0,0,0,0);
+  for (let y = t.getFullYear(); y <= t.getFullYear() + 1; y++){
+    let d; if (fx) d = new Date(y, fx[0]-1, fx[1]); else if (rule) d = rule(y);
+    else { const [, m, dd] = String(c.date || '').split('-').map(Number); if (!m) return c.date; d = new Date(y, m-1, dd); }
+    if (d >= t) return isoDay(d);
+  }
+  return c.date;
+}
+/* NYSE holidays and early closes by rule, so the market clock never runs out of dates */
+function nyseYear(y){
+  const obs = d => d.getDay() === 6 ? new Date(y, d.getMonth(), d.getDate()-1) : d.getDay() === 0 ? new Date(y, d.getMonth(), d.getDate()+1) : d;
+  const closed = [];
+  const ny = new Date(y, 0, 1); if (ny.getDay() !== 6) closed.push(obs(ny));
+  const ea = easterDay(y);
+  closed.push(nthDow(y,1,1,3), nthDow(y,2,1,3), new Date(y, ea.getMonth(), ea.getDate()-2), lastDow(y,5,1), obs(new Date(y,5,19)), obs(new Date(y,6,4)), nthDow(y,9,1,1), nthDow(y,11,4,4), obs(new Date(y,11,25)));
+  const tg = nthDow(y,11,4,4), early = [new Date(y, 10, tg.getDate()+1)];
+  const ce = new Date(y,11,24); if (ce.getDay() >= 1 && ce.getDay() <= 4) early.push(ce);
+  const j3 = new Date(y,6,3); if (j3.getDay() >= 1 && j3.getDay() <= 4) early.push(j3);
+  return {closed: closed.map(isoDay), early: early.map(isoDay)};
+}
+
+
 /* ---------- Clock ---------- */
 function tick(){
   const d = new Date(), hr = d.getHours();
@@ -1213,8 +1516,8 @@ function tick(){
 tick(); setInterval(tick, 1000);
 
 /* ---------- State + sync ---------- */
-const KEYS = ['links','countdowns','goals','todos','notes','teams','snapshot','market','car','tips','home','prefs','subs','prep','pkgs'];
-const S = {links:{groups:[]}, countdowns:{items:[]}, goals:{items:[]}, todos:{items:[]}, notes:{text:''}, teams:{items:[]}, snapshot:{}, market:{symbols:[]}, car:{vehicles:[]}, tips:{saved:[]}, home:{}, prefs:{}, subs:{items:[]}, prep:{done:{}}, pkgs:{items:[]}};
+const KEYS = ['links','countdowns','goals','todos','notes','teams','snapshot','market','car','tips','home','prefs','subs','prep','pkgs','golf','reading'];
+const S = {links:{groups:[]}, countdowns:{items:[]}, goals:{items:[]}, todos:{items:[]}, notes:{text:''}, teams:{items:[]}, snapshot:{}, market:{symbols:[]}, car:{vehicles:[]}, tips:{saved:[]}, home:{}, prefs:{}, subs:{items:[]}, prep:{done:{}}, pkgs:{items:[]}, golf:{rounds:[]}, reading:{items:[]}};
 let db = null, local = false, ready = false;
 const pending = {}, inflight = {};
 
@@ -1311,6 +1614,7 @@ async function liveSnapshot(){
     }
     snap.psu = p;
   } catch {}
+  if (window.__rv3){ stat('marine', tide.status === 'fulfilled' && marine.status === 'fulfilled', tide.status === 'fulfilled' ? '' : 'NOAA tides didn’t load'); }
   if (sa.status === 'fulfilled' || ith.status === 'fulfilled') snap.weather = [sa, ith].filter(x => x.status === 'fulfilled').map(x => x.value.line);
   const sports = teams.filter(x => x.status === 'fulfilled').map(x => x.value);
   try {
@@ -1397,7 +1701,7 @@ $('cleardone').addEventListener('click', () => { S.todos.items = (S.todos.items|
 const dayDiff = iso => { const [y,m,d] = iso.split('-').map(Number); const t = new Date(); t.setHours(0,0,0,0); return Math.round((new Date(y,m-1,d) - t) / 864e5); };
 R.countdowns = () => {
   const box = $('cds'); box.replaceChildren();
-  const items = (S.countdowns.items || []).filter(c => c.date).slice().sort((a,b) => a.date.localeCompare(b.date));
+  const items = (S.countdowns.items || []).filter(c => c.date).map(c => ({c, date: rollDate(c), name: c.name})).sort((a,b) => a.date.localeCompare(b.date));
   const live = items.filter(c => dayDiff(c.date) >= 0);
   if (!live.length) box.append(h('div',{class:'empty'},'No countdowns yet. Tap Edit to add a trip, birthday or season opener.'));
   live.forEach(c => {
@@ -1406,13 +1710,13 @@ R.countdowns = () => {
     box.append(h('div',{class:'cd'},
       h('div',{class:'cd-n'}, n === 0 ? 'Now' : n, h('small',{}, n === 0 ? 'today' : n === 1 ? 'day' : 'days')),
       h('div',{class:'cd-b'}, h('b',{}, c.name), h('span',{}, new Date(y,m-1,d).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}))),
-      h('button',{class:'x editonly', type:'button', 'aria-label':'Remove '+c.name, onclick: () => { S.countdowns.items = S.countdowns.items.filter(x => x !== c); R.countdowns(); save('countdowns'); }}, '×')
+      h('button',{class:'x editonly', type:'button', 'aria-label':'Remove '+c.name, onclick: () => { S.countdowns.items = S.countdowns.items.filter(x => x !== c.c); R.countdowns(); save('countdowns'); }}, '×')
     ));
   });
 };
 $('cdform').addEventListener('submit', e => {
   e.preventDefault(); const n = $('cdname').value.trim(), d = $('cddate').value; if (!n || !d) return;
-  (S.countdowns.items ||= []).push({id:uid(), name:n, date:d}); $('cdname').value = ''; $('cddate').value = ''; R.countdowns(); save('countdowns');
+  (S.countdowns.items ||= []).push({id:uid(), name:n, date:d, yearly: $('cdyearly').checked || undefined}); $('cdname').value = ''; $('cddate').value = ''; $('cdyearly').checked = false; R.countdowns(); save('countdowns');
 });
 
 /* ---------- Weather / sports snapshot ---------- */
@@ -1420,8 +1724,9 @@ let pubData = {};
 const snapView = () => window.claude ? (S.snapshot || {}) : {...(S.snapshot || {}), ...pubData};
 async function loadPubData(){
   if (window.claude || !/^https?:$/.test(location.protocol)) return;
-  try { const r = await fetch('data.json?t=' + Date.now(), {cache:'no-store'}); if (!r.ok) return; const j = await r.json();
-    const keep = {}; ['market','kidsEvents','dateNight','events'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot(); } catch {}
+  try { const r = await fetch('data.json?t=' + Date.now(), {cache:'no-store'}); if (!r.ok){ window.__rv3 && stat('pub', false, 'HTTP ' + r.status); return; } const j = await r.json();
+    const keep = {}; ['market','kidsEvents','dateNight','events','scoreboard','gameWeather'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot();
+    window.__rv3 && stat('pub', true, j.updatedAt ? 'from ' + new Date(j.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : ''); } catch { window.__rv3 && stat('pub', false, 'not found'); }
 }
 setTimeout(loadPubData, 250); setInterval(loadPubData, 60*60e3);
 R.snapshot = () => {
@@ -1431,6 +1736,7 @@ R.snapshot = () => {
   const wl = Array.isArray(s.weather) ? s.weather : (s.weather ? [s.weather] : []);
   if (wl.length){ wl.forEach(l => wx.append(h('div',{}, l))); if (stamp) wx.append(h('div',{class:'sub'}, 'Updated ' + stamp)); }
   renderSurf(s.fishing); renderPsu(s.psu); renderGames(s.games); renderEvents(s.events); renderStorms(); renderHeads(); if (!liveNews) renderNews(s.news); renderLocalNews(s.local); if (!liveLaunches) renderLaunches(s.launches); if (!liveSpace) renderSpaceNews(s.space); renderTrend(); renderKidFun(s.kidsEvents); renderDateNight(s.dateNight);
+  if (window.__rv3){ renderScoreboard(); renderStandings(); renderGolf(); renderBeach(); renderSky(); renderHistory(); renderStatus(); }
   const sp = $('spsnap'); sp.replaceChildren();
   if (Array.isArray(s.sports) && s.sports.length){ s.sports.forEach(l => sp.append(h('div',{}, l))); if (stamp) sp.append(h('div',{class:'sub'}, 'Updated ' + stamp)); }
 };
@@ -1500,9 +1806,8 @@ setInterval(() => R.snapshot(), 60000);
 })();
 
 /* ---------- Market ---------- */
-const NYSE_CLOSED = ['2026-01-01','2026-01-19','2026-02-16','2026-04-03','2026-05-25','2026-06-19','2026-07-03','2026-09-07','2026-11-26','2026-12-25',
-  '2027-01-01','2027-01-18','2027-02-15','2027-03-26','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-11-25','2027-12-24'];
-const NYSE_EARLY = ['2026-11-27','2026-12-24','2027-11-26'];
+const NYSE_CLOSED = [], NYSE_EARLY = [];
+{ const y0 = new Date().getFullYear(); for (let y = y0 - 1; y <= y0 + 2; y++){ const n = nyseYear(y); NYSE_CLOSED.push(...n.closed); NYSE_EARLY.push(...n.early); } }
 function etParts(d = new Date()){
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',weekday:'short',hourCycle:'h23'}).formatToParts(d).map(x => [x.type, x.value]));
   return {ymd:`${p.year}-${p.month}-${p.day}`, min:(+p.hour)*60 + (+p.minute), dow:p.weekday};
@@ -1679,7 +1984,7 @@ setTimeout(function mkLoop(){ loadQuotes(); setTimeout(mkLoop, marketState().ope
   function handle(raw){
     const heard = raw.trim(), t = heard.toLowerCase().replace(/[.?!,]/g,'').trim(); let m;
     if (!t) return;
-    if ((m = t.match(/^(?:go to|open|show|switch to)?\s*(?:the\s+)?(home|local|apps?|sports|garage|life)(?: screen| page| tab)?$/))){ const sc = m[1].startsWith('app') ? 'apps' : m[1]; go(sc); toast('Showing ' + sc, heard); return; }
+    if ((m = t.match(/^(?:go to|open|show|switch to)?\s*(?:the\s+)?(home|local|apps?|sports|garage|life|settings)(?: screen| page| tab)?$/))){ const sc = m[1].startsWith('app') ? 'apps' : m[1]; go(sc); toast('Showing ' + sc, heard); return; }
     if ((m = t.match(/^(?:ask|tell)\s+(claude|chat ?gpt|grok|gemini)\s+(.+)$/))){ const ai = m[1].replace(' ',''), q = m[2];
       if (ai === 'gemini'){ navigator.clipboard?.writeText(q).catch(() => {}); openUrl('https://gemini.google.com/app', 'Opening Gemini. Your question is copied, paste it in.', heard); }
       else openUrl((AIS[ai] || AIS.claude) + encodeURIComponent(q), 'Asking ' + (ai === 'chatgpt' ? 'ChatGPT' : ai[0].toUpperCase() + ai.slice(1)), heard); return; }
@@ -1869,6 +2174,7 @@ R.teams = () => {
     h('a',{href: safeUrl(t.url || '') || ('https://www.espn.com/search/_/q/' + encodeURIComponent(t.name)), target:'_blank', rel:'noopener'}, t.name),
     h('button',{class:'x editonly', type:'button', 'aria-label':'Remove '+t.name, onclick: () => { S.teams.items = items.filter(x => x !== t); R.teams(); save('teams'); }}, '×')
   )));
+  if (window.__rv3){ renderScoreboard(); renderDyk(); }
 };
 $('teamform').addEventListener('submit', e => {
   e.preventDefault(); const v = $('teamin').value.trim(); if (!v) return;
@@ -2064,10 +2370,10 @@ async function driveSync(){
         await gsFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {method:'POST', headers:{'Content-Type': 'multipart/related; boundary=' + b},
           body: `--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metaJ}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`}); }
     }
-    gsLast = Date.now();
+    gsLast = Date.now(); window.__rv3 && stat('drive', true, changed.length ? changed.length + ' updated' : '');
     if (changed.length){ renderAll(); loadQuotes?.(); }
   } catch (e) {
-    if (String(e.message) !== 'auth') gsErr = 'Couldn’t reach Google Drive just now. Tap Sync now to try again.';
+    if (String(e.message) !== 'auth') gsErr = 'Couldn’t reach Google Drive just now. Tap Sync now to try again.'; window.__rv3 && stat('drive', false, 'sync failed');
   }
   gsBusy = false; gsUI();
 }
@@ -2132,6 +2438,9 @@ function migrateLinks(){
     .forEach(([n, u]) => { if (!has(wx, u)){ (wx.links ||= []).unshift({id: uid(), name: n, url: u}); changed = true; } }); }
   if (!L.groups.some(g => g.vault)){ L.groups.push(clone(VAULT_SEED)); changed = true; }
   if (fixMyApps(L)) changed = true;
+  if (!L.v3links){ L.v3links = true; changed = true;
+    const at = () => { const i = L.groups.findIndex(g => g.vault); return i < 0 ? L.groups.length : i; };
+    [CODES_GROUP, INDUSTRY_GROUP].forEach(G => { if (!L.groups.some(g => g.id === G.id)) L.groups.splice(at(), 0, clone(G)); }); }
   return changed;
 }
 const MYAPPS = [['SurfCast','https://rvannederynen18.github.io/Surf-Cast/'],['Learning Den','https://rvannederynen18.github.io/Learning-Den/'],
@@ -2154,6 +2463,18 @@ function fixMyApps(L){
   MYAPPS.forEach(([name, url]) => { if (!all.some(x => same(x, {name, url}))) (target.links ||= []).push({id: uid(), name, url}); });
   return changed;
 }
+const CODES_GROUP = {"id":"gcodes","name":"Codes & standards","links":[
+  {"id":"cs1","name":"NEC · NFPA 70","url":"https://www.nfpa.org/70"},{"id":"cs2","name":"NFPA 90A","url":"https://www.nfpa.org/90A"},
+  {"id":"cs3","name":"ICC codes · Florida, IMC","url":"https://codes.iccsafe.org/"},{"id":"cs4","name":"UL standards","url":"https://www.shopulstandards.com/"},
+  {"id":"cs5","name":"UL Product iQ","url":"https://productiq.ulprospector.com/"},{"id":"cs6","name":"ASHRAE standards","url":"https://www.ashrae.org/technical-resources/standards-and-guidelines"},
+  {"id":"cs7","name":"ASHRAE free read-only","url":"https://www.ashrae.org/technical-resources/standards-and-guidelines/read-only-versions-of-ashrae-standards"},
+  {"id":"cs8","name":"AMCA","url":"https://www.amca.org/"},{"id":"cs9","name":"NEMA standards","url":"https://www.nema.org/standards"},
+  {"id":"cs10","name":"IEEE standards","url":"https://standards.ieee.org/"},{"id":"cs11","name":"DOE efficiency rules","url":"https://www.energy.gov/eere/buildings/appliance-and-equipment-standards-program"},
+  {"id":"cs12","name":"SMACNA","url":"https://www.smacna.org/"},{"id":"cs13","name":"Modbus specs","url":"https://modbus.org/specs.php"},{"id":"cs14","name":"BACnet · ASHRAE 135","url":"https://bacnet.org/"}]};
+const INDUSTRY_GROUP = {"id":"gindustry","name":"Industry & work","links":[
+  {"id":"in1","name":"Q-PAC","url":"https://www.q-pac.com/"},{"id":"in2","name":"ITT Goulds Pumps","url":"https://www.gouldspumps.com/"},
+  {"id":"in3","name":"Xylem","url":"https://www.xylem.com/"},{"id":"in4","name":"ZIEHL-ABEGG","url":"https://www.ziehl-abegg.com/"},
+  {"id":"in5","name":"ebm-papst","url":"https://www.ebmpapst.com/"},{"id":"in6","name":"Schneider Electric","url":"https://www.se.com/us/en/"}]};
 const VAULT_SEED = {"id":"gvault","name":"Vault","vault":true,"links":[
   {"id":"v1","name":"Google Password Manager","url":"https://passwords.google.com/"},
   {"id":"v2","name":"Google Security Checkup","url":"https://myaccount.google.com/security-checkup"},
@@ -2202,7 +2523,7 @@ function go(name, opts = {}){
   if (!SCREENS.includes(name)) name = 'home';
   document.querySelectorAll('.screen').forEach(x => x.hidden = x.dataset.screen !== name);
   document.querySelectorAll('.dk').forEach(b => b.setAttribute('aria-current', b.dataset.go === name ? 'page' : 'false'));
-  $('dkmore').setAttribute('aria-current', ['local','garage','tools','life'].includes(name) ? 'page' : 'false');
+  $('dkmore').setAttribute('aria-current', ['local','garage','tools','life','settings'].includes(name) ? 'page' : 'false');
   if (name !== 'vault') lsSet('screen', name); else if (!vaultUnlocked()) { openVault(); return; }
   if (name !== 'vault') vaultLockNow();
   if (!opts.keepScroll) window.scrollTo({top:0});
@@ -2212,13 +2533,14 @@ document.querySelectorAll('.dk').forEach(b => b.addEventListener('click', () => 
 { const start = (location.hash || '').slice(1) || lsGet('screen') || 'home'; go(start === 'vault' ? 'home' : start, {keepScroll:true}); }
 (() => {
   let x0 = null, y0 = 0, t0 = 0;
-  const ok = el => !el.closest('input,textarea,select,.qwrap,.tcats,.mapbox,.gtabs,.sheet,.gcal');
+  /* Inside Claude, sideways swipes belong to the app, so screen-swiping is off there */
+  const ok = el => !window.claude && !el.closest('input,textarea,select,.qwrap,.tcats,.mapbox,.gtabs,.sheet,.gcal');
   $('screens').addEventListener('touchstart', e => { const t = e.touches[0]; if (e.touches.length !== 1 || !ok(e.target)) { x0 = null; return; } x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, {passive:true});
   $('screens').addEventListener('touchend', e => {
     if (x0 == null) return; const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
     if (Math.abs(dx) < 80 || Math.abs(dy) > 60 || Date.now() - t0 > 600) return;
     if (!$('scr-vault').hidden) return;
-    const NAV = SCREENS.filter(x => x !== 'vault'), cur = NAV.indexOf(lsGet('screen') || 'home'), nx = cur + (dx < 0 ? 1 : -1);
+    const NAV = SCREENS.filter(x => x !== 'vault' && x !== 'settings'), cur = NAV.indexOf(lsGet('screen') || 'home'), nx = cur + (dx < 0 ? 1 : -1);
     if (nx >= 0 && nx < NAV.length) go(NAV[nx]);
   }, {passive:true});
 })();
@@ -2267,6 +2589,7 @@ R.home = () => {
     ['Superchargers', near('Tesla Supercharger')], ['Gas', near('gas station')], ['Food', near('restaurants')], ['Coffee', near('coffee')], ['Beach access', near('beach access')]
   ] : []).map(([t,u]) => h('a',{href:u, target:'_blank', rel:'noopener'}, t)));
   renderMap();
+  if (window.__rv3) renderTravel();
 };
 toggler('mapedit', $('addrform').closest('section'));
 $('addrform').addEventListener('submit', e => { e.preventDefault(); S.home = {...S.home, address:$('addrin').value.trim()}; mapShownFor = null; R.home(); save('home');
@@ -2292,6 +2615,8 @@ R.prefs = () => {
   $('sc').querySelector('.go-link').hidden = !sc;
   if (!window.claude && ready) calStandalone();
   tick(); renderKidFun(snapView().kidsEvents);
+  $('h-news').textContent = 'Around ' + ((P.cities || [])[0]?.short || 'town');
+  if (window.__rv3){ renderTravel(); renderSky(); }
 };
 $('sc').addEventListener('click', e => { if ($('sc').getAttribute('href') === '#') e.preventDefault(); });
 async function geocode(q){
@@ -2363,7 +2688,7 @@ async function loadNewsLive(){
       out[k] = [...x.querySelectorAll('item')].slice(0, 10).map(i => ({title: i.querySelector('title')?.textContent?.trim(), url: i.querySelector('link')?.textContent?.trim(), time: i.querySelector('pubDate')?.textContent}));
       if (out[k].length) any = true; } catch {}
   }));
-  if (any){ liveNews = true; renderNews(out); } else renderNews(S.snapshot.news);
+  window.__rv3 && stat('news', any); if (any){ liveNews = true; renderNews(out); } else renderNews(S.snapshot.news);
 }
 setTimeout(() => { renderNews(S.snapshot.news); loadNewsLive(); }, 200); setInterval(loadNewsLive, 20*60e3);
 
@@ -2463,7 +2788,7 @@ function renderGames(list){
   // Home: next 3 plus the next flagged one
   const nl = $('nextlist'); nl.replaceChildren();
   const pick = games.slice(0, 3); const sp = games.find(g => !pick.includes(g) && gameFlags(g, new Date(g.start)).some(x => x[0] === 'hot')); if (sp) pick.push(sp);
-  $('nextup').hidden = !pick.length; pick.forEach(g => nl.append(gameRow(g, true)));
+  $('nextsub').hidden = !pick.length; pick.forEach(g => nl.append(gameRow(g, true)));
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]:not(.dk)'); if (b) go(b.dataset.go); });
 
@@ -2582,6 +2907,7 @@ function trashDue(){
 function renderHeads(){
   const box = $('heads'); if (!box) return; box.replaceChildren();
   const add = (cls, k, txt, extra) => box.append(h('div',{class:'hu ' + cls}, h('span',{class:'hk'}, k), h('span',{}, txt), h('span',{class:'sp'}), extra || null));
+  if (window.__rvNewVer) add('info', 'Update', 'A new version of RV-1 is ready.', h('button',{class:'btn', type:'button', onclick: () => window.__rvDoUpdate && window.__rvDoUpdate()}, location.protocol === 'file:' ? 'Download it' : 'Reload'));
   const al = window.claude ? (S.snapshot.alerts || []) : (nwsAlerts || []);
   al.slice(0, 3).forEach(a => add(/warning/i.test(a.event) ? 'alert' : 'warn', 'Alert', a.event + (a.ends ? ' until ' + new Date(a.ends).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : ''), h('button',{class:'btn', type:'button', onclick: () => showAlert(a)}, 'Details')));
   const tr = trashDue(); if (tr) add('info', 'Tonight', tr.text, h('button',{class:'btn', type:'button', onclick: () => { lsSet(tr.key, true); renderHeads(); }}, 'Done'));
@@ -2598,7 +2924,7 @@ function showAlert(a){
   if (a.description) String(a.description).split(/\n\s*\n/).forEach(par => body.append(h('p',{}, par.replace(/\n/g, ' ').trim())));
   if (a.instruction) body.append(h('p',{class:'al-do'}, a.instruction.replace(/\n/g, ' ').trim()));
   if (!a.description && !a.headline) body.append(h('p',{}, 'The full text is on the National Weather Service forecast page for your area.'));
-  $('al-more').href = `https://forecast.weather.gov/MapClick.php?lat=${ll[0]}&lon=${ll[1]}`;
+  $('al-more').hidden = false; $('al-more').href = `https://forecast.weather.gov/MapClick.php?lat=${ll[0]}&lon=${ll[1]}`;
   $('alertsheet').hidden = false;
 }
 ['al-x','al-ok'].forEach(id => $(id).addEventListener('click', () => $('alertsheet').hidden = true));
@@ -2606,7 +2932,7 @@ $('alertsheet').addEventListener('click', e => { if (e.target === $('alertsheet'
 async function loadAlerts(){
   if (window.claude) return; const ll = homeLL(); if (!ll) return;
   try { const j = await getJSON(`https://api.weather.gov/alerts/active?point=${ll[0]},${ll[1]}`);
-    nwsAlerts = (j.features || []).map(f => f.properties).filter(Boolean).map(p => ({event: p.event, ends: p.ends || p.expires, headline: p.headline, description: p.description, instruction: p.instruction, area: p.areaDesc})); renderHeads(); } catch {}
+    nwsAlerts = (j.features || []).map(f => f.properties).filter(Boolean).map(p => ({event: p.event, ends: p.ends || p.expires, headline: p.headline, description: p.description, instruction: p.instruction, area: p.areaDesc})); renderHeads(); window.__rv3 && stat('alerts', true, nwsAlerts.length ? nwsAlerts.length + ' active' : 'none active'); renderBeach && window.__rv3 && renderBeach(); } catch { window.__rv3 && stat('alerts', false); }
 }
 setInterval(() => { renderHeads(); renderAstro(); }, 60000);
 setTimeout(() => { renderAstro(); loadAlerts(); renderHeads(); }, 400); setInterval(loadAlerts, 10*60e3);
@@ -2633,7 +2959,7 @@ function renderBdays(evs){
 
 /* ---------- Spoken briefing ---------- */
 const synth = window.speechSynthesis;
-function BRIEF_SECTIONS(){ return [['open','Opening'],['urgent','Heads-up'],['weather','Weather'],['day','Your day'],['todo','To-dos'],['sports','Sports'],['market','Market'],['coming','Coming up'],['fishing','Tides & surf'],['local','Local & launches'],['news','Headlines'],['tip','Tip of the day']]; }
+function BRIEF_SECTIONS(){ return [['open','Opening'],['urgent','Heads-up'],['weather','Weather'],['golf','Golf'],['day','Your day'],['todo','To-dos'],['sports','Sports'],['market','Market'],['coming','Coming up'],['fishing','Tides & surf'],['local','Local & launches'],['news','Headlines'],['tip','Tip of the day']]; }
 const DIRS = {N:'north',NE:'northeast',E:'east',SE:'southeast',S:'south',SW:'southwest',W:'west',NW:'northwest',NNE:'north-northeast',ENE:'east-northeast',ESE:'east-southeast',SSE:'south-southeast',SSW:'south-southwest',WSW:'west-southwest',WNW:'west-northwest',NNW:'north-northwest'};
 function sayable(t){
   return String(t || '')
@@ -2673,6 +2999,7 @@ function buildBriefing(){
   const wx = (S.snapshot.weather || []).slice(0, quick ? 1 : 2);
   const sun = sunToday ? (evening ? `Sunrise tomorrow is around ${hm(new Date(sunToday.rise.getTime() + 864e5))}.` : `Sunset is at ${hm(sunToday.set)}.`) : '';
   add('weather', SN.weather, [...wx, quick ? '' : sun]);
+  if (window.__rv3) add('golf', SN.golf, [golfLine()]);
   // Your day (calendar)
   const evs = (calEvents || []).map(ev => ({ev, d: evStart(ev), allDay: !ev.start?.dateTime})).filter(x => x.d);
   const today = evs.filter(x => x.d.toDateString() === now.toDateString() && (x.allDay || x.d > now - 30*60e3));
@@ -2712,7 +3039,7 @@ function buildBriefing(){
   if (!quick){
     // Coming up
     const cu = [], t0 = new Date(); t0.setHours(0,0,0,0);
-    (S.countdowns.items || []).map(c => ({c, n: dayDiff(c.date)})).filter(x => x.n > 0 && x.n <= 21).sort((a,b) => a.n - b.n).slice(0, 3)
+    (S.countdowns.items || []).filter(c => c.date).map(c => ({c, n: dayDiff(rollDate(c))})).filter(x => x.n > 0 && x.n <= 21).sort((a,b) => a.n - b.n).slice(0, 3)
       .forEach(x => cu.push(`${x.c.name} ${x.n === 1 ? 'is tomorrow' : 'in ' + x.n + ' days'}.`));
     bdayCache.filter(b => { const n = Math.round((b.d - t0) / 864e5); return n > 0 && n <= 7; }).forEach(b => cu.push(`${b.name}’s birthday is ${dayWord(b.d)}.`));
     (S.subs.items || []).map(it => ({it, d: nextBill(it)})).filter(x => x.d && Math.round((x.d - t0) / 864e5) <= 3).forEach(x => cu.push(`${x.it.name} bills ${dayWord(x.d)}, ${(+x.it.cost || 0).toFixed(2)} dollars.`));
@@ -2972,8 +3299,8 @@ async function loadLaunchesLive(){
       return {name: r.mission?.name || r.name, net: r.net, status: r.status?.abbrev || '', provider: r.launch_service_provider?.name || (r.name || '').split('|')[0].trim(), pad: r.pad?.name,
         rocket: r.rocket?.configuration?.full_name || r.rocket?.configuration?.name || (r.name || '').split('|')[0].trim(), orbit: r.mission?.orbit?.name || '', type: r.mission?.type || '',
         desc: r.mission?.description || '', windowStart: r.window_start, windowEnd: r.window_end, webcast: v?.url || '', webcastLive: !!r.webcast_live}; });
-    lsSet('ll3', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list);
-  } catch { if (cached) { liveLaunches = true; renderLaunches(cached.list); } else renderLaunches([]); }
+    lsSet('ll3', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list); window.__rv3 && stat('launch', true);
+  } catch { window.__rv3 && stat('launch', false, cached ? 'showing saved list' : ''); if (cached) { liveLaunches = true; renderLaunches(cached.list); } else renderLaunches([]); }
 }
 setInterval(() => { if (launchData.length) renderLaunches(launchData.map(({d, ...r}) => r)); }, 60000);
 setTimeout(loadLaunchesLive, 100); setInterval(loadLaunchesLive, 60*60e3);
@@ -2991,7 +3318,7 @@ async function loadSpaceLive(){
   if (window.claude) return;
   try { const j = await getJSON('https://api.spaceflightnewsapi.net/v4/articles/?limit=6&ordering=-published_at');
     const list = (j.results || []).map(a => ({title: a.title, url: a.url, source: a.news_site, time: a.published_at}));
-    if (list.length){ liveSpace = true; renderSpaceNews(list); } } catch {}
+    if (list.length){ liveSpace = true; renderSpaceNews(list); } window.__rv3 && stat('space', list.length > 0); } catch { window.__rv3 && stat('space', false); }
 }
 setTimeout(loadSpaceLive, 300); setInterval(loadSpaceLive, 60*60e3);
 
@@ -3104,6 +3431,51 @@ async function bootCal(){
 }
 bootCal();
 
+/* ---------- Inbox (Gmail connector, only in the version inside Claude) ---------- */
+(async () => {
+  let mcp = null;
+  try { mcp = window.claude?.use ? await window.claude.use('mcp') : null; } catch {}
+  if (!mcp) return; /* no connector here: the Inbox card stays hidden */
+  const GM = 'Gmail', tile = $('mailtile'), box = $('mail'), cnt = $('mailcount');
+  const listIn = {query:'in:inbox', pageSize:6};
+  const unreadIn = {query:'in:inbox is:unread', pageSize:50, view:'THREAD_VIEW_METADATA_ONLY'};
+  let shown = false;
+  const BRANDY = /no-?reply|do-?not-?reply|notification|alert|info|news|mailer|hello|support|team|update|account|service|digest|billing|order/i;
+  const who = s => { s = String(s || '').trim(); const m = s.match(/^"?([^"<]+?)"?\s*<([^>]+)>$/); if (m && m[1].trim()) return m[1].trim();
+    const a = (m ? m[2] : s).toLowerCase(), at = a.indexOf('@'); if (at < 0) return s || 'Unknown sender';
+    const local = a.slice(0, at), dom = a.slice(at + 1).split('.');
+    if (BRANDY.test(local) || local.includes('+')){ const b = dom.length >= 2 ? dom[dom.length - 2] : dom[0]; return b.charAt(0).toUpperCase() + b.slice(1); }
+    return a; };
+  const when = d => { const t = new Date(); if (d.toDateString() === t.toDateString()) return hm(d);
+    const y = new Date(t.getTime() - 864e5); if (d.toDateString() === y.toDateString()) return 'Yesterday';
+    return t - d < 6*864e5 ? d.toLocaleDateString([], {weekday:'short'}) : d.toLocaleDateString([], {month:'short', day:'numeric'}); };
+  const decode = s => { const e = document.createElement('textarea'); e.innerHTML = String(s || ''); return e.value; };
+  const show = res => {
+    const threads = Array.isArray(res.payload?.threads) ? res.payload.threads : [];
+    tile.hidden = false; shown = true; box.replaceChildren();
+    if (!threads.length){ box.append(h('div',{class:'empty'}, 'Your inbox is empty.')); return; }
+    threads.slice(0, 6).forEach(t => {
+      const ms = (t.messages || []).slice().sort((a,b) => (+a.internalDate || 0) - (+b.internalDate || 0)), last = ms[ms.length - 1] || {};
+      const unread = ms.some(m => (m.labelIds || []).includes('UNREAD')), d = last.date ? new Date(last.date) : null;
+      box.append(h('a',{class:'mrow' + (unread ? ' unread' : ''), href: safeUrl(t.viewUrl || last.viewUrl || '') || 'https://mail.google.com/', target:'_blank', rel:'noopener'},
+        h('span',{class:'mdot'}), h('span',{class:'ms'}, who(last.sender) + ((t.messageCount || 0) > 1 ? ' (' + t.messageCount + ')' : '')),
+        h('span',{class:'mt'}, d && !isNaN(d) ? when(d) : ''),
+        h('span',{class:'mj'}, decode(last.subject) || '(No subject)')));
+    });
+  };
+  const showCount = res => { const n = Array.isArray(res.payload?.threads) ? res.payload.threads.length : 0, more = !!res.payload?.nextPageToken;
+    cnt.hidden = !n; cnt.textContent = (more ? n + '+' : n) + ' unread'; };
+  const HIDE = ['server_not_connected','server_not_found','needs_reauth','not_in_manifest','blocked_by_policy','not_granted','capability_disabled','capability_removed','selection_required','consent_required','user_changed'];
+  const fail = e => { const c = e?.code;
+    if (c === 'approval_required'){ tile.hidden = false;
+      box.replaceChildren(h('div',{class:'note'}, 'This page needs your OK to show your newest emails.'),
+        h('button',{class:'btn primary', type:'button', style:'margin-top:8px', onclick: async () => { try { show(await mcp.callTool(GM, 'search_threads', listIn)); } catch (er) { fail(er); } }}, 'Allow inbox access'));
+      return; }
+    if (HIDE.includes(c) || !shown){ tile.hidden = true; shown = false; } };
+  mcp.watchTool(GM, 'search_threads', listIn, ev => ev.type === 'data' ? show(ev.result) : fail(ev.error), {cache:{staleTime: 3*60e3, gcTime: 24*3600e3}, refetchInterval: 5*60e3});
+  mcp.watchTool(GM, 'search_threads', unreadIn, ev => { if (ev.type === 'data') showCount(ev.result); }, {cache:{staleTime: 3*60e3, gcTime: 24*3600e3}, refetchInterval: 5*60e3});
+})();
+
 /* ---------- GitHub repos (GitHub connector) ---------- */
 const ago = iso => { const d = Math.floor((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
 async function bootGh(){
@@ -3146,5 +3518,649 @@ async function bootGh(){
     {cache:{staleTime: 10*60e3, gcTime: 24*3600e3}, refetchInterval: 30*60e3});
 }
 bootGh();
+
+/* =====================================================================
+   RV-1 v3: scoreboard, team cards, facts, standings, game-day weather,
+   golf, beach, sky, traffic, gas, markets, reading list, history,
+   data status and update notice
+   ===================================================================== */
+const RV1_VERSION = '2026.10.25.0019';
+const ST = {};
+function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
+const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
+  ['launch','Launch schedule'],['space','Space news'],['news','Headlines'],['history','Today in history'],['pub','Daily data file'],['drive','Google Drive sync'],['version','Update check']];
+function renderStatus(){
+  const ul = $('statuslist'); if (!ul) return; ul.replaceChildren();
+  const vl = $('verlabel'); if (vl) vl.textContent = 'Version ' + RV1_VERSION;
+  if (window.claude){
+    const at = S.snapshot.updatedAt ? new Date(S.snapshot.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : 'not yet';
+    ul.append(h('li',{}, h('span',{class:'sn'}, h('span',{class:'led on stled'}), 'Morning update', h('small',{}, 'Inside Claude, data arrives with the 5:59 AM update · last ' + at)), h('span'), h('span')));
+    return;
+  }
+  STATUS_SRC.forEach(([k, l]) => { const s = ST[k];
+    if (k === 'drive' && !lsGet('gsync')) return;
+    ul.append(h('li',{}, h('span',{class:'sn'}, h('span',{class:'led stled' + (s ? (s.ok ? ' on' : ' bad') : '')}), l,
+      h('small',{}, s ? (s.ok ? 'OK' : 'Problem') + ' · ' + hm(new Date(s.at)) + (s.msg ? ' · ' + s.msg : '') : 'Waiting')), h('span'), h('span'))); });
+}
+
+/* ---------- Teams ---------- */
+const LIVE_TEAMS = {Rangers:['hockey/nhl','nyr'], Giants:['football/nfl','nyg'], Bills:['football/nfl','buf'], Jaguars:['football/nfl','jax'], 'Penn State':['football/college-football','213']};
+const ESPN_LG = {'hockey/nhl':'nhl', 'football/nfl':'nfl', 'football/college-football':'college-football'};
+const TEAM_ORDER = ['Rangers','Giants','Bills','Jaguars','Penn State','Icemen','Jumbo Shrimp'];
+const LEAGUE = {Rangers:'NHL · Metropolitan', Giants:'NFL · NFC East', Bills:'NFL · AFC East', Jaguars:'NFL · AFC South', 'Penn State':'Big Ten football', Icemen:'ECHL hockey', 'Jumbo Shrimp':'Triple-A baseball'};
+const SEASONS = {Rangers:[10,6], Giants:[9,2], Bills:[9,2], Jaguars:[9,2], 'Penn State':[8,1], Icemen:[10,4], 'Jumbo Shrimp':[4,9]};
+const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+function inSeason(k, d = new Date()){ const s = SEASONS[k]; if (!s) return true; const m = d.getMonth() + 1; return s[0] <= s[1] ? (m >= s[0] && m <= s[1]) : (m >= s[0] || m <= s[1]); }
+function seasonNote(k){ if (!inSeason(k)) return 'Offseason · back in ' + MONTHS[SEASONS[k][0]]; return LIVE_TEAMS[k] ? 'No games played yet' : 'Scores update each morning'; }
+function sbTeams(){
+  const ks = [...new Set([...(S.teams.items || []).map(t => teamKey(t.name)), 'Penn State'].filter(Boolean))];
+  return ks.sort((a,b) => (TEAM_ORDER.indexOf(a) + 1 || 99) - (TEAM_ORDER.indexOf(b) + 1 || 99));
+}
+let sbLive = {}, sbBusy = false;
+async function loadTeamLive(k){
+  const [path, ab] = LIVE_TEAMS[k];
+  const [sch, tm] = await Promise.allSettled([getJSON(`https://site.api.espn.com/apis/site/v2/sports/${path}/teams/${ab}/schedule`), getJSON(`https://site.api.espn.com/apis/site/v2/sports/${path}/teams/${ab}`)]);
+  if (sch.status !== 'fulfilled') throw new Error('schedule');
+  const isMe = x => (x.team?.abbreviation || '').toLowerCase() === ab || String(x.team?.id) === ab || String(x.id) === ab;
+  const sc = x => { const v = x.score?.displayValue ?? x.score; return v == null || v === '' || typeof v === 'object' ? null : v; };
+  const evs = (sch.value.events || []).map(e => { const c = e.competitions?.[0] || {}, me = (c.competitors || []).find(isMe) || {}, op = (c.competitors || []).find(x => x !== me) || {};
+    return {id: e.id, d: new Date(e.date), done: !!c.status?.type?.completed, home: me.homeAway === 'home', opp: op.team?.shortDisplayName || op.team?.location || op.team?.displayName || 'TBD',
+      us: sc(me), them: sc(op), win: me.winner === true, tbd: e.timeValid === false, tv: (c.broadcasts || []).map(b => b.media?.shortName || (b.names || [])[0]).filter(Boolean).join(', '), venue: c.venue?.fullName || ''}; })
+    .filter(e => !isNaN(e.d)).sort((a,b) => a.d - b.d);
+  const done = evs.filter(e => e.done && e.us != null), last = done[done.length - 1], next = evs.find(e => !e.done && e.d.getTime() > Date.now() - 4*3600e3);
+  const res = e => e.win ? 'W' : (+e.us === +e.them ? 'T' : 'L');
+  let streak = '';
+  if (done.length){ const r0 = res(last); let n = 0; for (let i = done.length - 1; i >= 0 && res(done[i]) === r0; i--) n++; streak = (r0 === 'W' ? 'Won ' : r0 === 'L' ? 'Lost ' : 'Tied ') + n; }
+  let record = '', standing = '';
+  if (tm.status === 'fulfilled'){ const t = tm.value.team || {}, items = t.record?.items || []; record = (items.find(i => i.type === 'total') || items[0] || {}).summary || ''; standing = t.standingSummary || ''; }
+  if (!record && done.length){ const n = r => done.filter(e => res(e) === r).length; record = n('W') + '–' + n('L') + (n('T') ? '–' + n('T') : ''); }
+  return {team: k, record: String(record).replace(/-/g, '–'), standing, streak, at: Date.now(),
+    last: last ? {res: res(last), us: last.us, them: last.them, opp: last.opp, home: last.home, date: last.d.toISOString(), url: `https://www.espn.com/${ESPN_LG[path]}/game/_/gameId/${last.id}`} : null,
+    next: next ? {opp: next.opp, home: next.home, start: next.d.toISOString(), tbd: next.tbd, tv: next.tv, venue: next.venue} : null};
+}
+async function loadScoreboard(){
+  if (window.claude || sbBusy) return; sbBusy = true;
+  const ks = sbTeams().filter(k => LIVE_TEAMS[k]); let ok = 0, bad = 0;
+  await Promise.all(ks.map(async k => { try { sbLive[k] = await loadTeamLive(k); ok++; } catch { bad++; } }));
+  sbBusy = false;
+  if (ks.length) stat('espn', ok > 0, bad ? bad + ' team' + (bad > 1 ? 's' : '') + ' didn’t load' : '');
+  renderScoreboard(); loadStandings();
+}
+function sbData(){
+  const extra = {}; (snapView().scoreboard || []).forEach(x => { if (x && x.team) extra[teamKey(x.team) || x.team] = x; });
+  return sbTeams().map(k => sbLive[k] || extra[k] || {team: k});
+}
+const resCls = r => r === 'W' ? 'w' : r === 'L' ? 'l' : 't';
+const lastTxt = l => `${l.us}–${l.them} ${l.home ? 'vs' : 'at'} ${l.opp}`;
+const nextTxt = n => `${n.home ? 'vs' : 'at'} ${n.opp}`;
+const cap1 = s => String(s || '').replace(/^./, c => c.toUpperCase());
+const nextWhen = n => { const d = new Date(n.start); return cap1(dayWord(d)) + (n.tbd ? ' · time TBD' : ' · ' + hm(d)); };
+function renderScoreboard(){
+  const rows = sbData(), box = $('scoreboard');
+  if (box){
+    const full = rows.map(x => { const k = x.team, l = x.last, link = l && safeUrl(l.url || '');
+      return h(link ? 'a' : 'div', {class:'sbrow', href: link || undefined, target: link ? '_blank' : undefined, rel: link ? 'noopener' : undefined},
+        teamLogo(k, 'tl-row', !!link) || h('span'), h('span',{class:'sbn'}, k),
+        h('span',{class:'sbl'}, l ? [h('span',{class:'res ' + resCls(l.res)}, l.res), ' ' + lastTxt(l)] : h('span',{class:'sub'}, x.note || seasonNote(k))),
+        h('span',{class:'sbr'}, x.record || '—'),
+        h('span',{class:'sbx'}, x.next ? [h('b',{}, nextTxt(x.next)), nextWhen(x.next)] : (inSeason(k) ? '' : 'Offseason'))); });
+    const mini = rows.map(x => { const k = x.team, l = x.last, link = l && safeUrl(l.url || '');
+      return h(link ? 'a' : 'div', {class:'sbtile', href: link || undefined, target: link ? '_blank' : undefined, rel: link ? 'noopener' : undefined},
+        teamLogo(k, 'tl-mini', !!link) || h('span',{class:'tl-badge'}, k.slice(0,3)),
+        h('b',{class: l ? resCls(l.res) : ''}, l ? `${l.res} ${l.us}–${l.them}` : (inSeason(k) ? '—' : 'Off')), h('small',{}, x.record || (inSeason(k) ? '' : 'Offseason'))); });
+    box.replaceChildren(h('div',{class:'sbfull'}, full), h('div',{class:'sbmini'}, mini));
+  }
+  renderTeamCards(rows);
+}
+function renderTeamCards(rows){
+  const box = $('teamcards'); if (!box) return;
+  box.replaceChildren(...rows.map(x => { const k = x.team, ti = TEAMINFO[k] || {}, l = x.last, n = x.next, kv = [];
+    const add = (a, b) => kv.push(h('dt',{}, a), h('dd',{}, b));
+    if (l){ const link = safeUrl(l.url || ''); add('Last', [h('span',{class:'res ' + resCls(l.res)}, l.res), ' ' + lastTxt(l), ...(link ? [' · ', h('a',{href: link, target:'_blank', rel:'noopener'}, 'Box score')] : [])]); }
+    else add('Status', x.note || seasonNote(k));
+    if (x.streak) add('Streak', x.streak);
+    if (x.standing) add('Standing', x.standing);
+    if (n) add('Next', nextTxt(n) + ' · ' + nextWhen(n));
+    if (n && n.tv) add('Watch', n.tv);
+    return h('article',{class:'tcard'},
+      h('div',{class:'tchead'}, teamLogo(k, 'tl-card') || h('span'), h('div',{class:'tcname'}, h('b',{}, k), h('small',{}, LEAGUE[k] || '')), h('span',{class:'tcrec'}, x.record || '—')),
+      h('dl',{class:'tckv'}, kv),
+      ti.home ? h('a',{class:'tclink', href: ti.home, target:'_blank', rel:'noopener'}, 'Team site ↗') : null);
+  }));
+  const st = $('teamsstamp');
+  if (st) st.textContent = window.claude ? (S.snapshot.updatedAt ? 'Updated ' + new Date(S.snapshot.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : '') : (Object.keys(sbLive).length ? 'Live · ' + hm(new Date()) : '');
+}
+
+/* ---------- Standings ---------- */
+const STAND_SRC = {'hockey/nhl':'https://site.web.api.espn.com/apis/v2/sports/hockey/nhl/standings?level=3', 'football/nfl':'https://site.web.api.espn.com/apis/v2/sports/football/nfl/standings?level=3',
+  'football/college-football':'https://site.web.api.espn.com/apis/v2/sports/football/college-football/standings?group=5'};
+let standLive = null, standTab = null;
+function findGroup(node, ab, depth = 0){
+  if (!node || typeof node !== 'object' || depth > 6) return null;
+  const en = node.standings?.entries;
+  if (Array.isArray(en) && en.some(e => (e.team?.abbreviation || '').toLowerCase() === ab || String(e.team?.id) === ab)) return {name: node.name || node.abbreviation || '', entries: en};
+  for (const c of (node.children || [])){ const r = findGroup(c, ab, depth + 1); if (r) return r; }
+  return null;
+}
+function standRows(g, ab, path){
+  const st = (e, ...ns) => { for (const n of ns){ const s = (e.stats || []).find(x => x.name === n || x.type === n); if (s) return s; } return null; };
+  const dv = (e, ...ns) => { const s = st(e, ...ns); return s ? (s.displayValue ?? s.value) : null; };
+  const nhl = path === 'hockey/nhl';
+  return g.entries.map(e => {
+    const w = dv(e,'wins'), l = dv(e,'losses'), t = dv(e,'ties'), ot = dv(e,'otLosses','OTLosses','overtimeLosses');
+    let rec = w != null ? [w, l, nhl ? ot : (t != null && +t ? t : null)].filter(x => x != null).join('–') : (dv(e,'overall','total') || '');
+    const gb = dv(e,'gamesBehind'), pts = dv(e,'points');
+    return {team: e.team?.displayName || e.team?.name || '', me: (e.team?.abbreviation || '').toLowerCase() === ab || String(e.team?.id) === ab,
+      rec: String(rec).replace(/-/g, '–'), extra: nhl ? (pts != null ? pts + ' pts' : '') : (gb != null && gb !== '' ? (['0','-','0.0'].includes(String(gb)) ? '—' : gb + ' GB') : ''),
+      sortv: nhl ? +(st(e,'points')?.value ?? 0) : +(st(e,'winPercent')?.value ?? 0)};
+  }).sort((a,b) => b.sortv - a.sortv).map(({sortv, ...r}) => r);
+}
+async function loadStandings(){
+  if (window.claude) return;
+  const ks = sbTeams().filter(k => LIVE_TEAMS[k]), paths = [...new Set(ks.map(k => LIVE_TEAMS[k][0]))], out = {};
+  await Promise.all(paths.map(async p => { try { const j = await getJSON(STAND_SRC[p]);
+    ks.filter(k => LIVE_TEAMS[k][0] === p).forEach(k => { const g = findGroup(j, LIVE_TEAMS[k][1]); if (g) out[g.name || k] = {team: k, rows: standRows(g, LIVE_TEAMS[k][1], p)}; }); } catch {} }));
+  if (Object.keys(out).length) standLive = out;
+  renderStandings();
+}
+function renderStandings(){
+  const tabs = $('standtabs'), box = $('standtable'); if (!box) return;
+  const d = standLive || (snapView().standings && typeof snapView().standings === 'object' ? snapView().standings : null), names = d ? Object.keys(d) : [];
+  if (!names.length){ tabs.replaceChildren();
+    box.replaceChildren(h('div',{class:'empty'}, window.claude ? 'Standings arrive with the morning update.' : 'Standings didn’t load just now.'),
+      h('div',{class:'launch'}, h('a',{href:'https://www.espn.com/nfl/standings', target:'_blank', rel:'noopener'}, 'NFL standings'), h('a',{href:'https://www.espn.com/nhl/standings', target:'_blank', rel:'noopener'}, 'NHL standings'))); return; }
+  if (!names.includes(standTab)) standTab = names[0];
+  tabs.replaceChildren(...names.map(n => h('button',{class:'gtab', type:'button', role:'tab', 'aria-selected': n === standTab ? 'true' : 'false', onclick: () => { standTab = n; renderStandings(); }}, n)));
+  box.replaceChildren(h('div',{class:'qwrap'}, h('table',{class:'qt stt'}, h('tbody',{}, ((d[standTab] || {}).rows || []).map(r =>
+    h('tr',{class: r.me ? 'me' : ''}, h('td',{}, r.team), h('td',{class:'num'}, r.rec), h('td',{class:'num'}, r.extra || '')))))));
+}
+
+/* ---------- Did you know (checked team history facts) ---------- */
+const FACTS = {
+  Rangers: ['The Rangers joined the NHL in 1926 and are one of the league’s Original Six teams.',
+    'The Rangers have won the Stanley Cup four times: 1928, 1933, 1940 and 1994.',
+    'The 1994 Stanley Cup ended a 54-year wait, the longest title drought in Rangers history.',
+    'Before Game 6 of the 1994 conference final, Mark Messier guaranteed a win against the Devils, then scored a third-period hat trick to deliver it.',
+    'Brian Leetch won the 1994 Conn Smythe Trophy as playoff MVP, the first American-born player to win it.',
+    'Henrik Lundqvist holds the Rangers record for goalie wins with 459.',
+    'Rod Gilbert is the Rangers’ all-time leading scorer with 1,021 points.',
+    'Jaromír Jágr set the Rangers’ single-season records for goals (54) and points (123) in 2005–06.',
+    'In the 1928 Stanley Cup Final, 44-year-old coach Lester Patrick played goal for the Rangers after their goalie was injured, and they won the game in overtime.',
+    'The Rangers have won the Presidents’ Trophy for the NHL’s best regular-season record four times: 1992, 1994, 2015 and 2024.',
+    'The current Madison Square Garden, the Rangers’ home, opened in 1968 above Penn Station.',
+    'The Rangers reached the 2014 Stanley Cup Final, losing to the Los Angeles Kings.',
+    'Brian Leetch won the Norris Trophy as the NHL’s best defenseman in 1992 and 1997.'],
+  Giants: ['The Giants were founded in 1925 and have won eight NFL championships, four of them Super Bowls.',
+    'The Giants won Super Bowls XXI, XXV, XLII and XLVI.',
+    'In Super Bowl XLII the Giants beat the 18–0 New England Patriots, ending their bid for a perfect season.',
+    'David Tyree’s “helmet catch” kept the game-winning drive alive in Super Bowl XLII.',
+    'Eli Manning was named Super Bowl MVP twice, for XLII and XLVI.',
+    'In the 1934 “Sneakers Game,” the Giants switched to basketball shoes on a frozen field and beat the Bears for the title.',
+    'The 1958 title game the Giants lost to the Colts in overtime is often called “the greatest game ever played.”',
+    'Lawrence Taylor won NFL MVP in 1986, and he is still the last defensive player to win it.',
+    'Michael Strahan set the NFL single-season sack record with 22.5 in 2001.',
+    'Phil Simms completed 22 of 25 passes to win Super Bowl XXI MVP.',
+    'Bill Parcells coached the Giants to their first two Super Bowl titles, and Tom Coughlin to the next two.',
+    'Odell Beckham Jr.’s one-handed touchdown catch against Dallas in 2014 is one of the most replayed catches ever.'],
+  Bills: ['The Bills are the only team to play in four straight Super Bowls, from the 1990 through 1993 seasons.',
+    'The Bills were a founding member of the American Football League in 1960.',
+    'Buffalo won back-to-back AFL championships in 1964 and 1965.',
+    'In “The Comeback,” the Bills rallied from 35–3 down to beat the Oilers 41–38 in overtime in the January 1993 playoffs.',
+    'Backup quarterback Frank Reich led the Bills’ record playoff comeback against Houston.',
+    'Bruce Smith is the NFL’s all-time sack leader with 200.',
+    'Thurman Thomas was named NFL MVP in 1991.',
+    'Jim Kelly ran the Bills’ famous no-huddle “K-Gun” offense in the early 1990s.',
+    'Marv Levy coached the Bills in all four of their straight Super Bowl appearances.',
+    'Scott Norwood’s 47-yard field goal attempt went wide right at the end of Super Bowl XXV, which the Giants won 20–19.',
+    'The Bills ended a 17-season playoff drought in the 2017 season.',
+    'Josh Allen was named NFL MVP for the 2024 season.'],
+  Jaguars: ['The Jaguars played their first season in 1995, joining the NFL with the Carolina Panthers.',
+    'In only their second season, 1996, the Jaguars reached the AFC Championship Game.',
+    'The 1999 Jaguars went 14–2, still the best record in team history.',
+    'Tony Boselli, the Jaguars’ first-ever draft pick, became the first Jaguar in the Pro Football Hall of Fame in 2022.',
+    'Fred Taylor is the Jaguars’ all-time leading rusher.',
+    'Jacksonville hosted Super Bowl XXXIX in February 2005.',
+    'The Jaguars have played regular-season home games in London since 2013.',
+    'In the 2022 playoffs the Jaguars came back from 27–0 down to beat the Chargers 31–30.',
+    'The 2017 Jaguars defense earned the nickname “Sacksonville” on the way to the AFC Championship Game.',
+    'The Jaguars’ stadium hosts the annual Florida–Georgia football game.',
+    'The stadium’s north end zone has pools and cabanas, added in 2014.',
+    'Jaxson de Ville has been the Jaguars’ mascot since 1996.'],
+  'Penn State': ['Penn State won national championships in the 1982 and 1986 seasons.',
+    'Penn State beat Miami 14–10 in the Fiesta Bowl to clinch the 1986 national title.',
+    'Penn State beat Georgia 27–23 in the Sugar Bowl to win the 1982 national title.',
+    'John Cappelletti won the 1973 Heisman Trophy, Penn State’s only Heisman winner.',
+    'Penn State went undefeated in 1968, 1969, 1973 and 1994 without being named national champion.',
+    'Penn State began playing Big Ten football in 1993.',
+    'Beaver Stadium holds more than 106,000 fans, one of the largest stadiums in the world.',
+    'The Nittany Lion Shrine on campus was a gift from the class of 1940.',
+    'Saquon Barkley went from Penn State to the No. 2 pick in the 2018 NFL Draft.',
+    'Penn State’s White Out games fill Beaver Stadium with more than 100,000 fans dressed in white.',
+    'THON, Penn State’s student dance marathon, raises millions of dollars each year for children’s cancer care.',
+    'Penn State was founded in 1855.'],
+  Icemen: ['The Jacksonville Icemen joined the ECHL for the 2017–18 season.',
+    'The Icemen play their home games at VyStar Veterans Memorial Arena in downtown Jacksonville.',
+    'The ECHL is the level of pro hockey just below the AHL, two steps from the NHL.',
+    'Before the Icemen, Jacksonville’s ECHL team was the Lizard Kings, who played from 1995 to 2000.'],
+  'Jumbo Shrimp': ['The Jumbo Shrimp were called the Jacksonville Suns until they took their new name before the 2017 season.',
+    'The Jumbo Shrimp moved up to Triple-A in 2021, one step below the major leagues.',
+    'Jacksonville’s team has been a Miami Marlins affiliate since 2009.',
+    'Hank Aaron played in Jacksonville in 1953 and helped integrate the South Atlantic League.',
+    'The Jumbo Shrimp play at VyStar Ballpark, which opened in 2003.']
+};
+let dykLast = null;
+function renderDyk(){
+  const box = $('dyk'); if (!box) return;
+  const ks = sbTeams().filter(k => FACTS[k]); if (!ks.length){ box.replaceChildren(); return; }
+  let k, f, n = 0;
+  do { k = ks[Math.floor(Math.random() * ks.length)]; f = FACTS[k][Math.floor(Math.random() * FACTS[k].length)]; } while (f === dykLast && ++n < 12);
+  dykLast = f;
+  box.replaceChildren(h('div',{class:'dykh'}, teamLogo(k, 'tl-row') || null, h('span',{class:'lk'}, k + ' history')), h('p',{class:'dykt'}, f));
+}
+
+/* ---------- Game-day weather (outdoor home games in the next 7 days) ---------- */
+const STADIUMS = {Jaguars:['EverBank Stadium',30.3239,-81.6373], 'Penn State':['Beaver Stadium',40.8122,-77.8561], Bills:['Highmark Stadium',42.7738,-78.7870],
+  Giants:['MetLife Stadium',40.8135,-74.0745], 'Jumbo Shrimp':['VyStar Ballpark',30.3253,-81.6430]};
+const gdwCache = {};
+async function renderGameWx(){
+  const box = $('gdw'); if (!box) return;
+  if (window.claude){ const list = (S.snapshot.gameWeather || []).filter(x => x && new Date(x.start) > Date.now());
+    box.replaceChildren(...(list.length ? list.map(x => h('div',{class:'lnext'}, h('span',{class:'lk'}, new Date(x.start).toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}) + (x.venue ? ' · ' + x.venue : '')), h('b',{}, x.title || ''), h('span',{class:'sub'}, x.line || '')))
+      : [h('div',{class:'empty'}, 'No outdoor home games in the next 7 days.')])); return; }
+  const now = Date.now();
+  const games = (gamesCache || []).filter(g => g.home && STADIUMS[teamKey(g.team)] && !g.tbd && new Date(g.start) > now && new Date(g.start) - now < 7*864e5)
+    .sort((a,b) => new Date(a.start) - new Date(b.start)).slice(0, 4);
+  if (!games.length){ box.replaceChildren(h('div',{class:'empty'}, 'No outdoor home games in the next 7 days.')); return; }
+  const rows = await Promise.all(games.map(async g => { const [nm, lat, lon] = STADIUMS[teamKey(g.team)], key = lat + ',' + lon;
+    try { let c = gdwCache[key];
+      if (!c || now - c.at > 3*3600e3){ c = {at: now, d: await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=GMT&forecast_days=8`)}; gdwCache[key] = c; }
+      const H = c.d.hourly, i = H.time.indexOf(new Date(g.start).toISOString().slice(0,13) + ':00');
+      return {g, nm, line: i < 0 ? 'Forecast isn’t out yet' : `${Math.round(H.temperature_2m[i])}° · ${WX[H.weather_code[i]] || 'Mixed'} · ${H.precipitation_probability[i] ?? 0}% rain · wind ${Math.round(H.wind_speed_10m[i])} mph`};
+    } catch { return {g, nm, line: 'Forecast unavailable right now'}; } }));
+  box.replaceChildren(...rows.map(r => h('div',{class:'lnext'}, h('span',{class:'lk'}, new Date(r.g.start).toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}) + ' · ' + r.nm),
+    h('b',{}, r.g.label ? `${r.g.team} · ${r.g.label}` : `${r.g.team} vs ${r.g.oppShort || r.g.opp}`), h('span',{class:'sub'}, r.line))));
+}
+
+/* ---------- Golf ---------- */
+let golfWxLive = null;
+async function loadHomeWx(){
+  if (window.claude) return; const ll = homeLL(); if (!ll) return;
+  try { const j = await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${ll[0]}&longitude=${ll[1]}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m,wind_gusts_10m,cloud_cover&daily=sunrise,sunset,uv_index_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FNew_York&forecast_days=7`);
+    if (!j.hourly || !j.daily) throw 0; golfWxLive = j; stat('weather', true); }
+  catch { stat('weather', false, 'home forecast didn’t load'); }
+  renderGolf(); renderSky(); renderBeach();
+}
+const golfWx = () => golfWxLive || snapView().golfWx || null;
+const hrShort = d => d.toLocaleTimeString([], {hour:'numeric'}).replace(':00', '');
+function rateHour(H, i){
+  const pp = +(H.precipitation_probability?.[i] ?? 0), code = +(H.weather_code?.[i] ?? 0), w = +(H.wind_speed_10m?.[i] ?? 0), g = +(H.wind_gusts_10m?.[i] ?? 0);
+  const f = +(H.apparent_temperature?.[i] ?? H.temperature_2m[i]), why = []; let lv = 2;
+  const bad = (c, t) => { if (c){ lv = 0; why.push(t); } }, meh = (c, t) => { if (c){ lv = Math.min(lv, 1); why.push(t); } };
+  bad(code >= 95, 'lightning'); bad(pp >= 50, pp + '% rain chance'); bad(w >= 20 || g >= 30, 'wind ' + Math.round(w) + ' mph, gusts ' + Math.round(g));
+  bad(f >= 100, 'heat index ' + Math.round(f) + '°'); bad(f < 45, 'feels like ' + Math.round(f) + '°');
+  if (lv){ meh(pp >= 30, pp + '% rain chance'); meh(w >= 14 || g >= 24, 'wind ' + Math.round(w) + ' mph, gusts ' + Math.round(g)); meh(f >= 93, 'heat index ' + Math.round(f) + '°'); meh(f < 55, 'chilly, feels like ' + Math.round(f) + '°'); }
+  return {lv, why, pp, w: Math.round(w), g: Math.round(g), f: Math.round(f), t: Math.round(+H.temperature_2m[i])};
+}
+function golfDay(wx, di){
+  const H = wx.hourly, D = wx.daily, date = D.time[di], sr = parseLocal(D.sunrise[di]), ss = parseLocal(D.sunset[di]), now = Date.now(), hrs = [];
+  if (!date || !sr || !ss) return {lv: -1, hrs, issues: []};
+  H.time.forEach((t, i) => { if (!t.startsWith(date)) return; const d = parseLocal(t); if (!d) return;
+    if (d < sr.getTime() - 30*60e3 || d > ss.getTime() - 60*60e3) return; if (di === 0 && d < now - 30*60e3) return;
+    hrs.push({d, ...rateHour(H, i)}); });
+  let best = null;
+  for (let s = 0; s + 4 <= hrs.length; s++){ const win = hrs.slice(s, s + 4), mn = Math.min(...win.map(x => x.lv)), sum = win.reduce((a,x) => a + x.lv, 0);
+    if (!best || mn > best.mn || (mn === best.mn && sum > best.sum)) best = {mn, sum, s}; }
+  if (best){ let a = best.s, b = best.s + 3; while (a > 0 && hrs[a-1].lv >= best.mn) a--; while (b < hrs.length - 1 && hrs[b+1].lv >= best.mn) b++;
+    best.from = hrs[a].d; best.to = new Date(hrs[b].d.getTime() + 3600e3); best.a = a; best.b = b; }
+  const issues = [], seen = new Set();
+  hrs.forEach(x => x.why.forEach(w => { const key = w.replace(/[\d%°.]+/g, '').trim().split(' ')[0]; if (seen.has(key)) return; seen.add(key);
+    issues.push((w === 'lightning' ? 'Lightning possible' : cap1(w)) + ' around ' + hrShort(x.d)); }));
+  return {lv: best ? best.mn : -1, best, hrs, issues};
+}
+function golfSummary(){
+  const wx = golfWx(); if (!wx || !wx.hourly || !wx.daily) return null;
+  let di = 0, day = golfDay(wx, 0); if (day.lv < 0){ di = 1; day = golfDay(wx, 1); }
+  let next = null; for (let k = di + 1; k < Math.min(7, wx.daily.time.length); k++){ if (golfDay(wx, k).lv === 2){ next = parseLocal(wx.daily.time[k] + ' 12:00'); break; } }
+  return {di, day, next, when: di === 0 ? 'today' : 'tomorrow', word: ['Skip','Fair','Good'][day.lv] || 'No forecast'};
+}
+function golfLine(){
+  const g = golfSummary(); if (!g || g.day.lv < 0) return '';
+  const w = g.day.best ? `${hrShort(g.day.best.from)} to ${hrShort(g.day.best.to)}` : '';
+  return g.day.lv === 2 ? `Golf ${g.when} looks good. Best window ${w}.` : g.day.lv === 1 ? `Golf ${g.when} is fair. ${g.day.issues[0] || ''}.` : `Golf ${g.when}: skip it. ${g.day.issues[0] || ''}.${g.next ? ' Next good day is ' + dayWord(g.next) + '.' : ''}`;
+}
+function renderGolf(){
+  const mini = $('golfminibody'), v = $('golfverdict'), hoursEl = $('golfhours'), facts = $('golffacts');
+  const g = golfSummary();
+  if (!g){ const msg = window.claude ? 'The golf forecast arrives with the morning update.' : homeLL() ? 'Checking the forecast…' : 'Add your home city in Settings to get a golf forecast.';
+    [mini, v].forEach(el => el && el.replaceChildren(h('div',{class:'empty'}, msg))); if (hoursEl) hoursEl.replaceChildren(); if (facts) facts.replaceChildren(); return; }
+  const {day, next} = g, lv = day.lv, cls = ['bad','warn','ok'][lv] || '';
+  const win = day.best ? `${hrShort(day.best.from)} – ${hrShort(day.best.to)}` : '';
+  const head = lv === 2 ? 'Best window ' + win : lv === 1 ? 'Playable ' + win : 'Not a good golf day';
+  const why = day.issues.slice(0, 2).join('. ') || 'No weather problems in the forecast.';
+  const nx = lv < 2 ? (next ? 'Next good day: ' + cap1(dayWord(next)) : 'No good day in the 7-day forecast') : '';
+  if (mini) mini.replaceChildren(h('div',{class:'gverd ' + cls}, h('span',{class:'gword'}, g.word), h('span',{}, h('b',{}, cap1(g.when) + ' · ' + head), h('span',{class:'sub'}, why + (nx ? '. ' + nx : '')))));
+  if (v) v.replaceChildren(h('div',{class:'gverd big ' + cls}, h('span',{class:'gword'}, g.word), h('span',{}, h('span',{class:'lk'}, 'Golf ' + g.when), h('b',{}, head), h('span',{class:'sub'}, why))));
+  if (hoursEl) hoursEl.replaceChildren(...day.hrs.slice(0, 14).map((x, i) => h('div',{class:'ghr' + (day.best && i >= day.best.a && i <= day.best.b && lv > 0 ? ' best' : '')},
+    h('span',{}, hrShort(x.d)), h('b',{}, x.t + '°'), h('small',{}, x.pp >= 30 ? x.pp + '% rain' : x.w + ' mph'), h('i',{class:'gbar ' + ['bad','warn','ok'][x.lv]}))));
+  if (facts){ const s = day.best ? day.hrs[day.best.a] : day.hrs[0];
+    facts.replaceChildren(h('div',{}, h('small',{}, 'Wind at tee time'), h('b',{}, s ? `${s.w} mph, gusts ${s.g}` : '—')), h('div',{}, h('small',{}, 'Feels like'), h('b',{}, s ? s.f + '°' : '—')),
+      h('div',{}, h('small',{}, 'Rain chance in window'), h('b',{}, day.best ? Math.max(...day.hrs.slice(day.best.a, day.best.b + 1).map(x => x.pp)) + '%' : '—')),
+      h('div',{}, h('small',{}, 'Next good day'), h('b',{}, next ? cap1(dayWord(next)) : (lv === 2 ? cap1(g.when) : 'None this week')))); }
+  const st = $('golfstamp'); if (st) st.textContent = golfWxLive ? 'Live forecast · ' + hm(new Date()) : (S.snapshot.updatedAt ? 'Morning forecast' : '');
+}
+const WHS = {3:[1,-2], 4:[1,-1], 5:[1,0], 6:[2,-1], 7:[2,0], 8:[2,0], 9:[3,0], 10:[3,0], 11:[3,0], 12:[4,0], 13:[4,0], 14:[4,0], 15:[5,0], 16:[5,0], 17:[6,0], 18:[6,0], 19:[7,0], 20:[8,0]};
+function handicap(rounds){
+  const r = rounds.filter(x => +x.rating > 0 && +x.slope >= 55 && +x.score > 0).sort((a,b) => String(b.date).localeCompare(String(a.date))).slice(0, 20);
+  if (r.length < 3) return null;
+  const diffs = r.map(x => Math.round((113 / +x.slope) * (+x.score - +x.rating) * 10) / 10).sort((a,b) => a - b), [n, adj] = WHS[r.length];
+  return {idx: Math.round((diffs.slice(0, n).reduce((a,b) => a + b, 0) / n + adj) * 10) / 10, n: r.length};
+}
+const COURSES = [['King & Bear · World Golf Village','World Golf Village, St. Augustine','https://www.golfnow.com/courses/1588958-world-golf-village-king-bear-golf-course-details'],
+  ['St. Johns Golf Club','Elkton · county-owned public course','https://www.golfnow.com/courses/1039049-st-johns-golf-club-details'],
+  ['St. Augustine Shores Golf Club','St. Augustine Shores','https://www.golfnow.com/courses/1028716-st-augustine-shores-golf-course-details'],
+  ['TPC Sawgrass','Ponte Vedra Beach · home of The Players','https://www.tpc.com/sawgrass/']];
+R.golf = () => {
+  const rounds = (S.golf.rounds || []).slice().sort((a,b) => String(b.date).localeCompare(String(a.date)));
+  const hc = handicap(rounds), hEl = $('hcp'); if (!hEl) return;
+  hEl.textContent = hc ? hc.idx.toFixed(1) : '—'; hEl.title = hc ? `From your last ${hc.n} rounds` : 'Needs 3 rounds with course rating and slope';
+  const last5 = rounds.slice(0, 5).filter(x => +x.score);
+  $('golfavg').textContent = last5.length ? 'Last ' + last5.length + ' avg ' + (last5.reduce((a,x) => a + +x.score, 0) / last5.length).toFixed(1) : '';
+  const ul = $('rounds'); ul.replaceChildren();
+  if (!rounds.length) ul.append(h('li',{class:'empty'}, 'No rounds yet. Log one below.'));
+  rounds.slice(0, 8).forEach(x => ul.append(h('li',{}, h('span',{class:'sn'}, x.course || 'Round', h('small',{}, (x.date ? new Date(x.date + 'T12:00').toLocaleDateString([], {month:'short', day:'numeric', year:'numeric'}) : '') + (+x.rating && +x.slope ? ` · ${x.rating} / ${x.slope}` : ''))),
+    h('span',{class:'sc2'}, String(x.score)), h('button',{class:'x', type:'button', 'aria-label':'Delete round', onclick: () => { S.golf.rounds = (S.golf.rounds || []).filter(r => r !== x); R.golf(); save('golf'); }}, '×'))));
+  $('courses').replaceChildren(...COURSES.map(([n, w, u]) => h('li',{}, h('span',{class:'sn'}, n, h('small',{}, w)), h('a',{class:'btn', href: u, target:'_blank', rel:'noopener'}, 'Tee times'), h('span'))),
+    h('li',{}, h('span',{class:'sn'}, 'Every course near home', h('small',{}, 'Search tee times by date')), h('a',{class:'btn', href:'https://www.golfnow.com/', target:'_blank', rel:'noopener'}, 'GolfNow'), h('span')));
+  $('r-courses').replaceChildren(...[...new Set([...COURSES.map(c => c[0]), ...rounds.map(r => r.course).filter(Boolean)])].map(n => h('option',{value: n})));
+};
+$('roundform').addEventListener('submit', e => {
+  e.preventDefault(); const score = +$('r-score').value.replace(/[^0-9]/g, ''); if (!score) { $('r-score').focus(); return; }
+  (S.golf.rounds ||= []).push({id: uid(), date: $('r-date').value || todayISO(), course: $('r-course').value.trim(), score, rating: +$('r-rating').value || null, slope: +$('r-slope').value || null});
+  ['r-score','r-rating','r-slope'].forEach(i => $(i).value = ''); R.golf(); save('golf');
+});
+
+/* ---------- Beach today ---------- */
+let beachLive = null;
+async function loadBeach(){
+  if (window.claude) return;
+  try { const list = await getJSON('https://api.weather.gov/products/types/SRF/locations/JAX'), id = (list['@graph'] || [])[0]?.['@id']; if (!id) throw 0;
+    const txt = String((await getJSON(id)).productText || ''), seg = txt.split('$$').find(s => /St\.? Johns/i.test(s)) || '', m = seg.match(/Rip Current Risk\*?\.*\s*([A-Za-z]+)/i);
+    beachLive = {rip: m ? cap1(m[1].toLowerCase()) : null}; stat('beach', !!m, m ? '' : 'no St. Johns rip forecast today');
+  } catch { stat('beach', false, 'surf zone forecast didn’t load'); }
+  renderBeach();
+}
+function renderBeach(){
+  const box = $('beachread'); if (!box) return;
+  const sb = S.snapshot.beach || {}, alertRip = (nwsAlerts || S.snapshot.alerts || []).some(a => /rip current/i.test(a.event || ''));
+  const rip = alertRip ? 'High' : (beachLive && beachLive.rip) || sb.rip || null;
+  const wx = golfWx(), uv = wx?.daily?.uv_index_max?.[0] ?? sb.uv;
+  const uvTxt = uv == null ? '—' : Math.round(uv) + ' · ' + (uv < 3 ? 'Low' : uv < 6 ? 'Moderate' : uv < 8 ? 'High' : uv < 11 ? 'Very high' : 'Extreme');
+  const stats = (S.snapshot.fishing || {}).stats || [], sv = l => (stats.find(x => x.label === l) || {}).value || '—';
+  const rc = rip ? ({Low:'ok', Moderate:'warn', High:'bad'}[rip] || '') : '';
+  box.replaceChildren(h('div',{}, h('small',{}, 'Rip currents'), h('b',{class: rc}, rip || '—')), h('div',{}, h('small',{}, 'UV index'), h('b',{}, uvTxt)),
+    h('div',{}, h('small',{}, 'Water'), h('b',{}, sv('Water'))), h('div',{}, h('small',{}, 'Surf'), h('b',{}, sv('Surf'))));
+  const f = S.snapshot.fishing, td = (f?.tides || []).map(x => ({d: parseLocal(x.t), hi: x.type === 'H'})).filter(x => x.d && x.d > new Date()).sort((a,b) => a.d - b.d)[0];
+  $('beachfish').replaceChildren(h('span',{class:'lk'}, 'Fishing'), h('b',{}, td ? `Next ${td.hi ? 'high' : 'low'} tide ${hm(td.d)}` : 'Tide times load with the forecast'),
+    h('span',{class:'sub'}, (sv('Wind') !== '—' ? 'Wind ' + sv('Wind') + '. ' : '') + 'Open SurfCast for today’s Go / Maybe / Skip and the best spots.'));
+  $('beachsub').textContent = rip ? (rip === 'High' ? 'Stay out of the water' : rip === 'Moderate' ? 'Swim near a lifeguard' : 'Calmer surf') : '';
+}
+
+/* ---------- Tonight's sky ---------- */
+function renderSky(){
+  const box = $('skyread'); if (!box) return;
+  const ll = homeLL(), sun = ll ? sunTimes(new Date(new Date().setHours(12,0,0,0)), ll[0], ll[1]) : null, m = moonPhase(), wx = golfWx();
+  let cc = null; if (wx?.hourly){ const i = wx.hourly.time.indexOf(isoDay(new Date()) + 'T21:00'); if (i >= 0) cc = +wx.hourly.cloud_cover?.[i]; }
+  box.replaceChildren(h('div',{}, h('small',{}, 'Sunset'), h('b',{}, sun ? hm(sun.set) : '—')), h('div',{}, h('small',{}, 'Moon'), h('b',{}, m.name.replace(/ moon$/, '') + ' · ' + m.illum + '%')),
+    h('div',{}, h('small',{}, 'Clouds at 9 PM'), h('b',{}, cc == null || isNaN(cc) ? '—' : cc + '%')));
+  const night = (launchData || []).find(l => !/TBD|TBC/i.test(l.status || '') && l.d.toDateString() === new Date().toDateString() && isNight(l.d) && l.d > new Date());
+  const note = [cc == null || isNaN(cc) ? '' : cc < 30 ? 'Clear enough for stargazing tonight.' : cc < 70 ? 'Partly cloudy tonight.' : 'Mostly cloudy tonight.',
+    night ? `Night launch at ${hm(night.d)}: ${night.name}. Look south.` : ''].filter(Boolean).join(' ');
+  $('skynote').textContent = note;
+}
+
+/* ---------- Traffic, gas, markets ---------- */
+function renderTravel(){
+  const tl = $('trafficlinks'); if (!tl) return;
+  const addr = S.home.address || '', ll = homeLL(), zip = (addr.match(/\b\d{5}\b/) || [''])[0];
+  const dir = d => 'https://www.google.com/maps/dir/?api=1' + (addr ? '&origin=' + encodeURIComponent(addr) : '') + '&destination=' + encodeURIComponent(d) + '&travelmode=driving';
+  const A = ([t, u]) => h('a',{href: u, target:'_blank', rel:'noopener'}, t);
+  tl.replaceChildren(...[['To Jacksonville', dir('Downtown Jacksonville, FL')], ['To JAX airport', dir('Jacksonville International Airport')], ['To downtown St. Augustine', dir('St. George Street, St. Augustine, FL')],
+    ['Traffic map', ll ? `https://www.google.com/maps/@${ll[0]},${ll[1]},12z/data=!5m1!1e1` : 'https://www.google.com/maps/'], ['FL511 cameras', 'https://fl511.com/'], ['Waze live map', 'https://www.waze.com/live-map/']].map(A));
+  $('gaslinks').replaceChildren(...[['GasBuddy near home', 'https://www.gasbuddy.com/home?search=' + encodeURIComponent(zip || addr || 'St. Augustine, FL')],
+    ['Gas on the map', 'https://www.google.com/maps/search/' + encodeURIComponent('gas station near ' + (addr || 'me'))], ['Florida average (AAA)', 'https://gasprices.aaa.com/?state=FL'],
+    ['Superchargers', 'https://www.tesla.com/findus?filters=supercharger']].map(A));
+}
+const MARKETS = [{name:'Amphitheatre Farmers Market', where:'St. Augustine Amphitheatre', when:'8:30 AM – 12:30 PM', dow:6},
+  {name:'Wednesday Pier Farmers Market', where:'St. Johns County Ocean Pier, St. Augustine Beach', when:'8 AM – 12:30 PM', dow:3},
+  {name:'Salt Air Farmers Market', where:'Marineland Marina', when:'10 AM – 2 PM', dow:0},
+  {name:'Palm Valley Farmers Market', where:'Palm Valley', when:'Tuesdays', dow:2},
+  {name:'Nocatee Farmers Market', where:'Nocatee', when:'Third Saturday of the month', dow:6, nth:[3]},
+  {name:'Night Market at the Amp', where:'St. Augustine Amphitheatre', when:'6 – 9 PM, March to October', dow:2, nth:[2,4], months:[3,10]}];
+function marketNext(m){
+  const t = new Date(); t.setHours(0,0,0,0);
+  for (let i = 0; i < 70; i++){ const d = new Date(t.getFullYear(), t.getMonth(), t.getDate() + i); if (d.getDay() !== m.dow) continue;
+    if (m.nth && !m.nth.includes(Math.ceil(d.getDate() / 7))) continue; if (m.months && (d.getMonth() + 1 < m.months[0] || d.getMonth() + 1 > m.months[1])) continue; return d; }
+  return null;
+}
+function renderMarkets(){
+  const box = $('markets'); if (!box) return;
+  const list = MARKETS.map(m => ({m, d: marketNext(m)})).filter(x => x.d).sort((a,b) => a.d - b.d);
+  box.replaceChildren(...list.map(({m, d}) => { const w = dayWord(d);
+    return h('div',{class:'grow' + (w === 'today' ? ' flagged' : '')}, h('span',{class:'gt'}, cap1(w.length > 9 ? d.toLocaleDateString([], {month:'short', day:'numeric'}) : w), h('small',{}, d.toLocaleDateString([], {weekday:'short'}))),
+      h('span',{class:'dot', style:'background:#3fd27a'}), h('span',{class:'gm'}, h('b',{}, m.name), h('span',{}, m.where + ' · ' + m.when))); }));
+}
+
+/* ---------- Reading & watch list ---------- */
+R.reading = () => {
+  const ul = $('readlist'); if (!ul) return; ul.replaceChildren();
+  const items = S.reading.items || [];
+  if (!items.length) ul.append(h('li',{class:'empty'}, 'Save an article, show, movie or book to come back to.'));
+  items.slice(0, 40).forEach(it => { const u = safeUrl(it.url || '');
+    ul.append(h('li',{}, h('span',{class:'sn'}, u ? h('a',{href: u, target:'_blank', rel:'noopener'}, it.title) : it.title, h('small',{}, it.kind + (it.at ? ' · saved ' + new Date(it.at).toLocaleDateString([], {month:'short', day:'numeric'}) : ''))),
+      h('span'), h('button',{class:'x', type:'button', 'aria-label':'Done with ' + it.title, onclick: () => { S.reading.items = items.filter(x => x !== it); R.reading(); save('reading'); }}, '✓'))); });
+};
+$('readform').addEventListener('submit', e => {
+  e.preventDefault(); const v = $('readin').value.trim(); if (!v) return;
+  const u = /^https?:\/\/|^www\./i.test(v) ? safeUrl(v) : null;
+  let title = v; if (u){ try { const x = new URL(u); title = x.hostname.replace(/^www\./, '') + (x.pathname.length > 1 ? ' · ' + decodeURIComponent(x.pathname.split('/').filter(Boolean).pop() || '').replace(/[-_]+/g, ' ').replace(/\.\w+$/, '').slice(0, 70) : ''); } catch {} }
+  (S.reading.items ||= []).unshift({id: uid(), title, url: u || '', kind: $('readkind').value, at: Date.now()}); $('readin').value = ''; R.reading(); save('reading');
+});
+
+/* ---------- Today in history (Wikipedia "On this day") ---------- */
+let histLive = null, histIdx = 0;
+async function loadHistory(){
+  if (window.claude){ renderHistory(); return; }
+  const d = new Date(), mm = p2(d.getMonth() + 1), dd = p2(d.getDate()), c = lsGet('otd');
+  if (c && c.day === mm + dd){ histLive = c; renderHistory(); stat('history', true, 'saved today'); return; }
+  try { let j; try { j = await getJSON(`https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/selected/${mm}/${dd}`); } catch { j = await getJSON(`https://en.wikipedia.org/api/rest_v1/feed/onthisday/selected/${mm}/${dd}`); }
+    const list = (j.selected || []).filter(x => x.text && x.year != null).map(x => ({year: x.year, text: x.text, url: x.pages?.[0]?.content_urls?.desktop?.page || ''}));
+    if (!list.length) throw 0; histLive = {day: mm + dd, list}; lsSet('otd', histLive); stat('history', true);
+  } catch { stat('history', false, 'Wikipedia didn’t load'); }
+  renderHistory();
+}
+function renderHistory(){
+  const box = $('history'); if (!box) return;
+  const today = new Date(), list = (histLive && histLive.list) || ((S.snapshot.history || {}).list) || [];
+  if (!list.length){ box.replaceChildren(h('div',{class:'empty'}, window.claude ? 'Today’s history fact arrives with the morning update.' : 'Loading today in history…')); return; }
+  const it = list[(today.getDate() + histIdx) % list.length], u = safeUrl(it.url || '');
+  box.replaceChildren(...[h('span',{class:'lk'}, today.toLocaleDateString([], {month:'long', day:'numeric'}) + ' · ' + it.year), h('p',{class:'dykt'}, it.text),
+    u ? h('a',{class:'sub', href: u, target:'_blank', rel:'noopener'}, 'Read more on Wikipedia ↗') : null].filter(Boolean));
+}
+$('histnext').addEventListener('click', () => { histIdx++; renderHistory(); });
+
+/* ---------- Update notice ---------- */
+window.__rvNewVer = null;
+async function checkUpdate(){
+  if (window.claude || !/^(https?|file):$/.test(location.protocol)) return;
+  try { const j = await getJSON('https://raw.githubusercontent.com/rvannederynen18/rv-1/main/version.json?t=' + Date.now());
+    window.__rvNewVer = j.version && String(j.version) > RV1_VERSION && !RV1_VERSION.includes('@') ? String(j.version) : null;
+    stat('version', true, window.__rvNewVer ? 'new version ready' : 'up to date'); renderHeads();
+  } catch { stat('version', false, 'couldn’t check GitHub'); }
+}
+async function doUpdate(){
+  if (location.protocol !== 'file:'){ location.reload(); return; }
+  try { const r = await fetch('https://raw.githubusercontent.com/rvannederynen18/rv-1/main/index.html?t=' + Date.now()); if (!r.ok) throw 0; const t = await r.text(); if (!t.includes('RV1_VERSION')) throw 0;
+    const a = h('a',{href: URL.createObjectURL(new Blob([t], {type:'text/html'})), download:'rv-1.html'}); document.body.append(a); a.click(); a.remove();
+    toastMsg('New rv-1.html saved to your Downloads. Replace your old file with it, same name and same folder.');
+  } catch { window.open('https://github.com/rvannederynen18/rv-1/blob/main/index.html', '_blank', 'noopener'); }
+}
+window.__rvDoUpdate = doUpdate;
+
+/* ---------- Wire it up ---------- */
+$('dyknext').addEventListener('click', renderDyk);
+window.__rv3 = true;
+renderScoreboard(); renderStandings(); renderDyk(); renderGolf(); renderBeach(); renderSky(); renderTravel(); renderMarkets(); renderHistory(); renderStatus();
+setTimeout(async () => { await whenReady(); R.golf(); R.reading(); renderScoreboard(); renderTravel(); loadScoreboard(); loadHomeWx(); loadBeach(); loadHistory(); checkUpdate(); renderGameWx(); }, 700);
+setInterval(() => { if (!document.hidden) loadScoreboard(); }, 15*60e3);
+setInterval(() => { if (!document.hidden){ loadHomeWx(); renderGameWx(); } }, 30*60e3);
+setInterval(() => { if (!document.hidden){ loadBeach(); checkUpdate(); } }, 3*3600e3);
+setInterval(renderDyk, 30*60e3);
+setInterval(() => { renderMarkets(); loadHistory(); renderSky(); }, 60*60e3);
+
+/* ---------- More engineering tools ---------- */
+(() => {
+  const num = id => parseFloat(String($(id)?.value || '').replace(/,/g, ''));
+  const f = (v, d = 1) => isFinite(v) ? (+v).toLocaleString('en-US', {maximumFractionDigits: d, minimumFractionDigits: 0}) : '—';
+  const cells = (id, arr) => $(id).replaceChildren(...arr.map(([k, v, cls]) => h('div',{}, h('small',{}, k), h('b',{class: cls || ''}, v))));
+  const on = (ids, fn) => ids.forEach(id => { const el = $(id); if (el){ el.addEventListener('input', fn); el.addEventListener('change', fn); } });
+
+  /* Fan array redundancy */
+  function arr(){
+    const n = Math.round(num('fa-n')), dn = Math.round(num('fa-down')), sp = num('fa-spd') / 100;
+    if (!(n > 0) || !(dn >= 0) || dn >= n || !(sp > 0)){ cells('fa-out', [['Each fan needs','—'],['Array power','—'],['Holds airflow?','—']]); return; }
+    const need = sp * n / (n - dn), ok = need <= 1.0001;
+    const pw = ok ? ((n - dn) * need ** 3) / (n * sp ** 3) : ((n - dn) * 1) / (n * sp ** 3);
+    cells('fa-out', [['Each fan needs', ok ? f(need * 100, 0) + '%' : '100% (maxed)', ok ? '' : 'warn'], ['Array power', (pw >= 1 ? '+' : '') + f((pw - 1) * 100, 0) + '%'],
+      ['Holds airflow?', ok ? 'Yes' : 'No · ' + f((n - dn) / (n * sp) * 100, 0) + '% max', ok ? 'ok' : 'bad']]);
+  }
+  on(['fa-n','fa-down','fa-spd'], arr);
+
+  /* 3-phase power */
+  function p3(){
+    const v = num('p3-v'), pf = num('p3-pf'), eff = num('p3-eff') / 100, k = $('p3-k').value, x = num('p3-x'), r3 = Math.sqrt(3);
+    let I = NaN; if (k === 'a') I = x; else if (k === 'kw') I = x * 1000 / (r3 * v * pf); else if (k === 'hp') I = x * 746 / (r3 * v * pf * eff);
+    const kw = r3 * v * I * pf / 1000;
+    cells('p3-out', [['Amps', f(I, 1) + ' A'], ['Real power', f(kw, 2) + ' kW'], ['Apparent', f(r3 * v * I / 1000, 2) + ' kVA'], ['Shaft HP', f(kw * eff / 0.746, 1)]]);
+  }
+  on(['p3-v','p3-pf','p3-eff','p3-k','p3-x'], p3);
+
+  /* Motor FLA: NEC Table 430.250 (3-phase induction); conductors: Table 310.16, 75°C copper; OCPD: Table 430.52 */
+  const FLA_HP = ['0.5','0.75','1','1.5','2','3','5','7.5','10','15','20','25','30','40','50','60','75','100','125','150','200'];
+  const FLA = {200:[2.5,3.7,4.8,6.9,7.8,11.0,17.5,25.3,32.2,48.3,62.1,78.2,92,120,150,177,221,285,359,414,552],
+    208:[2.4,3.5,4.6,6.6,7.5,10.6,16.7,24.2,30.8,46.2,59.4,74.8,88,114,143,169,211,273,343,396,528],
+    230:[2.2,3.2,4.2,6.0,6.8,9.6,15.2,22,28,42,54,68,80,104,130,154,192,248,312,360,480],
+    460:[1.1,1.6,2.1,3.0,3.4,4.8,7.6,11,14,21,27,34,40,52,65,77,96,124,156,180,240],
+    575:[0.9,1.3,1.7,2.4,2.7,3.9,6.1,9,11,17,22,27,32,41,52,62,77,99,125,144,192]};
+  const CU75 = [['14',20],['12',25],['10',35],['8',50],['6',65],['4',85],['3',100],['2',115],['1',130],['1/0',150],['2/0',175],['3/0',200],['4/0',230],['250',255],['300',285],['350',310],['400',335],['500',380]];
+  const OCPD = [15,20,25,30,35,40,45,50,60,70,80,90,100,110,125,150,175,200,225,250,300,350,400,450,500,600,700,800,1000,1200];
+  const PROT = {itb:[2.5,'Inverse-time breaker'], tdf:[1.75,'Dual-element fuse'], ntd:[3.0,'Non-time-delay fuse'], itr:[8.0,'Instantaneous-trip breaker']};
+  const awg = a => (CU75.find(([, amp]) => amp >= a) || ['>500'])[0];
+  function fla(){
+    const i = FLA_HP.indexOf($('fl-hp').value), t = FLA[$('fl-v').value], a = t && i >= 0 ? t[i] : NaN, p = PROT[$('fl-p').value], np = num('fl-np');
+    const cond = a * 1.25, raw = a * p[0], ocpd = OCPD.find(s => s >= raw) || raw;
+    cells('fl-out', [['FLA (430.250)', f(a, 1) + ' A'], ['Conductor ≥ 125%', f(cond, 1) + ' A · #' + awg(cond) + ' Cu'], ['Max ' + p[1].toLowerCase(), f(ocpd, 0) + ' A'],
+      ['Overload (nameplate)', isFinite(np) && np > 0 ? f(np * 1.15, 1) + ' – ' + f(np * 1.25, 1) + ' A' : 'Add nameplate']]);
+  }
+  $('fl-hp').replaceChildren(...FLA_HP.map(x => h('option',{value: x}, (x === '0.5' ? '½' : x === '0.75' ? '¾' : x === '1.5' ? '1½' : x === '7.5' ? '7½' : x) + ' HP')));
+  $('fl-hp').value = '10';
+  on(['fl-hp','fl-v','fl-p','fl-np'], fla);
+
+  /* Voltage drop: NEC Chapter 9 Table 8, uncoated copper, ohms per 1000 ft */
+  const R8 = [['14',3.07],['12',1.93],['10',1.21],['8',0.764],['6',0.491],['4',0.308],['3',0.245],['2',0.194],['1',0.154],['1/0',0.122],['2/0',0.0967],['3/0',0.0766],['4/0',0.0608],['250',0.0515],['300',0.0429],['350',0.0367],['400',0.0321],['500',0.0258]];
+  function vd(){
+    const I = num('vd-a'), L = num('vd-l'), V = num('vd-v'), ph = $('vd-ph').value, tgt = num('vd-t') || 3, k = ph === '3' ? Math.sqrt(3) : 2;
+    if (!(I > 0 && L > 0 && V > 0)){ cells('vd-out', [['Copper size','—'],['Drop','—'],['Volts at load','—']]); return; }
+    const amp = Object.fromEntries(CU75), pick = R8.find(([s, r]) => amp[s] >= I && k * I * r * L / 1000 / V * 100 <= tgt);
+    if (!pick){ cells('vd-out', [['Copper size','Larger than 500 kcmil', 'warn'],['Drop','—'],['Volts at load','—']]); return; }
+    const d = k * I * pick[1] * L / 1000;
+    cells('vd-out', [['Copper size', '#' + pick[0] + (/^\d{3}$/.test(pick[0]) ? ' kcmil' : '')], ['Drop', f(d, 1) + ' V · ' + f(d / V * 100, 2) + '%'], ['Volts at load', f(V - d, 1) + ' V']]);
+  }
+  on(['vd-a','vd-l','vd-v','vd-ph','vd-t'], vd);
+
+  /* Air-side loads */
+  function loads(){
+    const q = num('ld-cfm'), dt = num('ld-dt'), dh = num('ld-dh'), s = 1.08 * q * dt, t = 4.5 * q * dh;
+    cells('ld-out', [['Sensible', f(s, 0) + ' BTU/h'], ['Sensible tons', f(s / 12000, 1)], ['Total (4.5 × CFM × Δh)', isFinite(t) && dh ? f(t, 0) + ' BTU/h · ' + f(t / 12000, 1) + ' tons' : 'Enter Δh']]);
+  }
+  on(['ld-cfm','ld-dt','ld-dh'], loads);
+
+  /* Psychrometrics (sea level; Magnus dew point, Stull wet bulb) */
+  function psy(){
+    const tf = num('ps-db'), rh = num('ps-rh'); if (!(rh > 0 && rh <= 100) || !isFinite(tf)){ cells('ps-out', [['Dew point','—'],['Wet bulb','—'],['Enthalpy','—']]); return; }
+    const tc = (tf - 32) * 5 / 9, g = Math.log(rh / 100) + 17.62 * tc / (243.12 + tc), dp = 243.12 * g / (17.62 - g);
+    const wb = tc * Math.atan(0.151977 * Math.sqrt(rh + 8.313659)) + Math.atan(tc + rh) - Math.atan(rh - 1.676331) + 0.00391838 * rh ** 1.5 * Math.atan(0.023101 * rh) - 4.686035;
+    const pw = rh / 100 * 0.61078 * Math.exp(17.27 * tc / (tc + 237.3)), W = 0.622 * pw / (101.325 - pw), hh = 0.24 * tf + W * (1061 + 0.444 * tf);
+    const C2F = c => c * 9 / 5 + 32;
+    cells('ps-out', [['Dew point', f(C2F(dp), 1) + '°F'], ['Wet bulb (approx.)', f(C2F(wb), 1) + '°F'], ['Enthalpy', f(hh, 1) + ' BTU/lb'], ['Humidity ratio', f(W * 7000, 0) + ' gr/lb']]);
+  }
+  on(['ps-db','ps-rh'], psy);
+
+  /* Duct velocity */
+  function duct(){
+    const q = num('dc-cfm'), w = num('dc-w'), hh = num('dc-h'), d = num('dc-d');
+    const rect = w > 0 && hh > 0, area = rect ? w * hh / 144 : d > 0 ? Math.PI * (d / 2) ** 2 / 144 : NaN;
+    const de = rect ? 1.30 * (w * hh) ** 0.625 / (w + hh) ** 0.25 : NaN;
+    cells('dc-out', [['Area', f(area, 2) + ' ft²'], ['Velocity', f(q / area, 0) + ' FPM'], ['Round equivalent', rect ? f(de, 1) + '" dia' : '—']]);
+  }
+  on(['dc-cfm','dc-w','dc-h','dc-d'], duct);
+
+  /* Signal scaling */
+  const SIG = {ma:[4,20,'mA'], v10:[0,10,'V'], v210:[2,10,'V'], ma020:[0,20,'mA']};
+  function sig(){
+    const [lo, hi, u] = SIG[$('sg-t').value], s = num('sg-s'), a = num('sg-lo'), b = num('sg-hi'), un = $('sg-u').value || '';
+    const pct = (s - lo) / (hi - lo), val = a + pct * (b - a);
+    const bad = s < lo - 0.0001 || s > hi + 0.0001;
+    cells('sg-out', [['Percent', f(pct * 100, 1) + '%', bad ? 'warn' : ''], ['Value', f(val, 2) + (un ? ' ' + un : '')], ['Signal range', `${lo}–${hi} ${u}` + (bad ? ' · out of range' : '')]]);
+  }
+  on(['sg-t','sg-s','sg-lo','sg-hi','sg-u'], sig);
+
+  /* Sensor lookup: platinum RTD (IEC 60751, alpha .00385) and NTC thermistor (beta model) */
+  const A = 3.9083e-3, B = -5.775e-7, C = -4.183e-12;
+  function sen(){
+    const t = $('sn-t').value, mode = $('sn-m').value, x = num('sn-x'), r0 = t === 'pt1000' ? 1000 : 100, r25 = num('sn-r25'), beta = num('sn-b');
+    $('sn-ntc').hidden = t !== 'ntc';
+    let tf, ohm;
+    if (mode === 't'){ tf = x; const tc = (tf - 32) * 5 / 9;
+      ohm = t === 'ntc' ? r25 * Math.exp(beta * (1 / (tc + 273.15) - 1 / 298.15)) : r0 * (1 + A * tc + B * tc * tc + (tc < 0 ? C * (tc - 100) * tc ** 3 : 0)); }
+    else { ohm = x; let tc;
+      if (t === 'ntc') tc = 1 / (1 / 298.15 + Math.log(ohm / r25) / beta) - 273.15;
+      else { tc = (-A + Math.sqrt(A * A - 4 * B * (1 - ohm / r0))) / (2 * B); if (tc < 0){ for (let i = 0; i < 20; i++){ const fx = r0 * (1 + A * tc + B * tc * tc + C * (tc - 100) * tc ** 3) - ohm, d = r0 * (A + 2 * B * tc + C * (4 * tc ** 3 - 300 * tc * tc)); tc -= fx / d; } } }
+      tf = tc * 9 / 5 + 32; }
+    cells('sn-out', [['Temperature', f(tf, 1) + '°F · ' + f((tf - 32) * 5 / 9, 1) + '°C'], ['Resistance', f(ohm, ohm < 1000 ? 2 : 0) + ' Ω'],
+      ['Curve', t === 'ntc' ? 'NTC, β ' + f(beta, 0) + ' (check your datasheet)' : (t === 'pt1000' ? 'Pt1000' : 'Pt100') + ' · α 0.00385']]);
+  }
+  on(['sn-t','sn-m','sn-x','sn-r25','sn-b'], sen);
+
+  /* BACnet MS/TP planner */
+  let mstpList = [];
+  function mstp(){
+    const n = Math.round(num('ms-n')), m0 = Math.round(num('ms-mac')), base = Math.round(num('ms-inst')), ul = parseFloat($('ms-ul').value), baud = $('ms-b').value;
+    if (!(n > 0) || !(m0 >= 0) || !(base >= 0)){ cells('ms-out', [['MAC range','—'],['Instances','—'],['Segments','—']]); return; }
+    const perSeg = Math.max(1, Math.floor(31 / ul)), segs = Math.ceil(n / perSeg), last = m0 + n - 1;
+    mstpList = Array.from({length: n}, (_, i) => [i + 1, m0 + i, base + i]);
+    cells('ms-out', [['MAC range', `${m0} – ${last}`, last > 127 ? 'bad' : ''], ['Instances', `${base} – ${base + n - 1}`, base + n - 1 > 4194302 ? 'bad' : ''],
+      ['Segments', `${segs} · up to ${perSeg} devices each`, segs > 1 ? 'warn' : ''], ['Baud', baud]]);
+    $('ms-note').textContent = last > 127 ? 'Masters must use MAC 0–127. Start lower or split the trunk.' : 'Unit loads assume 32 per segment, with one taken by the controller. Keep each segment under about 4,000 ft at 76.8k baud and terminate both ends.';
+  }
+  on(['ms-n','ms-mac','ms-inst','ms-ul','ms-b'], mstp);
+  $('ms-copy').addEventListener('click', () => { const t = 'Device,MAC,Instance\n' + mstpList.map(r => r.join(',')).join('\n');
+    navigator.clipboard?.writeText(t).then(() => toastMsg('Device list copied. Paste it into a spreadsheet.'), () => toastMsg('Copy didn’t work in this browser.')); });
+
+  /* Quick reference sheets */
+  const REF = {
+    nema: ['NEMA & IP ratings', [['NEMA 1','Indoor, general purpose. Keeps out fingers and falling dirt.'],['NEMA 3R','Outdoor. Rain, sleet and snow; ice on the outside won’t damage it.'],['NEMA 4','Indoor or outdoor. Hose-directed water and windblown dust.'],['NEMA 4X','Same as NEMA 4, plus corrosion resistance. Common near the coast.'],['NEMA 12','Indoor, industrial. Dust, dirt and dripping non-corrosive liquids.'],['IP code','First digit = solids (0–6), second = water (0–9). IP65: dust-tight and water jets. IP66: dust-tight and powerful jets. IP67: brief immersion.']]],
+    wire: ['Wire colors', [['120/208 V','Black, red, blue (common practice).'],['277/480 V','Brown, orange, yellow (common practice).'],['Neutral','White or gray. Required by the NEC.'],['Ground','Green, green with yellow stripe, or bare. Required by the NEC.'],['Note','Phase colors are local convention, not NEC rules. Follow the job spec and local codes.']]],
+    fill: ['Conduit fill', [['1 conductor','53% of the conduit area (NEC Chapter 9, Table 1).'],['2 conductors','31%.'],['3 or more','40%.'],['Nipples','60% for nipples 24 inches or shorter.'],['How','Add up conductor areas from Chapter 9, Table 5, and compare with the conduit’s allowed area in Table 4.']]],
+    ohm: ['Ohm’s law & power', [['Voltage','V = I × R'],['Current','I = V ÷ R'],['Resistance','R = V ÷ I'],['DC power','P = V × I = I² × R'],['1-phase AC','kW = V × I × PF ÷ 1000'],['3-phase AC','kW = 1.732 × V × I × PF ÷ 1000']]],
+    rs485: ['RS-485 wiring', [['Topology','Daisy chain from device to device. No stars or long stubs.'],['Termination','120 Ω at the two physical ends of the trunk only.'],['Biasing','One set of bias resistors per segment, usually at the controller.'],['Shield','Carry the shield through and ground it at one end only.'],['Cable','Shielded twisted pair, about 120 Ω, low capacitance.'],['Common','Run a reference/common conductor when devices aren’t on the same ground.']]]
+  };
+  document.querySelectorAll('[data-ref]').forEach(b => b.addEventListener('click', () => {
+    const [title, rows] = REF[b.dataset.ref];
+    $('al-title').textContent = title; $('al-more').hidden = true;
+    $('al-body').replaceChildren(...rows.map(([k, v]) => h('p',{}, h('b',{}, k + ': '), v)));
+    $('alertsheet').hidden = false;
+  }));
+  arr(); p3(); fla(); vd(); loads(); psy(); duct(); sig(); sen(); mstp();
+})();
 })();
 </script>
