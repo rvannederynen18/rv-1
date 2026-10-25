@@ -2131,15 +2131,29 @@ function migrateLinks(){
   if (wx){ [['AccuWeather','https://www.accuweather.com/en/us/st-augustine-fl/32084/weather-forecast/332327'],['AccuWeather radar','https://www.accuweather.com/en/us/st-augustine-fl/32084/weather-radar/332327'],['Weather Underground','https://www.wunderground.com/forecast/us/fl/st.-augustine/32095']].reverse()
     .forEach(([n, u]) => { if (!has(wx, u)){ (wx.links ||= []).unshift({id: uid(), name: n, url: u}); changed = true; } }); }
   if (!L.groups.some(g => g.vault)){ L.groups.push(clone(VAULT_SEED)); changed = true; }
-  if (!L.myAppsAdded){ L.myAppsAdded = true; changed = true;
-    if (!L.groups.some(g => g.id === 'gmyapps')) L.groups.unshift(clone(MYAPPS_SEED)); }
+  if (fixMyApps(L)) changed = true;
   return changed;
 }
-const MYAPPS_SEED = {"id":"gmyapps","name":"My apps","links":[
-  {"id":"ma1","name":"SurfCast","url":"https://rvannederynen18.github.io/Surf-Cast/"},
-  {"id":"ma2","name":"Learning Den","url":"https://rvannederynen18.github.io/Learning-Den/"},
-  {"id":"ma3","name":"CV-1","url":"https://rvannederynen18.github.io/Learning-Den/cv-1.html"},
-  {"id":"ma4","name":"HV-1","url":"https://rvannederynen18.github.io/Learning-Den/hv-1.html"}]};
+const MYAPPS = [['SurfCast','https://rvannederynen18.github.io/Surf-Cast/'],['Learning Den','https://rvannederynen18.github.io/Learning-Den/'],
+  ['CV-1','https://rvannederynen18.github.io/Learning-Den/cv-1.html'],['HV-1','https://rvannederynen18.github.io/Learning-Den/hv-1.html']];
+/* Adds SurfCast, Learning Den, CV-1 and HV-1 once, into the existing "My apps" group if there is one; merges any duplicate "My apps" groups. */
+function fixMyApps(L){
+  let changed = false;
+  const norm = s => String(s || '').toLowerCase().replace(/^the\s+/, '').trim();
+  const same = (a, b) => a.url === b.url || norm(a.name) === norm(b.name);
+  const mine = L.groups.filter(g => !g.vault && (g.id === 'g0' || g.id === 'gmyapps' || norm(g.name) === 'my apps'));
+  let target = mine.find(g => g.id !== 'gmyapps') || mine[0];
+  mine.forEach(g => { if (g === target) return;
+    (g.links || []).forEach(l => { if (!(target.links || []).some(x => same(x, l))) (target.links ||= []).push(l); });
+    L.groups = L.groups.filter(x => x !== g); changed = true; });
+  delete L.myAppsAdded;
+  if (L.myAppsV2) return changed;
+  L.myAppsV2 = true; changed = true;
+  if (!target){ target = {id:'gmyapps', name:'My apps', links:[]}; L.groups.unshift(target); }
+  const all = L.groups.flatMap(g => g.links || []);
+  MYAPPS.forEach(([name, url]) => { if (!all.some(x => same(x, {name, url}))) (target.links ||= []).push({id: uid(), name, url}); });
+  return changed;
+}
 const VAULT_SEED = {"id":"gvault","name":"Vault","vault":true,"links":[
   {"id":"v1","name":"Google Password Manager","url":"https://passwords.google.com/"},
   {"id":"v2","name":"Google Security Checkup","url":"https://myaccount.google.com/security-checkup"},
