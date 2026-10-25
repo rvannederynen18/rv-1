@@ -769,6 +769,56 @@ html.vp-phone .t-golfmini{order:2}html.vp-phone .t-nextup{order:3}
 :root[data-pal="gunmetal"] .launch a,:root[data-pal="gunmetal"] .app{background:linear-gradient(180deg,#2c3846,#1f2833);border-color:#3a4958;box-shadow:inset 0 1px 0 rgba(210,230,255,.12)}
 :root[data-pal="gunmetal"] .dock{background:linear-gradient(180deg,#1b232c,#0e1319)}
 /*VP-PHONE-START*/
+/* ===== v4 polish: tighter console, press feedback, fewer dead zones ===== */
+/* My rounds collapsible */
+.gtoggle{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;min-height:44px;margin:-6px 0;cursor:pointer;border-radius:3px;touch-action:manipulation}
+.gtoggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gtl{display:flex;align-items:center;gap:10px}
+.gsum{display:flex;align-items:baseline;gap:14px}
+.gsum b{font-family:var(--f-cond);font-size:24px;font-weight:600;color:#eef4fa;margin-left:6px}
+.chev{width:14px;height:14px;color:var(--accent-text);transform:rotate(90deg);transition:transform .18s;flex:none}
+.rounds-well.closed .chev{transform:none}
+.rbody{display:flex;flex-direction:column;gap:8px}
+.rounds-well.closed .rbody{display:none}
+.rounds-well.closed{padding-block:10px}
+.gtoggle:active{background:rgba(255,255,255,.04)}
+/* touch: everything pressable gives a physical click */
+.btn,.launch a,.app,.sbtile,.tl-board,.gtab,.dk,.grow,.tcard a,.gtoggle,.chip{transition:transform .08s ease,filter .08s ease,border-color .15s}
+.btn:active,.launch a:active,.app:active,.sbtile:active,.tl-board:active,.gtab:active{transform:scale(.965);filter:brightness(1.18)}
+a.grow:active,a.sbrow:active{filter:brightness(1.15)}
+.launch a,.btn,.gtab,.dk,.app{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+/* panel labels read like console nameplates */
+.tile>.th:first-child h2{display:flex;align-items:center;gap:9px}
+.tile>.th:first-child h2::before{content:"";width:3px;height:13px;border-radius:1px;background:var(--accent);box-shadow:0 0 6px color-mix(in srgb,var(--accent) 55%,transparent);flex:none}
+/* odd button out spans the row instead of leaving a hole */
+.launch:not(.l4)>a:last-child:nth-child(odd){grid-column:1/-1}
+.launch.l4>a:last-child:nth-child(4n+1){grid-column:1/-1}
+.launch.l4>a:last-child:nth-child(4n+2){grid-column:span 3}
+.launch.l4>a:last-child:nth-child(4n+3){grid-column:span 2}
+.sbmini>:last-child:nth-child(4n+3){grid-column:span 2}
+.sbmini>:last-child:nth-child(4n+2){grid-column:span 3}
+.sbmini>:last-child:nth-child(4n+1){grid-column:1/-1}
+@media (min-width:1200px){
+  html:not(.vp-phone) .tile{padding:14px;gap:10px}
+  html:not(.vp-phone) .tile>.th:first-child{margin:-14px -14px 0;padding:8px 14px;min-height:40px}
+  html:not(.vp-phone) .home,html:not(.vp-phone) .col,html:not(.vp-phone) .two,html:not(.vp-phone) .newsg,html:not(.vp-phone) .spgrid,html:not(.vp-phone) .spside,html:not(.vp-phone) .toolsgrid{gap:12px}
+  html:not(.vp-phone) .spgrid{margin-top:12px}
+  html:not(.vp-phone) .local,html:not(.vp-phone) .cols3{column-gap:12px}
+  html:not(.vp-phone) .local>.tile,html:not(.vp-phone) .cols3>.tile{margin-bottom:12px}
+  html:not(.vp-phone) .askbar{margin-bottom:12px}
+  html:not(.vp-phone) .wrap{gap:12px}
+  /* upcoming games: 4 across on the big panel, tighter cells, team marks a touch stronger */
+  html:not(.vp-phone) #sched{grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px 12px}
+  html:not(.vp-phone) .t-sched .sd{padding:10px}
+  html:not(.vp-phone) .grow{padding:10px 12px;margin-bottom:6px}
+  html:not(.vp-phone) .tl-fill{opacity:.3}
+  /* team cards: fixed 3-up; a short last row stretches across */
+  html:not(.vp-phone) .teamcards{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  html:not(.vp-phone) .teamcards>.tcard:last-child:nth-child(3n+1){grid-column:1/-1}
+  html:not(.vp-phone) .teamcards>.tcard:last-child:nth-child(3n+2){grid-column:span 2}
+  html:not(.vp-phone) .teamcards>.tcard:last-child:nth-child(3n+1){display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,2fr) auto;align-items:center;column-gap:20px}
+  html:not(.vp-phone) .teamcards>.tcard:last-child:nth-child(3n+1) .tckv{margin:0}
+}
 html.vp-phone .home{grid-template-columns:repeat(2,minmax(0,1fr))}html.vp-phone .home .col:nth-child(3){grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
 html.vp-phone .home,html.vp-phone .two{grid-template-columns:minmax(0,1fr)}html.vp-phone .home .col:nth-child(3){display:flex}
 html.vp-phone .askbar{border-radius:var(--r);padding:12px}html.vp-phone .ask-go{width:100%}html.vp-phone .ask-go .btn{flex:1;padding-inline:8px}
@@ -1113,9 +1163,9 @@ html.vp-phone .toast{left:50%}
             <div class="sub">Good, Fair or Skip comes from the forecast at home over a 4-hour round in daylight: rain chance, lightning, wind and gusts, heat index and temperature.</div>
           </div>
           <div class="gr">
-            <div class="gwell">
-              <div class="ghead"><h3 class="subh" style="margin:0">My rounds</h3><span class="sub">Handicap estimate<b id="hcp">—</b></span></div>
-              <div class="sub" id="golfavg"></div>
+            <div class="gwell rounds-well" id="roundswell">
+              <button class="ghead gtoggle" id="roundstog" type="button" aria-expanded="true" aria-controls="roundsbody"><span class="gtl"><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><h3 class="subh" style="margin:0">My rounds</h3></span><span class="gsum"><span class="sub" id="golfavg"></span><span class="sub">HCP<b id="hcp">—</b></span></span></button>
+              <div class="rbody" id="roundsbody">
               <ul class="sublist" id="rounds"></ul>
               <form class="car-form" id="roundform" autocomplete="off">
                 <label>Date<input type="date" id="r-date"></label>
@@ -1127,6 +1177,7 @@ html.vp-phone .toast{left:50%}
               </form>
               <datalist id="r-courses"></datalist>
               <div class="sub">Rating and slope are on the scorecard for the tees you played. The estimate follows the World Handicap System and needs 3 rounds that include both.</div>
+              </div>
             </div>
             <div class="gwell"><h3 class="subh" style="margin:0">Courses near home</h3><ul class="sublist" id="courses"></ul></div>
           </div>
@@ -3982,11 +4033,21 @@ R.golf = () => {
   $('courses').replaceChildren(...COURSES.map(([n, w, u]) => h('li',{}, h('span',{class:'sn'}, n, h('small',{}, w)), h('a',{class:'btn', href: u, target:'_blank', rel:'noopener'}, 'Tee times'), h('span'))),
     h('li',{}, h('span',{class:'sn'}, 'Every course near home', h('small',{}, 'Search tee times by date')), h('a',{class:'btn', href:'https://www.golfnow.com/', target:'_blank', rel:'noopener'}, 'GolfNow'), h('span')));
   $('r-courses').replaceChildren(...[...new Set([...COURSES.map(c => c[0]), ...rounds.map(r => r.course).filter(Boolean)])].map(n => h('option',{value: n})));
+  setRoundsOpen(typeof S.golf.open === 'boolean' ? S.golf.open : rounds.length > 0);
 };
+/* My rounds: opens on its own once you've logged rounds, tucks away while empty; your tap wins after that */
+function setRoundsOpen(open){
+  const w = $('roundswell'), t = $('roundstog'); if (!w || !t) return;
+  w.classList.toggle('closed', !open); t.setAttribute('aria-expanded', String(open));
+}
+$('roundstog').addEventListener('click', () => {
+  const open = $('roundswell').classList.contains('closed'); S.golf.open = open; setRoundsOpen(open); save('golf');
+  if (open && !(S.golf.rounds || []).length) setTimeout(() => $('r-score').focus(), 60);
+});
 $('roundform').addEventListener('submit', e => {
   e.preventDefault(); const score = +$('r-score').value.replace(/[^0-9]/g, ''); if (!score) { $('r-score').focus(); return; }
   (S.golf.rounds ||= []).push({id: uid(), date: $('r-date').value || todayISO(), course: $('r-course').value.trim(), score, rating: +$('r-rating').value || null, slope: +$('r-slope').value || null});
-  ['r-score','r-rating','r-slope'].forEach(i => $(i).value = ''); R.golf(); save('golf');
+  delete S.golf.open; ['r-score','r-rating','r-slope'].forEach(i => $(i).value = ''); R.golf(); save('golf');
 });
 
 /* ---------- Beach today ---------- */
