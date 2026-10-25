@@ -1379,7 +1379,7 @@ html.vp-phone .toast{left:50%}
             <label class="fl">Color theme<select id="p-pal"><option value="">Brushed steel</option><option value="midnight">Midnight blue</option><option value="teal">Carbon teal</option><option value="amber">Graphite amber</option><option value="violet">Night violet</option><option value="crimson">Crimson</option><option value="gunmetal">Gunmetal blue</option></select></label>
             <label class="fl">Your name<input type="text" id="p-name" placeholder="Shown in the greeting"></label>
             <label class="fl">Home address<input type="text" id="p-addr" placeholder="Street, city, state ZIP"></label>
-            <label class="fl">Weather: home city<input type="text" id="p-city1" placeholder="e.g. St. Augustine, FL"></label>
+            <label class="fl">Home city (weather &amp; golf)<input type="text" id="p-city1" placeholder="e.g. St. Augustine, FL"></label>
             <label class="fl">Weather: second city<input type="text" id="p-city2" placeholder="Optional, e.g. a family member's town"></label>
             <label class="fl">Google Calendar email<input type="text" id="p-cal" placeholder="you@gmail.com" inputmode="email"></label>
             <label class="fl">GitHub username<input type="text" id="p-gh" placeholder="Optional"></label>
@@ -2950,7 +2950,8 @@ async function renderWaits(){
 setTimeout(renderWaits, 300); setInterval(() => { if (!$('scr-local').hidden) renderWaits(); }, 10*60e3);
 
 /* ---------- Sun + moon ---------- */
-const homeLL = () => { const c = (S.prefs.cities || [])[0]; return c && c.lat != null ? [c.lat, c.lon] : null; };
+/* Home forecast spot: the home city from Settings, or St. Augustine when none is set (or it couldn't be looked up) */
+const homeLL = () => { const c = (S.prefs.cities || [])[0]; return c && c.lat != null ? [c.lat, c.lon] : [29.894, -81.314]; };
 function sunTimes(date, lat, lng){
   const rad = Math.PI/180, dayMs = 864e5, J1970 = 2440588, J2000 = 2451545, e = rad*23.4397;
   const toDays = d => d.valueOf()/dayMs - 0.5 + J1970 - J2000, fromJ = j => new Date((j + 0.5 - J1970) * dayMs);
@@ -3605,7 +3606,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.25.1049';
+const RV1_VERSION = '2026.10.25.1052';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
