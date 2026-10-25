@@ -449,7 +449,7 @@ input[type=time]{background:var(--panel-2);border:1px solid transparent;border-r
 .car-read.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:620px){.calc{grid-template-columns:minmax(0,1fr)}.car-read.c4{grid-template-columns:1fr 1fr}}
 /* Ambient / night */
-body.night .wrap{filter:brightness(.7)}
+body.night .top,body.night #screens,body.night .dock{filter:brightness(.7)}
 .ambient{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;padding:24px}
 .ambient[hidden]{display:none}
 .amb-clock{font-size:clamp(90px,18vw,260px);font-weight:200;letter-spacing:-.04em;line-height:1;color:#d9dde2}
@@ -526,6 +526,7 @@ body.night .wrap{filter:brightness(.7)}
 .favh{margin:0 0 10px;padding:0 4px;font-family:var(--f-cond);font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .favwrap{margin-bottom:22px}
 .allapps{display:none}
+.allrow{display:flex;gap:8px}
 .app-fav{position:absolute;top:-6px;right:-6px;background:var(--panel-3);color:var(--muted);border:2px solid var(--bg);z-index:2;font-size:15px}
 .app-fav.on{color:var(--warn)}
 .more-bg{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;padding:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
@@ -633,6 +634,7 @@ input[type=text],input[type=url],input[type=date],input[type=time],textarea,sele
   .verdict ul{font-size:15px}
   /* apps: favorites first, groups behind "All apps" */
   .allapps{display:flex;width:100%;margin:0 0 16px}
+  .allrow{display:flex;gap:8px}
   body:not(.allapps-open) #groups,body:not(.allapps-open) #groupform,body:not(.allapps-open) .apps-hint{display:none!important}
   .t-phonefav .apps,#favapps{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px}
   .t-phonefav .app,#favapps .app{min-height:86px;padding:10px 4px 8px}
@@ -966,7 +968,7 @@ html.vp-phone .toast{left:50%}
       <section class="tile t-links" aria-labelledby="h-links">
       <div class="th"><h2 id="h-links">Favorite links</h2><button class="btn ghost" id="linkedit" type="button">Edit</button></div>
       <div class="favwrap" id="favwrap" hidden><h3 class="favh">Favorites</h3><div class="apps" id="favapps"></div></div>
-      <button class="btn allapps" id="allapps" type="button" aria-expanded="false">All apps</button>
+      <div class="allrow"><button class="btn allapps" id="allapps" type="button" aria-expanded="false">All apps</button><button class="btn primary allapps" id="addlink" type="button">+ Add link</button></div>
       <div class="groups" id="groups"></div>
       <div class="apps-hint">Tip: press and hold any app to rearrange your list or remove it.</div>
       <form class="addrow editonly" id="groupform" style="max-width:420px"><input type="text" id="groupin" placeholder="New group name" aria-label="New group name"><button class="btn" type="submit">Add group</button></form>
@@ -1598,7 +1600,7 @@ $('mkform').addEventListener('submit', e => {
 $('mkkeyform').addEventListener('submit', e => { e.preventDefault(); const k = $('mkkey').value.trim(); if (!k) return; lsSet('fhkey', k); $('mkkey').value = ''; loadQuotes(); });
 let mkBusy = false;
 async function loadQuotes(){
-  if (window.claude){ mkMsg = 'Live quotes run in the browser version (lighthouse.html). Here you get the market clock and your watchlist.'; R.market(); return; }
+  if (window.claude){ mkMsg = 'Live quotes run on the RV-1 website. Here you get the market clock and your watchlist.'; R.market(); return; }
   const key = lsGet('fhkey');
   if (!key){ mkMsg = 'Tap Edit and add a free Finnhub key to turn on live quotes and the signal.'; R.market(); return; }
   if (mkBusy) return; mkBusy = true;
@@ -2113,6 +2115,7 @@ async function gsConnect(){
   const ms = $('moresheet');
   $('dkmore').addEventListener('click', () => { ms.hidden = !ms.hidden; });
   ms.addEventListener('click', e => { if (e.target === ms || e.target.closest('[data-go]')) ms.hidden = true; });
+  $('addlink').addEventListener('click', () => openSheet());
   $('allapps').addEventListener('click', () => { const on = document.body.classList.toggle('allapps-open'); $('allapps').textContent = on ? 'Show favorites only' : 'All apps'; $('allapps').setAttribute('aria-expanded', on); });
   const mic = $('mic'), fab = $('fabmic');
   const sync = () => { fab.hidden = mic.hidden; fab.classList.toggle('live', mic.classList.contains('live')); };
@@ -2225,7 +2228,7 @@ function renderMap(){
   const addr = S.home.address || '';
   const box = $('mapbox');
   if (!addr){ box.replaceChildren(h('div',{class:'note'}, 'Tap Edit to add your home address.')); mapShownFor = null; return; }
-  if (window.claude){ box.replaceChildren(h('div',{class:'note'}, 'The live map shows in the browser version (rv-1.html). The buttons below open Google Maps.')); }
+  if (window.claude){ box.replaceChildren(h('div',{class:'note'}, 'The live map shows on the RV-1 website. The buttons below open Google Maps.')); }
   else if (mapShownFor !== addr && !$('scr-local').hidden){
     box.replaceChildren(h('iframe',{title:'Map of home', loading:'lazy', referrerpolicy:'no-referrer-when-downgrade', allowfullscreen:true,
       src:'https://maps.google.com/maps?q=' + encodeURIComponent(addr) + '&z=13&output=embed'}));
@@ -2506,7 +2509,7 @@ async function renderWaits(){
   $('wdwtabs').replaceChildren(...PARKS.map(([n,id]) => h('button',{class:'gtab', type:'button', role:'tab', 'aria-selected': id === wdwPark ? 'true' : 'false', onclick: () => { wdwPark = id; renderWaits(); }}, n)));
   const box = $('waits');
   if (S.home.address) $('wdwdrive').href = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(S.home.address) + '&destination=' + encodeURIComponent('Walt Disney World');
-  if (window.claude){ box.replaceChildren(h('div',{class:'note'}, 'Live wait times show in the browser version (rv-1.html).')); return; }
+  if (window.claude){ box.replaceChildren(h('div',{class:'note'}, 'Live wait times show on the RV-1 website.')); return; }
   const key = 'qt_' + wdwPark, c = lsGet(key);
   let data = c && Date.now() - c.at < 10*60e3 ? c.data : null;
   if (!data){ try { data = await getJSON('https://queue-times.com/parks/' + wdwPark + '/queue_times.json'); lsSet(key, {at: Date.now(), data}); } catch { data = c?.data || null; } }
@@ -3032,10 +3035,19 @@ function calStandalone(){
   const id = (S.prefs.calId || '').trim();
   if (id === calShownFor) return; calShownFor = id;
   if (!id){ calStatus('', 'Calendar'); $('cal').replaceChildren(h('div',{class:'note'}, 'Add your Google Calendar email in Life → Settings to show your schedule here.')); return; }
+  const ua = navigator.userAgent || '';
+  const appleWebKit = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || (/Safari\//.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Android|Firefox|FxiOS/.test(ua));
+  const openBtn = h('a',{class:'btn primary', style:'margin-top:10px', href:'https://calendar.google.com/calendar/r/agenda', target:'_blank', rel:'noopener'}, 'Open Google Calendar');
+  if (appleWebKit){
+    /* Safari and every iPhone browser block Google's sign-in cookie inside embedded frames, so the embed only shows "Can't access your Google Account". */
+    calStatus('', 'Calendar');
+    $('cal').replaceChildren(h('div',{class:'note'}, 'Google doesn’t allow its calendar to show inside other apps on iPhone or in Safari. Tap below to open it.'), openBtn);
+    return;
+  }
   calStatus('ok', 'Google Calendar');
   $('cal').replaceChildren(h('iframe',{class:'gcal', title:'Google Calendar', loading:'lazy',
     src:'https://calendar.google.com/calendar/embed?src=' + encodeURIComponent(id) + '&ctz=' + encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone) + '&mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&showNav=1'}),
-    h('div',{class:'sub'}, 'Shows your calendar when you’re signed in to Google in this browser.'));
+    h('div',{class:'sub'}, 'Shows your calendar when you’re signed in to Google in this browser.'), openBtn);
 }
 async function bootCal(){
   let mcp = null;
