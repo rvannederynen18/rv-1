@@ -3873,6 +3873,24 @@ async function renderGameWx(){
     h('b',{}, r.g.label ? `${r.g.team} · ${r.g.label}` : `${r.g.team} vs ${r.g.oppShort || r.g.opp}`), h('span',{class:'sub'}, r.line))));
 }
 
+/* ---------- Ring & Alexa: open the phone app on phones, the website on a computer ---------- */
+const PHONE_APPS = [
+  {re: /^https:\/\/(account\.)?ring\.com\//i, android: 'com.ringapp', ios: 'ring://'},
+  {re: /^https:\/\/(www\.)?alexa\.(com|amazon\.com)\//i, android: 'com.amazon.dee.app', ios: 'alexa://'}];
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('a[href]'); if (!a || window.claude) return;
+  const ua = navigator.userAgent || '', android = /Android/i.test(ua), ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (!android && !ios) return;
+  const app = PHONE_APPS.find(x => x.re.test(a.href)); if (!app) return;
+  e.preventDefault();
+  if (android){ location.href = 'intent://#Intent;package=' + app.android + ';S.browser_fallback_url=' + encodeURIComponent(a.href) + ';end'; return; }
+  /* iPhone: try the app; if it hasn't opened in 1.5 s, go to the website */
+  const t = setTimeout(() => { if (!document.hidden) location.href = a.href; }, 1500);
+  const stop = () => { if (document.hidden) clearTimeout(t); };
+  document.addEventListener('visibilitychange', stop, {once: true}); window.addEventListener('pagehide', () => clearTimeout(t), {once: true});
+  location.href = app.ios;
+}, true);
+
 /* ---------- Golf ---------- */
 let golfWxLive = null;
 async function loadHomeWx(){
