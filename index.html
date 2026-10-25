@@ -1738,7 +1738,8 @@ async function loadPubData(){
   /* Opened as a file from the computer: read the same data file straight from GitHub */
   const src = /^https?:$/.test(location.protocol) ? 'data.json' : 'https://raw.githubusercontent.com/rvannederynen18/rv-1/main/data.json';
   try { const r = await fetch(src + '?t=' + Date.now(), {cache:'no-store'}); if (!r.ok){ window.__rv3 && stat('pub', false, 'HTTP ' + r.status); return; } const j = await r.json();
-    const keep = {}; ['market','kidsEvents','dateNight','events','scoreboard','gameWeather'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot();
+    const keep = {}; ['market','kidsEvents','dateNight','events','scoreboard','gameWeather','launches','space'].forEach(k => { if (j[k] != null) keep[k] = j[k]; }); pubData = keep; R.snapshot && R.snapshot();
+    if (window.__rv3){ if (keep.launches?.length && ST.launch && !ST.launch.ok) stat('launch', true, 'live feed busy · showing the morning list'); if (keep.space?.length && ST.space && !ST.space.ok) stat('space', true, 'live feed busy · showing the morning list'); }
     window.__rv3 && stat('pub', true, j.updatedAt ? 'from ' + new Date(j.updatedAt).toLocaleString([], {weekday:'short', hour:'numeric', minute:'2-digit'}) : ''); } catch { window.__rv3 && stat('pub', false, 'not found'); }
 }
 setTimeout(loadPubData, 250); setInterval(loadPubData, 60*60e3);
@@ -3376,13 +3377,19 @@ async function loadLaunchesLive(){
   if (window.claude) return;
   const cached = lsGet('ll3'); if (cached && Date.now() - cached.at < 60*60e3){ liveLaunches = true; renderLaunches(cached.list); return; }
   try {
-    const j = await getJSON('https://ll.thespacedevs.com/2.3.0/launches/upcoming/?location__ids=12,27&limit=15&mode=detailed');
+    /* The free launch API allows 15 calls an hour per network; if it says no, try its mirror, then use the morning list */
+    const q = '/2.3.0/launches/upcoming/?location__ids=12,27&limit=15&mode=detailed';
+    let j; try { j = await getJSON('https://ll.thespacedevs.com' + q); } catch { j = await getJSON('https://lldev.thespacedevs.com' + q); }
     const list = (j.results || []).map(r => { const v = (r.vid_urls || []).slice().sort((a,b) => (a.priority ?? 99) - (b.priority ?? 99))[0];
       return {name: r.mission?.name || r.name, net: r.net, status: r.status?.abbrev || '', provider: r.launch_service_provider?.name || (r.name || '').split('|')[0].trim(), pad: r.pad?.name,
         rocket: r.rocket?.configuration?.full_name || r.rocket?.configuration?.name || (r.name || '').split('|')[0].trim(), orbit: r.mission?.orbit?.name || '', type: r.mission?.type || '',
         desc: r.mission?.description || '', windowStart: r.window_start, windowEnd: r.window_end, webcast: v?.url || '', webcastLive: !!r.webcast_live}; });
     lsSet('ll3', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list); window.__rv3 && stat('launch', true);
-  } catch { window.__rv3 && stat('launch', false, cached ? 'showing saved list' : ''); if (cached) { liveLaunches = true; renderLaunches(cached.list); } else renderLaunches([]); }
+  } catch {
+    if (cached) { liveLaunches = true; renderLaunches(cached.list); }
+    const morning = (snapView().launches || []).length;
+    window.__rv3 && stat('launch', !!(cached || morning), cached ? 'live feed busy · showing saved list' : morning ? 'live feed busy · showing the morning list' : 'live feed busy · try again in an hour');
+    if (!cached) renderLaunches(snapView().launches || []); }
 }
 setInterval(() => { if (launchData.length) renderLaunches(launchData.map(({d, ...r}) => r)); }, 60000);
 setTimeout(loadLaunchesLive, 100); setInterval(loadLaunchesLive, 60*60e3);
@@ -3400,7 +3407,8 @@ async function loadSpaceLive(){
   if (window.claude) return;
   try { const j = await getJSON('https://api.spaceflightnewsapi.net/v4/articles/?limit=6&ordering=-published_at');
     const list = (j.results || []).map(a => ({title: a.title, url: a.url, source: a.news_site, time: a.published_at}));
-    if (list.length){ liveSpace = true; renderSpaceNews(list); } window.__rv3 && stat('space', list.length > 0); } catch { window.__rv3 && stat('space', false); }
+    if (list.length){ liveSpace = true; renderSpaceNews(list); } window.__rv3 && stat('space', list.length > 0); }
+  catch { const m = (snapView().space || []).length; window.__rv3 && stat('space', m > 0, m ? 'live feed busy · showing the morning list' : ''); }
 }
 setTimeout(loadSpaceLive, 300); setInterval(loadSpaceLive, 60*60e3);
 
@@ -3606,7 +3614,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.25.1052';
+const RV1_VERSION = '2026.10.25.1056';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
