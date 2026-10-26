@@ -2528,6 +2528,10 @@ function migrateLinks(){
   if (!L.v3links){ L.v3links = true; changed = true;
     const at = () => { const i = L.groups.findIndex(g => g.vault); return i < 0 ? L.groups.length : i; };
     [CODES_GROUP, INDUSTRY_GROUP].forEach(G => { if (!L.groups.some(g => g.id === G.id)) L.groups.splice(at(), 0, clone(G)); }); }
+  if (!L.v6links){ L.v6links = true; changed = true;
+    /* DoorDash in My apps */
+    const mine6 = L.groups.find(g => g.id === 'g0' || g.id === 'gmyapps' || /^my apps$/i.test(g.name || ''));
+    if (mine6 && !(mine6.links || []).some(l => /doordash\.com/i.test(l.url))) (mine6.links ||= []).push({id: uid(), name: 'DoorDash', url: 'https://www.doordash.com/'}); }
   if (!L.v5links){ L.v5links = true; changed = true;
     /* Ring and Alexa in My apps */
     const mine5 = L.groups.find(g => g.id === 'g0' || g.id === 'gmyapps' || /^my apps$/i.test(g.name || ''));
@@ -3693,7 +3697,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.1942';
+const RV1_VERSION = '2026.10.26.1954';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
@@ -3957,6 +3961,7 @@ async function renderGameWx(){
 const appHost = (...hosts) => new RegExp('^https?://([a-z0-9-]+\\.)*(' + hosts.map(x => x.replace(/\./g, '\\.')).join('|') + ')(/|$|\\?)', 'i');
 const PHONE_APPS = [
   {re: appHost('ring.com'), android: 'com.ringapp', ios: 'ring://'},
+  {re: appHost('doordash.com'), android: 'com.dd.doordash', ios: 'doordash://'},
   {re: appHost('alexa.com', 'alexa.amazon.com'), android: 'com.amazon.dee.app', ios: 'alexa://'},
   {re: appHost('schwab.com'), android: 'com.schwab.mobile'},
   {re: appHost('bankofamerica.com'), android: 'com.infonow.bofa'},
