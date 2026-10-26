@@ -784,6 +784,10 @@ html.vp-phone .t-golfmini{order:2}html.vp-phone .t-nextup{order:3}
 :root[data-pal="gunmetal"] .btn.ghost{background:none;border-color:transparent;box-shadow:none}
 :root[data-pal="gunmetal"] .launch a,:root[data-pal="gunmetal"] .app{background:linear-gradient(180deg,#2c3846,#1f2833);border-color:#3a4958;box-shadow:inset 0 1px 0 rgba(210,230,255,.12)}
 :root[data-pal="gunmetal"] .dock{background:linear-gradient(180deg,#1b232c,#0e1319)}
+/* Website & backup: lists that need the morning update are replaced by their calendar buttons */
+html.live-only #evfilt,html.live-only #events,html.live-only #kidfun,html.live-only .t-date .subh,html.live-only #dateev,
+html.live-only #mkedit,html.live-only #mkdown,html.live-only #mktrend,html.live-only #mkverdict,html.live-only .t-mkt .qwrap,html.live-only #mkstamp,html.live-only #mkwatch,html.live-only #mkform,html.live-only #mkkeyform,html.live-only #mkpill{display:none!important}
+html.live-only .t-events .launch,html.live-only .t-kidfun .launch,html.live-only .t-mkt .launch{margin-top:4px}
 /*VP-PHONE-START*/
 /* ===== v4 polish: tighter console, press feedback, fewer dead zones ===== */
 /* My rounds collapsible */
@@ -977,7 +981,7 @@ html.vp-phone .toast{left:50%}
       <div class="chips" id="mkwatch"></div>
       <form class="addrow editonly" id="mkform"><input type="text" id="mkin" placeholder="Add tickers, e.g. NVDA, AAPL" aria-label="Add tickers"><button class="btn primary" type="submit">Add</button></form>
       <form class="addrow editonly" id="mkkeyform"><input type="text" id="mkkey" placeholder="Finnhub API key (free at finnhub.io)" aria-label="Finnhub API key" autocomplete="off"><button class="btn" type="submit">Save key</button></form>
-      <div class="launch"><a href="https://finance.yahoo.com/portfolios" target="_blank" rel="noopener">Yahoo watchlist</a><a href="https://www.capitoltrades.com/trades" target="_blank" rel="noopener">Capitol Trades</a></div>
+      <div class="launch"><a href="https://finance.yahoo.com/markets/" target="_blank" rel="noopener">Yahoo Finance</a><a href="https://www.cnbc.com/markets/" target="_blank" rel="noopener">CNBC markets</a><a href="https://finance.yahoo.com/portfolios" target="_blank" rel="noopener">Yahoo watchlist</a><a href="https://www.capitoltrades.com/trades" target="_blank" rel="noopener">Capitol Trades</a></div>
     </section>
           <section class="tile t-kids" id="kidstile" aria-labelledby="h-kids" hidden>
             <div class="th"><h2 id="h-kids">Activities</h2><span class="sub">From your calendar</span></div>
@@ -1797,8 +1801,11 @@ $('cdform').addEventListener('submit', e => {
 
 /* ---------- Weather / sports snapshot ---------- */
 let pubData = {};
+if (!window.claude) document.documentElement.classList.add('live-only');
 const snapView = () => window.claude ? (S.snapshot || {}) : {...(S.snapshot || {}), ...pubData};
 async function loadPubData(){
+  /* The website and backup no longer use a daily data file: everything they show is live or a link */
+  return;
   if (window.claude) return;
   /* Opened as a file from the computer: read the same data file straight from GitHub */
   const src = /^https?:$/.test(location.protocol) ? 'data.json' : 'https://raw.githubusercontent.com/rvannederynen18/rv-1/main/data.json';
@@ -1985,6 +1992,7 @@ $('mkkeyform').addEventListener('submit', e => { e.preventDefault(); const k = $
 let mkBusy = false;
 async function loadQuotes(){
   if (window.claude){ mkMsg = 'Live quotes run on the RV-1 website. Here you get the market clock and your watchlist.'; R.market(); return; }
+  if (document.documentElement.classList.contains('live-only')){ R.market(); return; }
   const key = lsGet('fhkey');
   if (!key){ mkMsg = 'Tap Edit and add a free Finnhub key to turn on live quotes and the signal.'; R.market(); return; }
   if (mkBusy) return; mkBusy = true;
@@ -2988,12 +2996,13 @@ function renderKidFun(list){
   if (!rows.length){ box.append(h('div',{class:'empty'}, 'Kid-friendly events arrive with the morning update. The buttons below have full calendars.')); return; }
   rows.forEach(e => box.append(eventRow(e, '#3fd27a')));
 }
+const DATE_IDEAS = [{"title": "Schooner Freedom Charters", "url": "https://www.floridashistoriccoast.com/directory/schooner-freedom-charters/", "what": "Sunset sail", "where": "St. Augustine"}, {"title": "Pesca Rooftop", "url": "https://www.floridashistoriccoast.com/directory/pesca-rooftop/", "what": "Cocktails with ocean views", "where": "Vilano Beach"}, {"title": "The Magic Hideaway", "url": "https://www.floridashistoriccoast.com/directory/magic-hideaway/", "what": "Live magic show", "where": "Casa Monica"}, {"title": "Cordova Coastal Chophouse & Bar", "url": "https://www.floridashistoriccoast.com/directory/cordova-coastal-chophouse-bar/", "what": "Upscale dinner", "where": "Casa Monica"}, {"title": "La Cocina at the Cellar Upstairs", "url": "https://www.floridashistoriccoast.com/directory/la-cocina-at-the-cellar-upstairs/", "what": "Weekly salsa night", "where": "Downtown"}, {"title": "Third Space Improv", "url": "https://www.floridashistoriccoast.com/directory/third-space-improv/", "what": "Improv comedy", "where": "St. Augustine"}, {"title": "Limelight Theatre", "url": "https://www.floridashistoriccoast.com/directory/limelight-theatre/", "what": "Live theatre", "where": "St. Augustine"}, {"title": "St. Augustine Eco Tours", "url": "https://www.floridashistoriccoast.com/directory/st-augustine-eco-tours/", "what": "Kayak the marsh, spot dolphins", "where": "Matanzas Bay"}, {"title": "Caps on the Water", "url": "https://www.floridashistoriccoast.com/directory/caps-on-the-water/", "what": "Sunset dinner on the Intracoastal", "where": "North Beach"}, {"title": "Ice Plant Bar", "url": "https://www.floridashistoriccoast.com/directory/ice-plant-bar-restaurant/", "what": "Craft cocktails and small plates", "where": "St. Augustine"}];
 function renderDateNight(dn){
   const ev = $('dateev'), ul = $('dateideas'); if (!ev) return; ev.replaceChildren(); ul.replaceChildren();
   const rows = upcomingRows(dn && dn.events).slice(0, 8);
   if (!rows.length) ev.append(h('div',{class:'empty'}, 'Date-worthy shows and dinners arrive with the morning update.'));
   rows.forEach(e => ev.append(eventRow(e, '#ff6b8b')));
-  const ideas = (dn && dn.ideas) || [];
+  const ideas = (dn && dn.ideas && dn.ideas.length) ? dn.ideas : DATE_IDEAS;
   if (!ideas.length) ul.append(h('li',{class:'empty'}, 'Ideas arrive with the morning update.'));
   ideas.slice(0, 12).forEach(i => { const u = safeUrl(i.url || ''), kids = [h('b',{}, i.title), h('small',{}, [i.what, i.where].filter(Boolean).join(' · '))];
     ul.append(h('li',{}, u ? h('a',{href:u, target:'_blank', rel:'noopener'}, kids) : h('div',{class:'ir'}, kids))); });
@@ -3414,7 +3423,7 @@ function launchLinks(l){
 function renderLaunches(list){
   launchData = (list || []).map(l => ({...l, d: new Date(l.net)})).filter(l => !isNaN(l.d) && l.d > Date.now() - 3*3600e3).sort((a,b) => a.d - b.d);
   const nx = $('lnext'), ul = $('llist'); ul.replaceChildren();
-  if (!launchData.length){ nx.replaceChildren(h('span',{class:'lk'}, 'Launches'), h('div',{class:'sub'}, window.claude ? 'The launch schedule arrives with the morning update.' : 'Loading the launch schedule…')); lpill(); return; }
+  if (!launchData.length){ nx.replaceChildren(h('span',{class:'lk'}, 'Launches'), h('div',{class:'sub'}, window.claude ? 'The launch schedule arrives with the morning update.' : ((() => { try { return ST.launch && !ST.launch.ok; } catch { return false; } })() ? 'The launch feed is busy right now. Use Full schedule below, or check back in an hour.' : 'Loading the launch schedule…'))); lpill(); return; }
   const n = launchData[0], tbd = /TBD|TBC/i.test(n.status || ''), ms = n.d - Date.now();
   const when = tbd ? 'No earlier than ' + n.d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}) : n.d.toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
   const tm = ms <= 0 ? 'Launch window open' : tbd ? 'Date not confirmed' : 'T– ' + (ms > 864e5 ? Math.floor(ms/864e5) + 'd ' : '') + Math.floor(ms % 864e5 / 3600e3) + 'h ' + Math.floor(ms % 3600e3 / 60e3) + 'm';
@@ -3458,6 +3467,7 @@ async function loadLaunchesLive(){
     if (cached) { liveLaunches = true; renderLaunches(cached.list); }
     const morning = (snapView().launches || []).length;
     window.__rv3 && stat('launch', !!(cached || morning), cached ? 'live feed busy · showing saved list' : morning ? 'live feed busy · showing the morning list' : 'live feed busy · try again in an hour');
+    if (!cached && !morning) launchData = [];
     if (!cached) renderLaunches(snapView().launches || []); }
 }
 setInterval(() => { if (launchData.length) renderLaunches(launchData.map(({d, ...r}) => r)); }, 60000);
@@ -3683,11 +3693,11 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.25.1638';
+const RV1_VERSION = '2026.10.26.1942';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
-  ['launch','Launch schedule'],['space','Space news'],['news','Headlines'],['history','Today in history'],['pub','Daily data file'],['drive','Google Drive sync'],['version','Update check']];
+  ['launch','Launch schedule'],['space','Space news'],['news','Headlines'],['history','Today in history'],['drive','Google Drive sync'],['version','Update check']];
 function renderStatus(){
   const ul = $('statuslist'); if (!ul) return; ul.replaceChildren();
   const vl = $('verlabel'); if (vl) vl.textContent = 'Version ' + RV1_VERSION;
@@ -3710,7 +3720,7 @@ const LEAGUE = {Rangers:'NHL · Metropolitan', Giants:'NFL · NFC East', Bills:'
 const SEASONS = {Rangers:[10,6], Giants:[9,2], Bills:[9,2], Jaguars:[9,2], 'Penn State':[8,1], Icemen:[10,4], 'Jumbo Shrimp':[4,9]};
 const MONTHS = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
 function inSeason(k, d = new Date()){ const s = SEASONS[k]; if (!s) return true; const m = d.getMonth() + 1; return s[0] <= s[1] ? (m >= s[0] && m <= s[1]) : (m >= s[0] || m <= s[1]); }
-function seasonNote(k){ if (!inSeason(k)) return 'Offseason · back in ' + MONTHS[SEASONS[k][0]]; return LIVE_TEAMS[k] ? 'No games played yet' : 'Scores update each morning'; }
+function seasonNote(k){ if (!inSeason(k)) return 'Offseason · back in ' + MONTHS[SEASONS[k][0]]; return LIVE_TEAMS[k] ? 'No games played yet' : (window.claude ? 'Scores update each morning' : 'Scores & schedule on the team site ↗'); }
 function sbTeams(){
   const ks = [...new Set([...(S.teams.items || []).map(t => teamKey(t.name)), 'Penn State'].filter(Boolean))];
   return ks.sort((a,b) => (TEAM_ORDER.indexOf(a) + 1 || 99) - (TEAM_ORDER.indexOf(b) + 1 || 99));
@@ -3757,7 +3767,7 @@ const nextWhen = n => { const d = new Date(n.start); return cap1(dayWord(d)) + (
 function renderScoreboard(){
   const rows = sbData(), box = $('scoreboard');
   if (box){
-    const full = rows.map(x => { const k = x.team, l = x.last, link = l && safeUrl(l.url || '');
+    const full = rows.map(x => { const k = x.team, l = x.last, link = (l && safeUrl(l.url || '')) || (!window.claude && !l && !LIVE_TEAMS[k] && inSeason(k) ? safeUrl((TEAMINFO[k] || {}).home || '') : '');
       return h(link ? 'a' : 'div', {class:'sbrow', href: link || undefined, target: link ? '_blank' : undefined, rel: link ? 'noopener' : undefined},
         teamLogo(k, 'tl-row', !!link) || h('span'), h('span',{class:'sbn'}, k),
         h('span',{class:'sbl'}, l ? [h('span',{class:'res ' + resCls(l.res)}, l.res), ' ' + lastTxt(l)] : h('span',{class:'sub'}, x.note || seasonNote(k))),
