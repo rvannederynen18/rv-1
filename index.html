@@ -3462,7 +3462,17 @@ async function loadLaunchesLive(){
   try {
     /* The free launch API allows 15 calls an hour per network; if it says no, try its mirror, then use the morning list */
     const q = '/2.3.0/launches/upcoming/?location__ids=12,27&limit=15&mode=detailed';
-    let j; try { j = await getJSON('https://ll.thespacedevs.com' + q); } catch { j = await getJSON('https://lldev.thespacedevs.com' + q); }
+    let j = null; try { j = await getJSON('https://ll.thespacedevs.com' + q); } catch { try { j = await getJSON('https://lldev.thespacedevs.com' + q); } catch {} }
+    if (!j){
+      /* Third source: RocketLaunch.live's free feed (next launches worldwide, kept to Florida) */
+      const r = await getJSON('https://fdo.rocketlaunch.live/json/launches/next/5');
+      const fl = (r.result || []).filter(x => /FL|Florida/i.test(x.pad?.location?.state || '') || /Canaveral|Kennedy/i.test((x.pad?.location?.name || '') + ' ' + (x.pad?.name || '')));
+      const list = fl.map(x => ({name: x.name, net: x.t0 || x.win_open || (x.sort_date ? new Date(+x.sort_date * 1000).toISOString() : ''), status: x.t0 || x.win_open ? 'Go' : 'TBD',
+        provider: x.provider?.name || '', pad: x.pad?.name || '', rocket: x.vehicle?.name || '', orbit: '', type: '', desc: x.launch_description || '',
+        windowStart: x.win_open || '', windowEnd: x.win_close || '', webcast: '', webcastLive: false}));
+      lsSet('ll3', {at: Date.now(), list}); liveLaunches = true; renderLaunches(list); window.__rv3 && stat('launch', true, 'from RocketLaunch.live');
+      return;
+    }
     const list = (j.results || []).map(r => { const v = (r.vid_urls || []).slice().sort((a,b) => (a.priority ?? 99) - (b.priority ?? 99))[0];
       return {name: r.mission?.name || r.name, net: r.net, status: r.status?.abbrev || '', provider: r.launch_service_provider?.name || (r.name || '').split('|')[0].trim(), pad: r.pad?.name,
         rocket: r.rocket?.configuration?.full_name || r.rocket?.configuration?.name || (r.name || '').split('|')[0].trim(), orbit: r.mission?.orbit?.name || '', type: r.mission?.type || '',
@@ -3698,7 +3708,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.2015';
+const RV1_VERSION = '2026.10.26.2021';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
