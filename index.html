@@ -788,6 +788,30 @@ html.vp-phone .t-golfmini{order:2}html.vp-phone .t-nextup{order:3}
 html.live-only #evfilt,html.live-only #events,html.live-only #kidfun,html.live-only .t-date .subh,html.live-only #dateev,
 html.live-only #mkedit,html.live-only #mkdown,html.live-only #mktrend,html.live-only #mkverdict,html.live-only .t-mkt .qwrap,html.live-only #mkstamp,html.live-only #mkwatch,html.live-only #mkform,html.live-only #mkkeyform,html.live-only #mkpill{display:none!important}
 html.live-only .t-events .launch,html.live-only .t-kidfun .launch,html.live-only .t-mkt .launch{margin-top:4px}
+/* ===== Upcoming games: first on Sports, compact ===== */
+#scr-sports .t-sched{margin-bottom:16px}
+#scr-sports .t-sched .gtabs{margin-bottom:10px}
+#scr-sports #sched .sd-fill{display:none!important}
+#scr-sports #sched .grow{grid-template-columns:66px 26px minmax(0,1fr);gap:8px;padding:8px 10px;margin-bottom:6px;border-radius:10px;align-items:center}
+#scr-sports #sched .grow .gt{font-size:14px;white-space:nowrap;line-height:1.15}
+#scr-sports #sched .grow .gt small{display:block;font-size:11px}
+#scr-sports #sched .grow .gm{line-height:1.25}
+#scr-sports #sched .grow .flags{margin-top:3px}
+#scr-sports #sched .grow .gm b{font-size:15px}
+#scr-sports #sched .grow .gm span{font-size:12.5px}
+#scr-sports #sched .tl-row{width:26px;height:26px}
+#scr-sports .schedmore{display:none;width:100%;margin-top:4px}
+@media (min-width:761px){
+  html:not(.vp-phone) #scr-sports #sched{display:grid!important;grid-auto-flow:column;grid-template-columns:none!important;grid-auto-columns:minmax(250px,calc((100% - 36px)/4));
+    gap:12px!important;overflow-x:auto;align-items:start!important;scroll-snap-type:x proximity;padding-bottom:6px;overscroll-behavior-x:contain}
+  html:not(.vp-phone) #scr-sports #sched .sd{scroll-snap-align:start;padding:10px;border:1px solid var(--line);border-radius:4px;background:rgba(0,0,0,.18)}
+  html:not(.vp-phone) #scr-sports #sched .sd h3{margin-bottom:8px}
+  html:not(.vp-phone) #scr-sports #sched .sd .grow:last-child{margin-bottom:0}
+}
+@media (max-width:760px){ #scr-sports .t-sched:not(.open) .sd-more{display:none} #scr-sports .schedmore:not([hidden]){display:block} #scr-sports #sched{gap:10px} }
+html.vp-phone #scr-sports .t-sched:not(.open) .sd-more{display:none}
+html.vp-phone #scr-sports .schedmore:not([hidden]){display:block}
+html.vp-phone #scr-sports #sched{gap:10px}
 /*VP-PHONE-START*/
 /* ===== v4 polish: tighter console, press feedback, fewer dead zones ===== */
 /* My rounds collapsible */
@@ -1173,6 +1197,12 @@ html.vp-phone .toast{left:50%}
     </section>
     </div>
     <div class="screen" id="scr-sports" data-screen="sports" hidden>
+      <section class="tile t-sched" aria-labelledby="h-sched">
+        <div class="th"><h2 id="h-sched">Upcoming games</h2><span class="sub" id="schedsub"></span></div>
+        <div class="gtabs tfilt" id="tfilt" role="tablist" aria-label="Filter by team"></div>
+        <div class="sched" id="sched"></div>
+        <button class="btn schedmore" id="schedmore" type="button" hidden>Show all games</button>
+      </section>
       <section class="tile t-golf" id="golftile" aria-labelledby="h-golf">
         <div class="th"><h2 id="h-golf">Golf</h2><span class="sub" id="golfstamp"></span></div>
         <div class="golf">
@@ -1225,11 +1255,6 @@ html.vp-phone .toast{left:50%}
           </section>
         </div>
       </div>
-      <section class="tile t-sched" aria-labelledby="h-sched" style="margin-top:16px">
-        <div class="th"><h2 id="h-sched">Upcoming games</h2><span class="sub" id="schedsub"></span></div>
-        <div class="gtabs tfilt" id="tfilt" role="tablist" aria-label="Filter by team"></div>
-        <div class="sched" id="sched"></div>
-      </section>
       <div class="two" style="margin-top:16px"><section class="tile t-sp" aria-labelledby="h-sp">
         <div class="th"><h2 id="h-sp">Sports</h2><button class="btn ghost" id="spedit" type="button">Edit</button></div>
         <div class="teamboard" id="teamboard" aria-label="Team home pages"></div>
@@ -2947,6 +2972,10 @@ function renderGames(list){
   if (!shown.length) box.append(h('div',{class:'empty'}, window.claude ? 'Schedules arrive with the morning update.' : 'Loading schedules…'));
   const byDay = new Map(); shown.forEach(g => { const k = new Date(g.start).toDateString(); (byDay.get(k) || byDay.set(k, []).get(k)).push(g); });
   const today = new Date().toDateString(), tmr = new Date(Date.now() + 864e5).toDateString();
+  queueMicrotask(() => { const days = [...box.querySelectorAll(':scope > .sd')], mb = $('schedmore'); if (!mb) return;
+    days.forEach((d, i) => d.classList.toggle('sd-more', i >= 3));
+    const extra = days.slice(3).reduce((n, d) => n + d.querySelectorAll('.grow').length, 0);
+    mb.hidden = !extra; mb.textContent = $('h-sched').closest('.t-sched').classList.contains('open') ? 'Show fewer' : `Show ${extra} more game${extra === 1 ? '' : 's'}`; });
   byDay.forEach((gs, k) => box.append(h('div',{class:'sd' + (k === today ? ' today' : '')}, h('h3',{}, k === today ? 'Today' : k === tmr ? 'Tomorrow' : new Date(k).toLocaleDateString([], {weekday:'long', month:'short', day:'numeric'})), gs.map(g => gameRow(g)),
     h('div',{class:'sd-fill'}, [...new Set(gs.map(g => teamKey(g.team)).filter(Boolean))].map(t => teamLogo(t, 'tl-fill'))))));
   // Home: next 3 plus the next flagged one
@@ -2955,6 +2984,7 @@ function renderGames(list){
   $('nextsub').hidden = !pick.length; pick.forEach(g => nl.append(gameRow(g, true)));
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]:not(.dk)'); if (b) go(b.dataset.go); });
+$('schedmore').addEventListener('click', () => { const t = $('schedmore').closest('.t-sched'); t.classList.toggle('open'); renderGames(gamesCache); if (!t.classList.contains('open')) t.scrollIntoView({block:'start'}); });
 
 /* ---------- Events ---------- */
 let evFilter = 'All';
@@ -3708,7 +3738,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.2036';
+const RV1_VERSION = '2026.10.26.2046';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
