@@ -2934,8 +2934,9 @@ function gameRow(g, compact){
     h('span',{class:'gm'}, h('b',{}, g.label ? `${g.team} · ${g.label}` : `${g.team} ${g.home ? 'vs' : 'at'} ${g.oppShort || g.opp}`), h('span',{}, [g.tv && !/night football/i.test(g.tv) ? g.tv : '', g.venue].filter(Boolean).join(' · ')),
       f.length ? h('span',{class:'flags'}, f.map(([c,t]) => h('span',{class:'flag ' + c}, t))) : null));
 }
-let gamesCache = [];
+let gamesCache = [], minorGames = {};
 function renderGames(list){
+  if (!window.claude && Object.keys(minorGames).length) list = [...(list || []).filter(g => !minorGames[teamKey(g.team)]), ...Object.values(minorGames).flat()];
   gamesCache = list || [];
   const now = Date.now(), games = (list || []).filter(g => g.start && new Date(g.start).getTime() > now - 3.5*3600e3).sort((a,b) => new Date(a.start) - new Date(b.start));
   const teams = ['All', ...new Set(games.map(g => g.team))];
@@ -3697,10 +3698,10 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.1954';
+const RV1_VERSION = '2026.10.26.2010';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
-const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
+const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
   ['launch','Launch schedule'],['space','Space news'],['news','Headlines'],['history','Today in history'],['drive','Google Drive sync'],['version','Update check']];
 function renderStatus(){
   const ul = $('statuslist'); if (!ul) return; ul.replaceChildren();
@@ -3757,7 +3758,65 @@ async function loadScoreboard(){
   await Promise.all(ks.map(async k => { try { sbLive[k] = await loadTeamLive(k); ok++; } catch { bad++; } }));
   sbBusy = false;
   if (ks.length) stat('espn', ok > 0, bad ? bad + ' team' + (bad > 1 ? 's' : '') + ' didn’t load' : '');
-  renderScoreboard(); loadStandings();
+  renderScoreboard(); loadStandings(); loadMinors();
+}
+
+/* ---------- Icemen (ECHL) and Jumbo Shrimp (Triple-A): live from their leagues' own public feeds ---------- */
+const HT_FEED = 'https://lscluster.hockeytech.com/feed/index.php?feed=modulekit&key=2c2b89ea7345cae8&client_code=echl&lang=en&fmt=json';
+const SHRIMP_ID = 564;
+async function getLoose(url){ const r = await fetch(url); if (!r.ok) throw new Error(r.status); const t = (await r.text()).trim(); return JSON.parse(t.replace(/^\(/, '').replace(/\);?$/, '')); }
+const dayFromNow = n => isoDay(new Date(Date.now() + n*864e5));
+function minorSummary(k, evs, record, standing, otl){
+  evs = evs.filter(e => !isNaN(e.d)).sort((a,b) => a.d - b.d);
+  const done = evs.filter(e => e.done && e.us != null), last = done[done.length - 1], next = evs.find(e => !e.done && e.d.getTime() > Date.now() - 4*3600e3);
+  const res = e => e.win ? 'W' : (+e.us === +e.them ? 'T' : 'L');
+  let streak = '';
+  if (done.length){ const r0 = res(last); let n = 0; for (let i = done.length - 1; i >= 0 && res(done[i]) === r0; i--) n++; streak = (r0 === 'W' ? 'Won ' : r0 === 'L' ? 'Lost ' : 'Tied ') + n; }
+  if (!record && done.length){ const w = done.filter(e => e.win).length, ot = otl ? done.filter(e => !e.win && e.ot).length : 0; record = w + '–' + (done.length - w - ot) + (otl ? '–' + ot : ''); }
+  minorGames[k] = evs.filter(e => !e.done && e.d.getTime() > Date.now() - 3.5*3600e3 && e.d.getTime() - Date.now() < 35*864e5)
+    .map(e => ({team: k, opp: e.oppFull || e.opp, oppShort: e.opp, home: e.home, start: e.d.toISOString(), tbd: !!e.tbd, tv: e.tv || '', venue: e.venue || ''}));
+  if (!last && !next) return null;
+  return {team: k, record, standing: standing || '', streak, at: Date.now(),
+    last: last ? {res: res(last), us: last.us, them: last.them, opp: last.opp, home: last.home, date: last.d.toISOString(), url: last.url || ''} : null,
+    next: next ? {opp: next.opp, home: next.home, start: next.d.toISOString(), tbd: !!next.tbd, tv: next.tv || '', venue: next.venue || ''} : null};
+}
+async function loadIcemen(){
+  const j = await getLoose(HT_FEED + '&view=scorebar&numberofdaysback=60&numberofdaysahead=40');
+  const list = j?.SiteKit?.Scorebar || j?.Scorebar || (Array.isArray(j) ? j : []);
+  if (!Array.isArray(list)) throw new Error('feed');
+  const jax = s => /jacksonville/i.test(s || '');
+  let rec = '';
+  const evs = list.filter(g => jax(g.HomeLongName || g.HomeCity) || jax(g.VisitorLongName || g.VisitorCity)).map(g => {
+    const home = jax(g.HomeLongName || g.HomeCity), P = home ? 'Home' : 'Visitor', O = home ? 'Visitor' : 'Home';
+    const status = String(g.GameStatusString || g.GameStatusStringLong || ''), done = String(g.GameStatus) === '4' || /final/i.test(status);
+    const us = g[P + 'Goals'], them = g[O + 'Goals'];
+    if (g[P + 'Wins'] != null) rec = [g[P + 'Wins'], g[P + 'RegulationLosses'], (+g[P + 'OTLosses'] || 0) + (+g[P + 'ShootoutLosses'] || 0)].join('–');
+    return {d: new Date(g.GameDateISO8601 || g.Date), done, home, us: done ? us : null, them: done ? them : null, win: done && +us > +them, ot: /OT|SO/i.test(status),
+      opp: g[O + 'City'] || g[O + 'LongName'] || 'TBD', oppFull: g[O + 'LongName'] || '', venue: g.venue_name || g.Venue || '',
+      url: g.ID ? 'https://lscluster.hockeytech.com/game_reports/official-game-report.php?client_code=echl&game_id=' + encodeURIComponent(g.ID) + '&lang_id=1' : ''}; });
+  return minorSummary('Icemen', evs, rec, '', true);
+}
+async function loadShrimp(){
+  const j = await getJSON(`https://statsapi.mlb.com/api/v1/schedule?sportId=11&teamId=${SHRIMP_ID}&startDate=${dayFromNow(-60)}&endDate=${dayFromNow(40)}`);
+  let rec = '';
+  const evs = (j.dates || []).flatMap(d => d.games || []).filter(g => !/Postponed|Cancelled|Suspended/i.test(g.status?.detailedState || '')).map(g => {
+    const home = g.teams?.home?.team?.id === SHRIMP_ID, me = home ? g.teams.home : g.teams.away, op = home ? g.teams.away : g.teams.home;
+    const done = g.status?.abstractGameState === 'Final';
+    if (me?.leagueRecord && done) rec = me.leagueRecord.wins + '–' + me.leagueRecord.losses;
+    return {d: new Date(g.gameDate), done, home, us: done ? me.score : null, them: done ? op.score : null, win: !!me.isWinner, tbd: !!g.status?.startTimeTBD,
+      opp: (op.team?.name || 'TBD').replace(/^(.*?)\s+(\S+)$/, (m, a) => a) || op.team?.name, oppFull: op.team?.name || '', venue: g.venue?.name || '',
+      url: g.gamePk ? 'https://www.milb.com/gameday/' + g.gamePk : ''}; });
+  return minorSummary('Jumbo Shrimp', evs, rec, '', false);
+}
+let minorsBusy = false;
+async function loadMinors(){
+  if (window.claude || minorsBusy) return; minorsBusy = true;
+  const want = sbTeams().filter(k => k === 'Icemen' || k === 'Jumbo Shrimp' ), fns = {Icemen: loadIcemen, 'Jumbo Shrimp': loadShrimp};
+  let ok = 0, bad = [];
+  await Promise.all(want.map(async k => { try { const r = await fns[k](); if (r) sbLive[k] = r; ok++; } catch { bad.push(k); } }));
+  minorsBusy = false;
+  if (want.length) stat('minor', ok > 0, bad.length ? bad.join(' & ') + ' didn’t load' : '');
+  renderScoreboard(); renderGames(gamesCache.filter(g => !minorGames[teamKey(g.team)]));
 }
 function sbData(){
   const extra = {}; (snapView().scoreboard || []).forEach(x => { if (x && x.team) extra[teamKey(x.team) || x.team] = x; });
