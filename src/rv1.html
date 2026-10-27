@@ -3412,7 +3412,7 @@ function launchLinks(l){
 function renderLaunches(list){
   launchData = (list || []).map(l => ({...l, d: new Date(l.net)})).filter(l => !isNaN(l.d) && l.d > Date.now() - 3*3600e3).sort((a,b) => a.d - b.d);
   const nx = $('lnext'), ul = $('llist'); ul.replaceChildren();
-  if (!launchData.length){ nx.replaceChildren(h('span',{class:'lk'}, 'Launches'), h('div',{class:'sub'}, window.claude ? 'The launch schedule arrives with the morning update.' : ((() => { try { return ST.launch && !ST.launch.ok; } catch { return false; } })() ? 'The launch feed is busy right now. Use Full schedule below, or check back in an hour.' : 'Loading the launch schedule…'))); lpill(); return; }
+  if (!launchData.length){ nx.replaceChildren(h('span',{class:'lk'}, 'Launches'), h('div',{class:'sub'}, window.claude ? 'The launch schedule arrives with the morning update.' : ((() => { try { return ST.launch && !ST.launch.ok; } catch { return false; } })() ? 'The launch feed is busy right now. Use Full schedule below, or check back in an hour.' : ((() => { try { return ST.launch && ST.launch.ok; } catch { return false; } })() ? 'No Cape Canaveral or Kennedy launches are listed right now. Full schedule below shows everything.' : 'Loading the launch schedule…')))); lpill(); return; }
   const n = launchData[0], tbd = /TBD|TBC/i.test(n.status || ''), ms = n.d - Date.now();
   const when = tbd ? 'No earlier than ' + n.d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}) : n.d.toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
   const tm = ms <= 0 ? 'Launch window open' : tbd ? 'Date not confirmed' : 'T– ' + (ms > 864e5 ? Math.floor(ms/864e5) + 'd ' : '') + Math.floor(ms % 864e5 / 3600e3) + 'h ' + Math.floor(ms % 3600e3 / 60e3) + 'm';
@@ -4324,13 +4324,29 @@ async function checkUpdate(){
   } catch { stat('version', false, 'couldn’t check GitHub'); }
 }
 async function doUpdate(){
-  if (location.protocol !== 'file:'){ location.reload(); return; }
+  if (location.protocol !== 'file:'){ freshReload(); return; }
   try { const r = await fetch('https://raw.githubusercontent.com/rvannederynen18/rv-1/main/index.html?t=' + Date.now()); if (!r.ok) throw 0; const t = await r.text(); if (!t.includes('RV1_VERSION')) throw 0;
     const a = h('a',{href: URL.createObjectURL(new Blob([t], {type:'text/html'})), download:'rv-1.html'}); document.body.append(a); a.click(); a.remove();
     toastMsg('New rv-1.html saved to your Downloads. Replace your old file with it, same name and same folder.');
   } catch { window.open('https://github.com/rvannederynen18/rv-1/blob/main/index.html', '_blank', 'noopener'); }
 }
 window.__rvDoUpdate = doUpdate;
+/* A plain reload can come back from the phone's cache (home-screen apps hold on to pages), so ask for a fresh copy */
+function freshReload(){ location.replace(location.pathname + '?v=' + encodeURIComponent(window.__rvNewVer || Date.now())); }
+/* Home-screen app: iPhone freezes it in the background and resumes it later without reloading,
+   so timers stall and data goes stale. After 15 minutes away, start fresh; after a short break, refresh the live feeds. */
+(() => {
+  if (window.claude || location.protocol === 'file:') return;
+  let hiddenAt = 0;
+  const away = () => hiddenAt ? Date.now() - hiddenAt : 0;
+  const busy = () => { const a = document.activeElement; return a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && a.value; };
+  const refresh = () => { [typeof checkUpdate === 'function' && checkUpdate, typeof loadScoreboard === 'function' && loadScoreboard, typeof loadMinors === 'function' && loadMinors,
+    typeof loadLaunchesLive === 'function' && loadLaunchesLive, typeof loadSpaceLive === 'function' && loadSpaceLive, typeof loadAlerts === 'function' && loadAlerts,
+    typeof loadHomeWx === 'function' && loadHomeWx].filter(Boolean).forEach(f => { try { f(); } catch {} }); };
+  const back = () => { const t = away(); hiddenAt = 0; if (t > 15*60e3 && !busy()) { freshReload(); return; } if (t > 60e3) refresh(); };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) hiddenAt = Date.now(); else back(); });
+  window.addEventListener('pageshow', e => { if (e.persisted) refresh(); });
+})();
 
 /* ---------- Wire it up ---------- */
 $('dyknext').addEventListener('click', renderDyk);
