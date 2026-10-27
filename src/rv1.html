@@ -1618,13 +1618,17 @@ function lsGet(k){ try { const v = localStorage.getItem('cc_'+k); return v ? JSO
 function lsSet(k,v){ try { localStorage.setItem('cc_'+k, JSON.stringify(v)); } catch {} }
 
 function save(key){ pending[key] = true; flush(key); }
+/* Automatic changes (starter links, updates) save locally without marking the data as newer for sync,
+   so they never overwrite edits made on another device */
+const quietKeys = new Set();
+function saveQuiet(key){ quietKeys.add(key); save(key); }
 async function flush(key){
   if (inflight[key] || !pending[key]) return;
   pending[key] = false; inflight[key] = true;
   if (db) setSync('busy','Saving');
   try {
     if (db) await db.doc('cc/' + key).set(clone(S[key]));
-    else { lsSet(key, S[key]); driveTouched(key); }
+    else { lsSet(key, S[key]); if (quietKeys.has(key)) quietKeys.delete(key); else driveTouched(key); }
   } catch (e) {
     if (e && e.code === 'unavailable') { pending[key] = true; await new Promise(r => setTimeout(r, 800 + Math.random()*800)); }
     else setSync('bad', e && e.code === 'quota_exceeded' ? 'Storage full' : 'Save failed');
@@ -2406,6 +2410,23 @@ const GS_FILE = 'rv1-sync.json', GS_SCOPE = 'https://www.googleapis.com/auth/dri
 const gsKeys = () => KEYS.filter(k => k !== 'snapshot');
 let gsToken = null, gsExp = 0, gsClient = null, gsBusy = false, gsTimer = null, gsLast = 0, gsErr = '';
 function gsMeta(){ return lsGet('gsmeta') || {}; }
+function unionLinks(a, b){
+  const out = clone(a || {groups: []}); out.groups ||= [];
+  Object.keys(b || {}).forEach(k => { if (k !== 'groups' && out[k] == null) out[k] = clone(b[k]); });
+  const norm = u => String(u || '').trim().toLowerCase().replace(/\/+$/, '');
+  (b?.groups || []).forEach(g => {
+    if (!g || g.vault) return;
+    let t = out.groups.find(x => x.id === g.id) || out.groups.find(x => (x.name || '').toLowerCase() === (g.name || '').toLowerCase());
+    if (!t){ const vi = out.groups.findIndex(x => x.vault); out.groups.splice(vi < 0 ? out.groups.length : vi, 0, clone(g)); return; }
+    (g.links || []).forEach(l => { if (!(t.links ||= []).some(x => norm(x.url) === norm(l.url))) t.links.push(clone(l)); });
+  });
+  return out;
+}
+function unionTeams(a, b){
+  const out = clone(a || {}); const items = out.items ||= [];
+  (b?.items || []).forEach(t => { if (!items.some(x => (x.name || '').toLowerCase() === (t.name || '').toLowerCase())) items.push(clone(t)); });
+  return out;
+}
 function driveTouched(key){ const m = gsMeta(); m[key] = Date.now(); lsSet('gsmeta', m); if (lsGet('gsync')){ gsUI(); clearTimeout(gsTimer); gsTimer = setTimeout(() => gsValid() && driveSync(), 2500); } }
 const gsValid = () => gsToken && Date.now() < gsExp - 60e3;
 const gsClientId = () => RV1_GOOGLE_CLIENT_ID || '';
@@ -2449,9 +2470,18 @@ async function driveSync(){
     const remote = fileId ? await (await gsFetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`)).json() : {keys:{}};
     const meta = gsMeta(), merged = {}, changed = [];
     const local = Object.fromEntries(gsKeys().map(k => [k, S[k]])); local.fhkey = lsGet('fhkey');
+    /* A device syncing for the first time takes what's already saved in Drive, so a new install never replaces it */
+    const first = !lsGet('gsfirst'), union = !first && !lsGet('gsunion1');
     for (const k of new Set([...Object.keys(local), ...Object.keys(remote.keys || {})])){
       const r = remote.keys?.[k], lt = meta[k] || 0;
-      if (r && r.t > lt){ merged[k] = r; changed.push(k); }
+      if (union && r && local[k] != null && (k === 'links' || k === 'teams')){
+        /* One-time repair: put back links and teams that an earlier sync dropped, from whichever copy still has them */
+        const newer = r.t > lt ? r.data : local[k], older = r.t > lt ? local[k] : r.data;
+        const data = k === 'links' ? unionLinks(newer, older) : unionTeams(newer, older);
+        merged[k] = {t: Date.now(), data}; if (JSON.stringify(data) !== JSON.stringify(local[k])) changed.push(k);
+        continue;
+      }
+      if (r && (first || r.t > lt)){ merged[k] = r; changed.push(k); }
       else if (local[k] != null) merged[k] = {t: lt || Date.now(), data: local[k]};
       else if (r) merged[k] = r;
     }
@@ -2466,7 +2496,9 @@ async function driveSync(){
         await gsFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {method:'POST', headers:{'Content-Type': 'multipart/related; boundary=' + b},
           body: `--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metaJ}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`}); }
     }
+    lsSet('gsfirst', true); if (union) lsSet('gsunion1', true);
     gsLast = Date.now(); window.__rv3 && stat('drive', true, changed.length ? changed.length + ' updated' : '');
+    if (changed.includes('links') && migrateLinks()){ R.links?.(); saveQuiet('links'); }
     if (changed.length){ renderAll(); loadQuotes?.(); }
   } catch (e) {
     if (String(e.message) !== 'auth') gsErr = 'Couldn’t reach Google Drive just now. Tap Sync now to try again.'; window.__rv3 && stat('drive', false, 'sync failed');
@@ -2653,7 +2685,7 @@ const VAULT_SEED = {"id":"gvault","name":"Vault","vault":true,"links":[
   {"id":"v3","name":"Google account security","url":"https://myaccount.google.com/security"},
   {"id":"v4","name":"2-Step Verification","url":"https://myaccount.google.com/signinoptions/twosv"},
   {"id":"v5","name":"Have I Been Pwned","url":"https://haveibeenpwned.com/"}]};
-setTimeout(async () => { await whenReady(); if (migrateLinks()){ R.links(); save('links'); } }, 600);
+setTimeout(async () => { await whenReady(); if (migrateLinks()){ R.links(); saveQuiet('links'); } }, 600);
 
 /* ---------- Vault (hidden screen) ---------- */
 let vaultOk = false, vaultTimer = null;
