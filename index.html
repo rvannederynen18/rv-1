@@ -3708,7 +3708,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.2021';
+const RV1_VERSION = '2026.10.26.2027';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
@@ -3768,7 +3768,9 @@ async function loadScoreboard(){
   await Promise.all(ks.map(async k => { try { sbLive[k] = await loadTeamLive(k); ok++; } catch { bad++; } }));
   sbBusy = false;
   if (ks.length) stat('espn', ok > 0, bad ? bad + ' team' + (bad > 1 ? 's' : '') + ' didn’t load' : '');
-  renderScoreboard(); loadStandings(); loadMinors();
+  loadMinors();
+  try { renderScoreboard(); } catch (e) { console.warn('scoreboard', e); }
+  loadStandings();
 }
 
 /* ---------- Icemen (ECHL) and Jumbo Shrimp (Triple-A): live from their leagues' own public feeds ---------- */
@@ -3787,7 +3789,7 @@ function jsonp(url, ms = 12000){
 }
 async function getHT(url){ try { return await getLoose(url); } catch { return await jsonp(url); } }
 const SHRIMP_ID = 564;
-async function getLoose(url){ const r = await fetch(url); if (!r.ok) throw new Error(r.status); const t = (await r.text()).trim(); return JSON.parse(t.replace(/^\(/, '').replace(/\);?$/, '')); }
+async function getLoose(url){ const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 10000); const r = await fetch(url, {signal: ac.signal}).finally(() => clearTimeout(tm)); if (!r.ok) throw new Error(r.status); const t = (await r.text()).trim(); return JSON.parse(t.replace(/^\(/, '').replace(/\);?$/, '')); }
 const dayFromNow = n => isoDay(new Date(Date.now() + n*864e5));
 function minorSummary(k, evs, record, standing, otl){
   evs = evs.filter(e => !isNaN(e.d)).sort((a,b) => a.d - b.d);
@@ -3834,14 +3836,18 @@ async function loadShrimp(){
 let minorsBusy = false;
 async function loadMinors(){
   if (window.claude || minorsBusy) return; minorsBusy = true;
-  const want = sbTeams().filter(k => k === 'Icemen' || k === 'Jumbo Shrimp' ), fns = {Icemen: loadIcemen, 'Jumbo Shrimp': loadShrimp};
+  let want = [];
+  try { want = sbTeams().filter(k => k === 'Icemen' || k === 'Jumbo Shrimp'); } catch {}
+  if (!want.length){ minorsBusy = false; stat('minor', true, 'not on your team list'); return; }
+  const fns = {Icemen: loadIcemen, 'Jumbo Shrimp': loadShrimp};
   let ok = 0, bad = [];
   const empty = [];
   await Promise.all(want.map(async k => { try { const r = await fns[k](); if (r) sbLive[k] = r; else if (inSeason(k)) empty.push(k); ok++; } catch (e) { bad.push(k + ' (' + (e && e.message || 'error') + ')'); } }));
   minorsBusy = false;
   if (want.length) stat('minor', ok > 0 && !empty.length, [bad.length ? bad.join(' & ') + ' didn’t load' : '', empty.length ? empty.join(' & ') + ': feed loaded but no games found' : ''].filter(Boolean).join(' · '));
-  renderScoreboard(); renderGames(gamesCache.filter(g => !minorGames[teamKey(g.team)]));
+  try { renderScoreboard(); renderGames(gamesCache.filter(g => !minorGames[teamKey(g.team)])); } catch (e) { console.warn('minors render', e); }
 }
+setTimeout(loadMinors, 1500); setInterval(loadMinors, 30*60e3);
 function sbData(){
   const extra = {}; (snapView().scoreboard || []).forEach(x => { if (x && x.team) extra[teamKey(x.team) || x.team] = x; });
   return sbTeams().map(k => sbLive[k] || extra[k] || {team: k});
