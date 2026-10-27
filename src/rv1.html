@@ -3746,7 +3746,20 @@ async function loadScoreboard(){
 }
 
 /* ---------- Icemen (ECHL) and Jumbo Shrimp (Triple-A): live from their leagues' own public feeds ---------- */
-const HT_FEED = 'https://lscluster.hockeytech.com/feed/index.php?feed=modulekit&key=2c2b89ea7345cae8&client_code=echl&lang=en&fmt=json';
+const HT_FEED = 'https://lscluster.hockeytech.com/feed/index.php?feed=modulekit&key=2c2b89ea7345cae8&client_code=echl&site_id=0&league_id=1&lang=en&fmt=json';
+/* The ECHL feed doesn't let other sites read it directly, so it's loaded the way the league's own widgets do (a script callback) */
+function jsonp(url, ms = 12000){
+  return new Promise((ok, fail) => {
+    const cb = '__rv1cb' + Math.random().toString(36).slice(2), sc = document.createElement('script');
+    const done = () => { delete window[cb]; sc.remove(); clearTimeout(t); };
+    const t = setTimeout(() => { done(); fail(new Error('timeout')); }, ms);
+    window[cb] = d => { done(); ok(d); };
+    sc.onerror = () => { done(); fail(new Error('load')); };
+    sc.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+    document.head.appendChild(sc);
+  });
+}
+async function getHT(url){ try { return await getLoose(url); } catch { return await jsonp(url); } }
 const SHRIMP_ID = 564;
 async function getLoose(url){ const r = await fetch(url); if (!r.ok) throw new Error(r.status); const t = (await r.text()).trim(); return JSON.parse(t.replace(/^\(/, '').replace(/\);?$/, '')); }
 const dayFromNow = n => isoDay(new Date(Date.now() + n*864e5));
@@ -3765,7 +3778,7 @@ function minorSummary(k, evs, record, standing, otl){
     next: next ? {opp: next.opp, home: next.home, start: next.d.toISOString(), tbd: !!next.tbd, tv: next.tv || '', venue: next.venue || ''} : null};
 }
 async function loadIcemen(){
-  const j = await getLoose(HT_FEED + '&view=scorebar&numberofdaysback=60&numberofdaysahead=40');
+  const j = await getHT(HT_FEED + '&view=scorebar&numberofdaysback=60&numberofdaysahead=40');
   const list = j?.SiteKit?.Scorebar || j?.Scorebar || (Array.isArray(j) ? j : []);
   if (!Array.isArray(list)) throw new Error('feed');
   const jax = s => /jacksonville/i.test(s || '');
@@ -3797,9 +3810,10 @@ async function loadMinors(){
   if (window.claude || minorsBusy) return; minorsBusy = true;
   const want = sbTeams().filter(k => k === 'Icemen' || k === 'Jumbo Shrimp' ), fns = {Icemen: loadIcemen, 'Jumbo Shrimp': loadShrimp};
   let ok = 0, bad = [];
-  await Promise.all(want.map(async k => { try { const r = await fns[k](); if (r) sbLive[k] = r; ok++; } catch { bad.push(k); } }));
+  const empty = [];
+  await Promise.all(want.map(async k => { try { const r = await fns[k](); if (r) sbLive[k] = r; else if (inSeason(k)) empty.push(k); ok++; } catch (e) { bad.push(k + ' (' + (e && e.message || 'error') + ')'); } }));
   minorsBusy = false;
-  if (want.length) stat('minor', ok > 0, bad.length ? bad.join(' & ') + ' didn’t load' : '');
+  if (want.length) stat('minor', ok > 0 && !empty.length, [bad.length ? bad.join(' & ') + ' didn’t load' : '', empty.length ? empty.join(' & ') + ': feed loaded but no games found' : ''].filter(Boolean).join(' · '));
   renderScoreboard(); renderGames(gamesCache.filter(g => !minorGames[teamKey(g.team)]));
 }
 function sbData(){
