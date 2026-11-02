@@ -1614,8 +1614,13 @@ function setSync(kind, text){
   const led = $('syncled'); led.className = 'led' + (kind==='ok'?' on':kind==='busy'?' amber':kind==='bad'?' bad':'');
   $('synctxt').textContent = text;
 }
-function lsGet(k){ try { const v = localStorage.getItem('cc_'+k); return v ? JSON.parse(v) : null; } catch { return null; } }
-function lsSet(k,v){ try { localStorage.setItem('cc_'+k, JSON.stringify(v)); } catch {} }
+/* If this browser won't let the page save (guest or kiosk profiles, site data blocked), keep everything in memory
+   for the visit so sign-in, sync and restore still work until the page closes */
+const MEMSTORE = new Map();
+const STORAGE_OK = (() => { try { const k = 'cc__probe'; localStorage.setItem(k, '1'); const ok = localStorage.getItem(k) === '1'; localStorage.removeItem(k); return ok; } catch { return false; } })();
+function lsGet(k){ if (MEMSTORE.has(k)) { try { return JSON.parse(MEMSTORE.get(k)); } catch { return null; } }
+  try { const v = localStorage.getItem('cc_'+k); return v ? JSON.parse(v) : null; } catch { return null; } }
+function lsSet(k,v){ const j = JSON.stringify(v); try { localStorage.setItem('cc_'+k, j); if (localStorage.getItem('cc_'+k) === j){ MEMSTORE.delete(k); return; } } catch {} MEMSTORE.set(k, j); }
 
 function save(key){ pending[key] = true; flush(key); }
 /* Automatic changes (starter links, updates) save locally without marking the data as newer for sync,
@@ -2535,6 +2540,7 @@ async function driveSync(){
     lsSet('gsfirst', true); lsSet('gsprev', syncPrint(merged.links?.data, merged.teams?.data));
     gsLast = Date.now(); window.__rv3 && stat('drive', true, changed.length ? changed.length + ' updated' : '');
     if (changed.includes('links') && migrateLinks()){ R.links?.(); saveQuiet('links'); }
+    if (changed.includes('teams')){ try { loadScoreboard(); } catch {} try { loadMinors(); } catch {} }
     if (changed.length){ renderAll(); loadQuotes?.(); }
   } catch (e) {
     const m = String(e && e.message || e || '');
@@ -2809,6 +2815,7 @@ document.querySelectorAll('.dk').forEach(b => b.addEventListener('click', () => 
     try { const j = JSON.parse(await f.text()); const d = j.data || j; let n = 0;
       for (const k of KEYS) if (k !== 'snapshot' && d[k] && typeof d[k] === 'object'){ S[k] = d[k]; save(k); n++; }
       renderAll(); $('bkmsg').textContent = n ? `Restored ${n} sections from ${f.name}.` : 'That file didn’t contain RV-1 data.';
+      if (n){ try { loadScoreboard(); } catch {} try { loadMinors(); } catch {} }
     } catch { $('bkmsg').textContent = 'That file couldn’t be read. Pick an RV-1 backup (.json).'; }
     $('bkfile').value = '';
   });
@@ -3803,7 +3810,7 @@ bootGh();
 const RV1_VERSION = '/*@VERSION@*/';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
-const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
+const STATUS_SRC = [['store','Saving in this browser'],['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
   ['launch','Launch schedule'],['space','Space news'],['news','Headlines'],['history','Today in history'],['drive','Google Drive sync'],['version','Update check']];
 function renderStatus(){
   const ul = $('statuslist'); if (!ul) return; ul.replaceChildren();
@@ -4424,6 +4431,9 @@ $('histnext').addEventListener('click', () => { histIdx++; renderHistory(); });
 
 /* ---------- Update notice ---------- */
 window.__rvNewVer = null;
+setTimeout(() => { if (window.claude) return;
+  stat('store', STORAGE_OK, STORAGE_OK ? '' : 'blocked: this browser won’t let RV-1 save, so links, teams and settings reset when the page closes. Sign in to Google sync each visit, or allow site data for this site in Chrome settings');
+  if (!STORAGE_OK && typeof toastMsg === 'function') toastMsg('This browser isn’t letting RV-1 save anything. Sign in to Google sync in Settings to load your links and teams for this visit.'); }, 1200);
 async function checkUpdate(){
   if (window.claude || !/^(https?|file):$/.test(location.protocol)) return;
   try { const j = await getJSON('https://raw.githubusercontent.com/rvannederynen18/rv-1/main/version.json?t=' + Date.now());
