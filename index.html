@@ -2429,13 +2429,43 @@ function gsMeta(){ return lsGet('gsmeta') || {}; }
 function unionLinks(a, b){
   const out = clone(a || {groups: []}); out.groups ||= [];
   Object.keys(b || {}).forEach(k => { if (k !== 'groups' && out[k] == null) out[k] = clone(b[k]); });
-  const norm = u => String(u || '').trim().toLowerCase().replace(/\/+$/, '');
+  const norm = normUrl;
   (b?.groups || []).forEach(g => {
     if (!g || g.vault) return;
     let t = out.groups.find(x => x.id === g.id) || out.groups.find(x => (x.name || '').toLowerCase() === (g.name || '').toLowerCase());
     if (!t){ const vi = out.groups.findIndex(x => x.vault); out.groups.splice(vi < 0 ? out.groups.length : vi, 0, clone(g)); return; }
     (g.links || []).forEach(l => { if (!(t.links ||= []).some(x => norm(x.url) === norm(l.url))) t.links.push(clone(l)); });
   });
+  return out;
+}
+const normUrl = u => String(u || '').trim().toLowerCase().replace(/^https?:\/\/(www\.)?/, '').replace(/\/+$/, '');
+/* What this device had at its last sync: lets a merge tell "deleted here" apart from "added on another device" */
+function syncPrint(links, teams){
+  return {urls: [...new Set((links?.groups || []).filter(g => !g.vault).flatMap(g => (g.links || []).map(l => normUrl(l.url))))],
+    groups: (links?.groups || []).filter(g => !g.vault).map(g => g.id), teams: (teams?.items || []).map(t => (t.name || '').toLowerCase())};
+}
+function tombs(prevList, localList, remoteTombs, localTombs){
+  const now = Date.now(), keep = 120*864e5, out = {};
+  [...(remoteTombs || []), ...(localTombs || [])].forEach(t => { if (t && t.k && now - (t.t || 0) < keep && (!out[t.k] || out[t.k] < t.t)) out[t.k] = t.t; });
+  const have = new Set(localList);
+  (prevList || []).forEach(k => { if (!have.has(k)) out[k] = Math.max(out[k] || 0, now); });   /* deleted here since last sync */
+  localList.forEach(k => { if (!(prevList || []).includes(k) && out[k]) delete out[k]; });      /* re-added here since last sync */
+  return out;
+}
+function mergeLinks(newer, older, local, remote){
+  const prev = lsGet('gsprev') || {}, lp = syncPrint(local, null);
+  const tu = tombs(prev.urls, lp.urls, remote?.removedUrls, local?.removedUrls), tg = tombs(prev.groups, lp.groups, remote?.removedGroups, local?.removedGroups);
+  const out = unionLinks(newer, older);
+  out.groups = out.groups.filter(g => g.vault || !tg[g.id]).map(g => g.vault ? g : {...g, links: (g.links || []).filter(l => !tu[normUrl(l.url)])});
+  out.removedUrls = Object.entries(tu).map(([k, t]) => ({k, t})); out.removedGroups = Object.entries(tg).map(([k, t]) => ({k, t}));
+  return out;
+}
+function mergeTeams(newer, older, local, remote){
+  const prev = lsGet('gsprev') || {}, lp = (local?.items || []).map(t => (t.name || '').toLowerCase());
+  const tt = tombs(prev.teams, lp, remote?.removed, local?.removed);
+  const out = unionTeams(newer, older);
+  out.items = (out.items || []).filter(t => !tt[(t.name || '').toLowerCase()]);
+  out.removed = Object.entries(tt).map(([k, t]) => ({k, t}));
   return out;
 }
 function unionTeams(a, b){
@@ -2487,14 +2517,16 @@ async function driveSync(){
     const meta = gsMeta(), merged = {}, changed = [];
     const local = Object.fromEntries(gsKeys().map(k => [k, S[k]])); local.fhkey = lsGet('fhkey');
     /* A device syncing for the first time takes what's already saved in Drive, so a new install never replaces it */
-    const first = !lsGet('gsfirst'), union = !first && !lsGet('gsunion1');
+    const first = !lsGet('gsfirst'), union = !first;
     for (const k of new Set([...Object.keys(local), ...Object.keys(remote.keys || {})])){
       const r = remote.keys?.[k], lt = meta[k] || 0;
       if (union && r && local[k] != null && (k === 'links' || k === 'teams')){
-        /* One-time repair: put back links and teams that an earlier sync dropped, from whichever copy still has them */
+        /* Links and teams always merge, so no device (new, outdated or offline) can wipe what another added.
+           Deletions made on this device since its last sync are remembered so they stay deleted everywhere. */
         const newer = r.t > lt ? r.data : local[k], older = r.t > lt ? local[k] : r.data;
-        const data = k === 'links' ? unionLinks(newer, older) : unionTeams(newer, older);
-        merged[k] = {t: Date.now(), data}; if (JSON.stringify(data) !== JSON.stringify(local[k])) changed.push(k);
+        const data = k === 'links' ? mergeLinks(newer, older, local[k], r.data) : mergeTeams(newer, older, local[k], r.data);
+        merged[k] = {t: Math.max(r.t || 0, lt || 0, JSON.stringify(data) !== JSON.stringify(r.data) ? Date.now() : 0), data};
+        if (JSON.stringify(data) !== JSON.stringify(local[k])) changed.push(k);
         continue;
       }
       if (r && (first || r.t > lt)){ merged[k] = r; changed.push(k); }
@@ -2512,7 +2544,7 @@ async function driveSync(){
         await gsFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {method:'POST', headers:{'Content-Type': 'multipart/related; boundary=' + b},
           body: `--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metaJ}\r\n--${b}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${b}--`}); }
     }
-    lsSet('gsfirst', true); if (union) lsSet('gsunion1', true);
+    lsSet('gsfirst', true); lsSet('gsprev', syncPrint(merged.links?.data, merged.teams?.data));
     gsLast = Date.now(); window.__rv3 && stat('drive', true, changed.length ? changed.length + ' updated' : '');
     if (changed.includes('links') && migrateLinks()){ R.links?.(); saveQuiet('links'); }
     if (changed.length){ renderAll(); loadQuotes?.(); }
@@ -3770,7 +3802,7 @@ bootGh();
    golf, beach, sky, traffic, gas, markets, reading list, history,
    data status and update notice
    ===================================================================== */
-const RV1_VERSION = '2026.10.26.2054';
+const RV1_VERSION = '2026.11.02.0925';
 const ST = {};
 function stat(src, ok, msg){ ST[src] = {ok: !!ok, msg: msg || '', at: Date.now()}; renderStatus(); }
 const STATUS_SRC = [['espn','Scores & standings (ESPN)'],['minor','Icemen & Jumbo Shrimp'],['weather','Weather & golf forecast'],['marine','Tides & surf'],['beach','Rip current forecast (NWS)'],['alerts','Weather alerts (NWS)'],
