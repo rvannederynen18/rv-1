@@ -2406,6 +2406,7 @@ $('groupform').addEventListener('submit', e => {
 
 /* ---------- Google Drive sync (hosted site only) ---------- */
 const RV1_GOOGLE_CLIENT_ID = '132078323168-6jojlcci9ugsrtoo291b06lm0vi5s2rl.apps.googleusercontent.com';
+let gsWait = 0;
 const GS_FILE = 'rv1-sync.json', GS_SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
 const gsKeys = () => KEYS.filter(k => k !== 'snapshot');
 let gsToken = null, gsExp = 0, gsClient = null, gsBusy = false, gsTimer = null, gsLast = 0, gsErr = '';
@@ -2479,15 +2480,18 @@ async function gsAuth(prompt){
   await gsLoad();
   return new Promise((res, rej) => {
     gsClient = google.accounts.oauth2.initTokenClient({client_id: gsClientId(), scope: GS_SCOPE,
-      callback: r => { if (r.error){ rej(r); return; } gsToken = r.access_token; gsExp = Date.now() + (r.expires_in || 3600) * 1000; try { sessionStorage.setItem('gstok', JSON.stringify({t:gsToken, e:gsExp})); } catch {} res(); },
-      error_callback: e => rej(e)});
+      callback: r => { clearTimeout(gsWait); if (r.error){ rej(r); return; }
+        try { if (google.accounts.oauth2.hasGrantedAllScopes && !google.accounts.oauth2.hasGrantedAllScopes(r, GS_SCOPE)){ rej({error:'scope'}); return; } } catch {}
+        gsToken = r.access_token; gsExp = Date.now() + (r.expires_in || 3600) * 1000; try { sessionStorage.setItem('gstok', JSON.stringify({t:gsToken, e:gsExp})); } catch {} res(); },
+      error_callback: e => { clearTimeout(gsWait); rej(e); }});
+    gsWait = setTimeout(() => rej({error:'noreply'}), 120e3);
     gsClient.requestAccessToken({prompt});
   });
 }
 async function gsFetch(url, opts = {}){
   const r = await fetch(url, {...opts, headers: {...(opts.headers || {}), Authorization: 'Bearer ' + gsToken}});
   if (r.status === 401){ gsToken = null; throw new Error('auth'); }
-  if (!r.ok) throw new Error('http ' + r.status);
+  if (!r.ok){ let why = ''; try { why = (await r.json())?.error?.errors?.[0]?.reason || ''; } catch {} throw new Error('http ' + r.status + (why ? ' ' + why : '')); }
   return r;
 }
 async function driveSync(){
@@ -2533,13 +2537,23 @@ async function driveSync(){
     if (changed.includes('links') && migrateLinks()){ R.links?.(); saveQuiet('links'); }
     if (changed.length){ renderAll(); loadQuotes?.(); }
   } catch (e) {
-    if (String(e.message) !== 'auth') gsErr = 'Couldn’t reach Google Drive just now. Tap Sync now to try again.'; window.__rv3 && stat('drive', false, 'sync failed');
+    const m = String(e && e.message || e || '');
+    if (m !== 'auth') gsErr = /403/.test(m) ? 'Google Drive refused RV-1 (' + m + '). If this Google account is a work or school account, its admin may block apps like RV-1; sign in with your personal Gmail instead.'
+      : /Failed to fetch|NetworkError|Load failed/i.test(m) ? 'This device couldn’t reach Google Drive (' + m + '). Its network may block googleapis.com.'
+      : 'Couldn’t reach Google Drive just now (' + m + '). Tap Sync now to try again.';
+    window.__rv3 && stat('drive', false, 'sync failed · ' + (m || 'unknown'));
   }
   gsBusy = false; gsUI();
 }
 async function gsConnect(){
   gsErr = ''; try { await gsAuth(lsGet('gsync') ? '' : 'consent'); lsSet('gsync', true); await driveSync(); }
-  catch (e) { gsErr = (e && (e.type === 'popup_closed' || e.error === 'access_denied')) ? '' : 'Google sign-in didn’t finish. Try again.'; gsUI(); }
+  catch (e) {
+    const c = e && (e.error || e.type) || '';
+    gsErr = c === 'scope' ? 'Google didn’t give RV-1 access to its Drive folder. Sign in again and, on the Google screen, tick the box to let RV-1 see and save its own app data.'
+      : c === 'noreply' ? 'Google sign-in never came back to this page. If a Google window is still open, close it and try again; this browser may be blocking pop-up windows from talking to the page.'
+      : c === 'popup_failed_to_open' ? 'The Google sign-in window was blocked. Allow pop-ups for this site and try again.'
+      : (c === 'popup_closed' || c === 'access_denied') ? '' : 'Google sign-in didn’t finish (' + (c || 'unknown') + '). Try again.';
+    window.__rv3 && gsErr && stat('drive', false, 'sign-in: ' + (c || 'unknown')); gsUI(); }
 }
 (() => {
   try { const t = JSON.parse(sessionStorage.getItem('gstok') || 'null'); if (t && t.e > Date.now() + 60e3){ gsToken = t.t; gsExp = t.e; } } catch {}
